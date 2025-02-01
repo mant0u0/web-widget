@@ -44,11 +44,17 @@ import {
 const TextFormatter = () => {
   const [text, setText] = useState<string>("");
 
+  // 符號功能
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSymbols, setRecentSymbols] = useState([]);
+  // Emoji
+  const [searchEmojiQuery, setSearchEmojiQuery] = useState("");
+  const [recentEmojiSymbols, setRecentEmojiSymbols] = useState([]);
 
+  // 載入 Pangu.js
   const [panguLoaded, setPanguLoaded] = useState(false);
 
+  // 歷史功能
   const [history, setHistory] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
@@ -172,7 +178,7 @@ const TextFormatter = () => {
     ],
   };
 
-  const emojisData = {
+  const emojiData = {
     表情符號: [
       { symbol: "😀", tags: ["開心", "笑臉"] },
       { symbol: "😂", tags: ["笑到爆", "笑臉"] },
@@ -188,18 +194,6 @@ const TextFormatter = () => {
   };
 
   // ================================================
-
-  // 尋找符號的完整資訊
-  const findSymbolInfo = (symbol) => {
-    for (const category in symbolsData) {
-      const found = symbolsData[category].find(
-        (item) => item.symbol === symbol
-      );
-      if (found) return found;
-    }
-    return { symbol, tags: [] };
-  };
-
   // 在指定位置插入符號並更新最近使用記錄
   const insertSymbol = (symbol) => {
     const textArea = document.querySelector("textarea");
@@ -261,6 +255,18 @@ const TextFormatter = () => {
       textArea.setSelectionRange(newPosition, newPosition);
     }, 0);
   };
+  // ================================================
+
+  // 尋找符號的完整資訊
+  const findSymbolInfo = (symbol) => {
+    for (const category in symbolsData) {
+      const found = symbolsData[category].find(
+        (item) => item.symbol === symbol
+      );
+      if (found) return found;
+    }
+    return { symbol, tags: [] };
+  };
 
   // 一般符號
   const filteredSymbols = useMemo(() => {
@@ -304,7 +310,6 @@ const TextFormatter = () => {
 
   // 刪除文字
   const clearText = () => {
-    // setText("");
     updateText("");
   };
 
@@ -470,70 +475,6 @@ const TextFormatter = () => {
                 <Button variant="outline">
                   <Type className="h-5 w-5 mr-1" />
                   插入符號
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-80 max-h-96 overflow-y-auto overflow-x-hidden p-0"
-                align="start"
-              >
-                {/* 搜尋框 */}
-                <div className="sticky top-0 left-0 bg-background p-4 border-b z-10">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-                    <Input
-                      type="text"
-                      placeholder="搜尋符號或標籤..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-4">
-                  {/* 最近使用的符號 */}
-                  {recentSymbols.length > 0 && !searchQuery && (
-                    <div className="mb-4">
-                      <h3 className="text-sm font-semibold mb-2 flex items-center">
-                        <History className="h-4 w-4 mr-1" />
-                        最近使用
-                      </h3>
-                      <div className="flex flex-wrap gap-1">
-                        {recentSymbols.map((item, index) => (
-                          <SymbolButton
-                            key={`${item.symbol}-${index}`}
-                            item={item}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 符號按鈕組 */}
-                  {Object.entries(filteredSymbols).map(
-                    ([category, symbols]) => (
-                      <div key={category} className="mb-4">
-                        <h3 className="text-sm font-semibold mb-2">
-                          {category}
-                        </h3>
-                        <div className="flex flex-wrap gap-1">
-                          {symbols.map((item) => (
-                            <SymbolButton key={item.symbol} item={item} />
-                          ))}
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            {/* emoji 選擇按鈕 */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline">
-                  <Type className="h-5 w-5 mr-1" />
-                  Emoji
                 </Button>
               </PopoverTrigger>
               <PopoverContent

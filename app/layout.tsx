@@ -15,13 +15,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="header">
+        {/* <div className="header">
           <div className="container">
             <Link href="/" className="btn">
-              首頁
+              測試
             </Link>
           </div>
-        </div>
+        </div> */}
 
         {children}
       </body>
