@@ -34,13 +34,13 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const TextFormatter = () => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSymbols, setRecentSymbols] = useState([]);
   const [panguLoaded, setPanguLoaded] = useState(false);
 
-  const [history, setHistory] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [history, setHistory] = useState<string[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
   // ================================================
 
