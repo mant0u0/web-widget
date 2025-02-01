@@ -1,13 +1,27 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="">
-      <main className="">
-        <div className="item">1213212</div>
-        <Link href="/a1">前往第二頁</Link>
-      </main>
-      <footer className=""></footer>
+    <div className="page">
+      <div className="container">
+        <div className="link-list">
+          <LinkItem text="程式一" link="/example" />
+          <LinkItem text="社群編輯器" link="/SocialMediaEditor" />
+          <LinkItem text="Pangu" link="/Pangu" />
+          <LinkItem text="文字編輯器" link="/TextEditor" />
+        </div>
+      </div>
     </div>
-  )
+  );
+}
+
+function LinkItem({ text = "文字", link = "#" }) {
+  return (
+    <Link className="link-item" href={link}>
+      <div className="img-box"></div>
+      <div className="text-box">
+        <p>{text}</p>
+      </div>
+    </Link>
+  );
 }
