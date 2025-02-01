@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  ChangeEvent,
+} from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,6 +48,9 @@ const TextFormatter = () => {
   const [history, setHistory] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
+  // 首行加入符號功能：設定是否包含空行
+  const [includeEmptyLines, setIncludeEmptyLines] = useState(false);
+
   // ================================================
 
   // 更新文字並記錄歷史
@@ -57,7 +66,7 @@ const TextFormatter = () => {
   );
 
   // 處理文字變更
-  const handleTextChange = (e) => {
+  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     updateText(e.target.value);
   };
 
@@ -316,14 +325,15 @@ const TextFormatter = () => {
       // 找出游標所在行或選取的行範圍
       let startLine, endLine;
 
+      // 如果沒有選取文字，處理游標所在行
       if (start === end) {
-        // 如果沒有選取文字，處理游標所在行
         startLine = text.lastIndexOf("\n", start - 1) + 1;
         if (startLine === -1) startLine = 0;
         endLine = text.indexOf("\n", start);
         if (endLine === -1) endLine = text.length;
-      } else {
-        // 如果有選取文字，處理選取範圍
+      }
+      // 如果有選取文字，處理選取範圍
+      else {
         startLine = text.lastIndexOf("\n", start - 1) + 1;
         if (startLine === -1) startLine = 0;
         endLine = text.indexOf("\n", end);
@@ -338,34 +348,44 @@ const TextFormatter = () => {
 
       // 為每行加入前綴
       let newLines;
+      let currentNumber = 1; // 追踪當前序號
 
       // 數字列表特殊處理
       if (prefix === "1. ") {
-        newLines = selectedLines.map((line, index) =>
-          line.trim() ? `${index + 1}. ${line}` : line
-        );
+        newLines = selectedLines.map((line) => {
+          // 根據 includeEmptyLines 決定是否處理空行
+          if (!line.trim() && !includeEmptyLines) return line;
+          const numberedLine = `${currentNumber}. ${line}`;
+          currentNumber++;
+          return numberedLine;
+        });
       } else if (prefix === "01. ") {
-        newLines = selectedLines.map((line, index) =>
-          line.trim() ? `${String(index + 1).padStart(2, "0")}. ${line}` : line
-        );
+        newLines = selectedLines.map((line) => {
+          if (!line.trim() && !includeEmptyLines) return line;
+          const numberedLine = `${String(currentNumber).padStart(
+            2,
+            "0"
+          )}. ${line}`;
+          currentNumber++;
+          return numberedLine;
+        });
       }
-
       // 圓圈數字特殊處理
       else if (prefix === "①") {
-        newLines = selectedLines.map((line, index) => {
-          if (!line.trim()) return line;
+        newLines = selectedLines.map((line) => {
+          if (!line.trim() && !includeEmptyLines) return line;
           const circleNumber =
-            index < circleNumbers.length
-              ? circleNumbers[index]
-              : `${index + 1}.`;
+            currentNumber <= circleNumbers.length
+              ? circleNumbers[currentNumber - 1]
+              : `${currentNumber}.`;
+          currentNumber++;
           return `${circleNumber} ${line}`;
         });
       }
-
       // 其他符號直接加入
       else {
         newLines = selectedLines.map((line) =>
-          line.trim() ? `${prefix}${line}` : line
+          !line.trim() && !includeEmptyLines ? line : `${prefix}${line}`
         );
       }
 
@@ -379,7 +399,7 @@ const TextFormatter = () => {
         textarea.setSelectionRange(startLine, endLine);
       }, 0);
     },
-    [text, updateText]
+    [text, updateText, includeEmptyLines] // 加入 includeEmptyLines 作為依賴
   );
   // ================================================
 
@@ -538,6 +558,13 @@ const TextFormatter = () => {
                     align="start"
                   >
                     <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        className="col-span-2"
+                        onClick={() => setIncludeEmptyLines(!includeEmptyLines)}
+                      >
+                        {includeEmptyLines ? "包含空白行" : "不包含空白行"}
+                      </Button>
                       {prefixSymbols.map((item) => (
                         <Button
                           key={item.symbol}
