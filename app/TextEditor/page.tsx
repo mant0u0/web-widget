@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +18,8 @@ import {
   UnfoldHorizontal,
   Copy,
   CircleCheck,
+  ListOrdered,
+  Undo,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -36,6 +38,38 @@ const TextFormatter = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSymbols, setRecentSymbols] = useState([]);
   const [panguLoaded, setPanguLoaded] = useState(false);
+
+  const [history, setHistory] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+
+  // ================================================
+
+  // 更新文字並記錄歷史
+  const updateText = useCallback(
+    (newText) => {
+      setText(newText);
+      const newHistory = history.slice(0, currentIndex + 1);
+      newHistory.push(newText);
+      setHistory(newHistory);
+      setCurrentIndex(newHistory.length - 1);
+    },
+    [history, currentIndex]
+  );
+
+  // 處理文字變更
+  const handleTextChange = (e) => {
+    updateText(e.target.value);
+  };
+
+  // 還原功能
+  const handleUndo = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      setText(history[currentIndex - 1]);
+    }
+  };
+
+  // ================================================
 
   // 載入 pangu.js
   useEffect(() => {
@@ -57,9 +91,12 @@ const TextFormatter = () => {
   const handlePangu = () => {
     if (window.pangu && text) {
       const spacedText = window.pangu.spacing(text);
-      setText(spacedText);
+      // setText(spacedText);
+      updateText(spacedText);
     }
   };
+
+  // ================================================
 
   // 引號設定
   const quotes = [
@@ -119,6 +156,8 @@ const TextFormatter = () => {
     ],
   };
 
+  // ================================================
+
   // 尋找符號的完整資訊
   const findSymbolInfo = (symbol) => {
     for (const category in symbolsData) {
@@ -139,11 +178,16 @@ const TextFormatter = () => {
     const textAfter = text.substring(end);
 
     const newText = textBefore + symbol + textAfter;
-    setText(newText);
-
-    // 更新光標位置
     const newPosition = start + symbol.length;
-    textArea.setSelectionRange(newPosition, newPosition);
+
+    // setText(newText);
+    updateText(newText);
+
+    // 使用 setTimeout 確保在狀態更新後設置游標位置
+    setTimeout(() => {
+      textArea.focus();
+      textArea.setSelectionRange(newPosition, newPosition);
+    }, 0);
 
     // 更新最近使用記錄
     setRecentSymbols((prev) => {
@@ -172,7 +216,8 @@ const TextFormatter = () => {
     // 組合新文字
     const newText =
       textBefore + leftQuote + selectedText + rightQuote + textAfter;
-    setText(newText);
+    // setText(newText);
+    updateText(newText);
 
     // 設置游標位置到引號中間
     const newPosition =
@@ -210,7 +255,8 @@ const TextFormatter = () => {
 
   // 刪除文字
   const clearText = () => {
-    setText("");
+    // setText("");
+    updateText("");
   };
 
   // 複製文字
@@ -237,12 +283,105 @@ const TextFormatter = () => {
         {item.symbol}
       </Button>
       {/* 標籤提示 */}
-      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
+      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-2 pointer-events-none">
         {/* {item.tags.join(", ")} */}
         {item.tags[0]}
       </div>
     </div>
   );
+
+  // ================================================
+
+  // 行首符號設定
+  const prefixSymbols = [
+    { symbol: "　", name: "全形空格" },
+    { symbol: " ", name: "半形空格" },
+    { symbol: "- ", name: "短橫線" },
+    { symbol: "• ", name: "圓點" },
+    { symbol: "1. ", name: "數字列表" },
+    { symbol: "01. ", name: "二位數字列表" },
+    { symbol: "①", name: "圓圈數字" },
+  ];
+
+  // 圓圈數字陣列
+  const circleNumbers = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"];
+
+  // 在選取的行首插入符號
+  const insertPrefix = useCallback(
+    (prefix) => {
+      const textarea = document.querySelector("textarea");
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+
+      // 找出游標所在行或選取的行範圍
+      let startLine, endLine;
+
+      if (start === end) {
+        // 如果沒有選取文字，處理游標所在行
+        startLine = text.lastIndexOf("\n", start - 1) + 1;
+        if (startLine === -1) startLine = 0;
+        endLine = text.indexOf("\n", start);
+        if (endLine === -1) endLine = text.length;
+      } else {
+        // 如果有選取文字，處理選取範圍
+        startLine = text.lastIndexOf("\n", start - 1) + 1;
+        if (startLine === -1) startLine = 0;
+        endLine = text.indexOf("\n", end);
+        if (endLine === -1) endLine = text.length;
+      }
+
+      const beforeSelection = text.substring(0, startLine);
+      const afterSelection = text.substring(endLine);
+
+      // 處理選取的行
+      const selectedLines = text.substring(startLine, endLine).split("\n");
+
+      // 為每行加入前綴
+      let newLines;
+
+      // 數字列表特殊處理
+      if (prefix === "1. ") {
+        newLines = selectedLines.map((line, index) =>
+          line.trim() ? `${index + 1}. ${line}` : line
+        );
+      } else if (prefix === "01. ") {
+        newLines = selectedLines.map((line, index) =>
+          line.trim() ? `${String(index + 1).padStart(2, "0")}. ${line}` : line
+        );
+      }
+
+      // 圓圈數字特殊處理
+      else if (prefix === "①") {
+        newLines = selectedLines.map((line, index) => {
+          if (!line.trim()) return line;
+          const circleNumber =
+            index < circleNumbers.length
+              ? circleNumbers[index]
+              : `${index + 1}.`;
+          return `${circleNumber} ${line}`;
+        });
+      }
+
+      // 其他符號直接加入
+      else {
+        newLines = selectedLines.map((line) =>
+          line.trim() ? `${prefix}${line}` : line
+        );
+      }
+
+      // 組合新文字
+      const newText = beforeSelection + newLines.join("\n") + afterSelection;
+      updateText(newText);
+
+      // 更新選取範圍
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(startLine, endLine);
+      }, 0);
+    },
+    [text, updateText]
+  );
+  // ================================================
 
   return (
     <div className="flex flex-col items-center pt-10 min-h-screen">
@@ -252,7 +391,8 @@ const TextFormatter = () => {
             {/* 文字輸入區域 */}
             <Textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              // onChange={(e) => setText(e.target.value)}
+              onChange={handleTextChange}
               placeholder="在這裡輸入或編輯文字..."
               className="w-full h-40 p-2"
             />
@@ -366,7 +506,7 @@ const TextFormatter = () => {
                     className="w-80 max-h-96 overflow-y-auto overflow-x-hidden p-4"
                     align="start"
                   >
-                    <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {quotes.map((quote) => (
                         <Button
                           key={quote.symbol}
@@ -381,6 +521,38 @@ const TextFormatter = () => {
                     </div>
                   </PopoverContent>
                 </Popover>
+
+                {/* 行首插入按鈕 */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">
+                      <ListOrdered className="h-5 w-5 mr-1" />
+                      行首插入
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-84 max-h-96 overflow-y-auto overflow-x-hidden p-4"
+                    align="start"
+                  >
+                    <div className="grid grid-cols-2 gap-2">
+                      {prefixSymbols.map((item) => (
+                        <Button
+                          key={item.symbol}
+                          variant="outline"
+                          onClick={() => insertPrefix(item.symbol)}
+                          className="justify-start"
+                        >
+                          <span className="mr-2 w-4 text-center">
+                            {item.symbol}
+                          </span>
+                          {item.name}
+                        </Button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* 中英間距按鈕 */}
                 <Button
                   onClick={handlePangu}
                   variant="outline"
@@ -391,6 +563,18 @@ const TextFormatter = () => {
                   中英間距
                 </Button>
 
+                {/* 還原按鈕 */}
+                <Button
+                  variant="outline"
+                  onClick={handleUndo}
+                  disabled={currentIndex <= 0}
+                  className="flex items-center"
+                >
+                  <Undo className="h-5 w-5 mr-1" />
+                  還原
+                </Button>
+
+                {/* 複製按鈕 */}
                 <Button
                   onClick={copyText}
                   variant="outline"
