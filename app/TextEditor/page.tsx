@@ -46,7 +46,7 @@ const TextFormatter = () => {
 
   // 更新文字並記錄歷史
   const updateText = useCallback(
-    (newText) => {
+    (newText: string) => {
       setText(newText);
       const newHistory = history.slice(0, currentIndex + 1);
       newHistory.push(newText);
