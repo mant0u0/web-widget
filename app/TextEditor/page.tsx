@@ -388,6 +388,9 @@ const TextFormatter = () => {
       <Card className="w-full max-w-4xl">
         <CardContent className="pt-6">
           <div className="space-y-4">
+            {/* 主功能按鈕 */}
+            <div className="flex justify-between"></div>
+
             {/* 文字輸入區域 */}
             <Textarea
               value={text}
@@ -397,7 +400,7 @@ const TextFormatter = () => {
               className="w-full h-40 p-2"
             />
 
-            {/* 功能按鈕 */}
+            {/* 其他功能按鈕 */}
             <div className="flex justify-between">
               <div className="flex gap-2">
                 {/* 刪除按鈕 */}

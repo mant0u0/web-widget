@@ -6,8 +6,6 @@ export default function Home() {
       <div className="container">
         <div className="link-list">
           <LinkItem text="程式一" link="/example" />
-          <LinkItem text="社群編輯器" link="/SocialMediaEditor" />
-          <LinkItem text="Pangu" link="/Pangu" />
           <LinkItem text="文字編輯器" link="/TextEditor" />
         </div>
       </div>
