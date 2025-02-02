@@ -47,12 +47,6 @@ interface SymbolItem {
   tags: string[];
 }
 
-// 定義數據分類的接口
-interface CategoryData {
-  categoryTags: string[];
-  items: SymbolItem[];
-}
-
 // 共用的符號選擇器組件
 const SymbolPicker = ({
   data,
