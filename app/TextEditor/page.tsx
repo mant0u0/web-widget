@@ -41,12 +41,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-// 定義單個符號項目的接口
-interface SymbolItem {
-  symbol: string;
-  tags: string[];
-}
-
 // 定義 item 的類型
 type SymbolItem = {
   symbol: string;
