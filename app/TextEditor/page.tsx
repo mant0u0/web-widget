@@ -79,7 +79,15 @@ const SymbolPicker = ({
     if (!searchQuery) return data;
 
     const searchLower = searchQuery.toLowerCase();
-    const filtered = {};
+    const filtered: {
+      [category: string]: {
+        categoryTags: string[];
+        items: {
+          symbol: string;
+          tags: string[];
+        }[];
+      };
+    } = {};
 
     Object.entries(data).forEach(([category, { categoryTags, items }]) => {
       // 檢查分類標籤是否匹配
