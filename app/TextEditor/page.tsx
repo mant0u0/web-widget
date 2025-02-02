@@ -472,8 +472,17 @@ const TextFormatter = () => {
     },
   };
 
+  // 定義 item 的類型
+  type SymbolItem = {
+    symbol: string;
+    tags: string[];
+  };
+
   // 插入符號
-  const insertSymbol = (item, model = "Symbol") => {
+  const insertSymbol = (
+    item: SymbolItem,
+    model: "Symbol" | "Emoji" | "Kaomoji" = "Symbol"
+  ) => {
     const textArea = document.querySelector("textarea");
     const start = textArea.selectionStart;
     const end = textArea.selectionEnd;
