@@ -53,11 +53,6 @@ interface CategoryData {
   items: SymbolItem[];
 }
 
-// 定義整個數據結構的接口
-interface SymbolData {
-  [category: string]: CategoryData;
-}
-
 // 共用的符號選擇器組件
 const SymbolPicker = ({
   data,
