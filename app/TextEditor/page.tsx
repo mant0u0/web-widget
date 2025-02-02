@@ -392,9 +392,9 @@ const TextFormatter = () => {
 
   // 處理中英文間距
   const handlePangu = () => {
-    // @ts-ignore
+    // @ts-expect-error pangu is injected globally
     if (window.pangu && text) {
-      // @ts-ignore
+      // @ts-expect-error pangu is injected globally
       const spacedText = window.pangu.spacing(text);
       // 更新文字
       updateText(spacedText);
