@@ -41,6 +41,33 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+// 定義單個符號項目的接口
+interface SymbolItem {
+  symbol: string;
+  tags: string[];
+}
+
+// 定義數據分類的接口
+interface CategoryData {
+  categoryTags: string[];
+  items: SymbolItem[];
+}
+
+// 定義整個數據結構的接口
+interface SymbolData {
+  [category: string]: CategoryData;
+}
+
+// 定義組件的 Props 接口
+interface SymbolPickerProps {
+  data: SymbolData;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  recentItems: SymbolItem[];
+  onSymbolSelect: (item: SymbolItem) => void;
+  placeholder: string;
+}
+
 // 共用的符號選擇器組件
 const SymbolPicker = ({
   data,
@@ -82,8 +109,13 @@ const SymbolPicker = ({
     return filtered;
   }, [searchQuery, data]);
 
+  // 為 SymbolButton 添加類型
+  interface SymbolButtonProps {
+    item: SymbolItem;
+  }
+
   // 符號按鈕組件
-  const SymbolButton = ({ item }) => (
+  const SymbolButton: React.FC<SymbolButtonProps> = ({ item }) => (
     <div className="relative group">
       <Button
         onClick={() => onSymbolSelect(item)}
