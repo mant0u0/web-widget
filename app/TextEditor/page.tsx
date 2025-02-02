@@ -136,20 +136,18 @@ const SymbolPicker = ({
         )}
 
         {/* 符號列表 */}
-        {Object.entries(filteredItems).map(
-          ([category, { categoryTags, items }]) => (
-            <div key={category} className="mb-4">
-              <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                {category}
-              </h3>
-              <div className="flex flex-wrap gap-1">
-                {items.map((item) => (
-                  <SymbolButton key={item.symbol} item={item} />
-                ))}
-              </div>
+        {Object.entries(filteredItems).map(([category, { items }]) => (
+          <div key={category} className="mb-4">
+            <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+              {category}
+            </h3>
+            <div className="flex flex-wrap gap-1">
+              {items.map((item) => (
+                <SymbolButton key={item.symbol} item={item} />
+              ))}
             </div>
-          )
-        )}
+          </div>
+        ))}
       </div>
     </PopoverContent>
   );
@@ -369,7 +367,7 @@ const TextFormatter = () => {
   // 符號資料
   const symbolsData = {
     標點符號: {
-      categoryTags: ["標點", "符號", "punctuation"],
+      categoryTags: ["標點", "符號"],
       items: [
         { symbol: "，", tags: ["逗號", "暫停", "分隔"] },
         { symbol: "。", tags: ["句號", "結束", "停頓"] },
@@ -377,15 +375,28 @@ const TextFormatter = () => {
         { symbol: "！", tags: ["驚嘆號", "感嘆號", "強調"] },
         { symbol: "？", tags: ["問號", "疑問"] },
         { symbol: "：", tags: ["冒號", "解釋"] },
+        { symbol: "；", tags: ["分號"] },
+        { symbol: "「", tags: ["引號", "對話", "引用"] },
+        { symbol: "」", tags: ["引號", "對話", "引用"] },
+        { symbol: "『", tags: ["雙引號", "引用"] },
+        { symbol: "』", tags: ["雙引號", "引用"] },
+        { symbol: "（", tags: ["括號", "補充"] },
+        { symbol: "）", tags: ["括號", "補充"] },
+        { symbol: "【", tags: ["方括號", "標題"] },
+        { symbol: "】", tags: ["方括號", "標題"] },
       ],
     },
     裝飾符號: {
-      categoryTags: ["裝飾", "符號", "decoration"],
+      categoryTags: ["裝飾", "符號"],
       items: [
         { symbol: "★", tags: ["星星", "實心星", "強調"] },
         { symbol: "☆", tags: ["星星", "空心星"] },
         { symbol: "♥", tags: ["愛心", "實心", "喜歡"] },
         { symbol: "♡", tags: ["愛心", "空心", "喜歡"] },
+        { symbol: "♪", tags: ["音符", "音樂"] },
+        { symbol: "♫", tags: ["音符", "音樂"] },
+        { symbol: "✿", tags: ["花", "裝飾"] },
+        { symbol: "❀", tags: ["花", "裝飾"] },
       ],
     },
   };
@@ -625,7 +636,7 @@ const TextFormatter = () => {
         textarea.setSelectionRange(startLine, endLine);
       }, 0);
     },
-    [text, updateText, includeEmptyLines] // 加入 includeEmptyLines 作為依賴
+    [text, updateText, includeEmptyLines, circleNumbers]
   );
 
   // ================================================
