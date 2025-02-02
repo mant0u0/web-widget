@@ -7,7 +7,6 @@ import React, {
   useCallback,
   ChangeEvent,
 } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -167,7 +166,6 @@ const TextFormatter = () => {
   const [replaceText, setReplaceText] = useState("");
   const [matchCount, setMatchCount] = useState(0);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
-  const [isSearchMode, setIsSearchMode] = useState(true);
 
   // 符號搜尋狀態
   const [symbolSearchQuery, setSymbolSearchQuery] = useState("");
@@ -730,7 +728,7 @@ const TextFormatter = () => {
               data={kaomojiData}
               searchQuery={kaomojiSearchQuery}
               onSearchChange={setKaomojiSearchQuery}
-              recentItems={recentEmojis}
+              recentItems={recentKaomojis}
               onSymbolSelect={(item) => insertSymbol(item, "Kaomoji")}
               placeholder="搜尋 顏文字 或標籤..."
             />
@@ -820,12 +818,7 @@ const TextFormatter = () => {
             {isConverting ? "轉換中..." : "簡轉繁體"}
           </Button>
 
-          {/* 字數統計 */}
-          <div className="text-sm text-gray-500">
-            目前總共 {characterCount} 個字，共 {lineCount} 行。
-          </div>
-
-          <div className="w-full h-full flex flex-col gap-4 pt-10">
+          <div className="w-full flex flex-col gap-4 pt-10">
             {/* 搜尋輸入框 */}
             <div className="flex flex-col gap-2">
               <Input
@@ -915,6 +908,11 @@ const TextFormatter = () => {
                 找到 {matchCount} 個結果 ({currentMatchIndex + 1}/{matchCount})
               </div>
             )}
+
+            {/* 字數統計 */}
+            <div className="text-sm text-gray-500">
+              目前總共 {characterCount} 個字，共 {lineCount} 行。
+            </div>
           </div>
         </div>
       </div>
