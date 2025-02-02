@@ -47,6 +47,12 @@ interface SymbolItem {
   tags: string[];
 }
 
+// 定義 item 的類型
+type SymbolItem = {
+  symbol: string;
+  tags: string[];
+};
+
 // 共用的符號選擇器組件
 const SymbolPicker = ({
   data,
@@ -208,9 +214,9 @@ const TextFormatter = () => {
   const [kaomojiSearchQuery, setKaomojiSearchQuery] = useState("");
 
   // 符號最近使用記錄
-  const [recentSymbols, setRecentSymbols] = useState([]);
-  const [recentEmojis, setRecentEmojis] = useState([]);
-  const [recentKaomojis, setRecentKaomojis] = useState([]);
+  const [recentSymbols, setRecentSymbols] = useState<SymbolItem[]>([]);
+  const [recentEmojis, setRecentEmojis] = useState<SymbolItem[]>([]);
+  const [recentKaomojis, setRecentKaomojis] = useState<SymbolItem[]>([]);
 
   // 符號 Popover 開關狀態
   const [symbolPopoverOpen, setSymbolPopoverOpen] = useState(false);
@@ -472,12 +478,6 @@ const TextFormatter = () => {
     },
   };
 
-  // 定義 item 的類型
-  type SymbolItem = {
-    symbol: string;
-    tags: string[];
-  };
-
   // 插入符號
   const insertSymbol = (
     item: SymbolItem,
@@ -503,21 +503,21 @@ const TextFormatter = () => {
 
     // 更新最近使用記錄
     if (model === "Emoji") {
-      setRecentEmojis((prev) => {
+      setRecentEmojis((prev: SymbolItem[]) => {
         if (prev.find((prevItem) => prevItem.symbol === item.symbol)) {
           return prev;
         }
         return [item, ...prev].slice(0, 20);
       });
     } else if (model === "Symbol") {
-      setRecentSymbols((prev) => {
+      setRecentSymbols((prev: SymbolItem[]) => {
         if (prev.find((prevItem) => prevItem.symbol === item.symbol)) {
           return prev;
         }
         return [item, ...prev].slice(0, 20);
       });
     } else if (model === "Kaomoji") {
-      setRecentKaomojis((prev) => {
+      setRecentKaomojis((prev: SymbolItem[]) => {
         if (prev.find((prevItem) => prevItem.symbol === item.symbol)) {
           return prev;
         }
