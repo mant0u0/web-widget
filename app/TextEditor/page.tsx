@@ -602,13 +602,15 @@ const TextFormatter = () => {
 
   // 在選取的行首插入符號
   const insertPrefix = useCallback(
-    (prefix) => {
-      const textarea = document.querySelector("textarea");
+    (prefix: string) => {
+      const textarea = document.querySelector<HTMLTextAreaElement>("textarea");
+      if (!textarea) return;
+
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
 
       // 找出游標所在行或選取的行範圍
-      let startLine, endLine;
+      let startLine: number, endLine: number;
 
       // 如果沒有選取文字，處理游標所在行
       if (start === end) {
@@ -632,7 +634,7 @@ const TextFormatter = () => {
       const selectedLines = text.substring(startLine, endLine).split("\n");
 
       // 為每行加入前綴
-      let newLines;
+      let newLines: string[];
       let currentNumber = 1; // 追踪當前序號
 
       // 數字列表特殊處理
