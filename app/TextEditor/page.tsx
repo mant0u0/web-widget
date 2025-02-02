@@ -392,8 +392,9 @@ const TextFormatter = () => {
 
   // 處理中英文間距
   const handlePangu = () => {
-    if (window.pangu && text) {
-      const spacedText = window.pangu.spacing(text);
+    const panguInstance = (window as any).pangu;
+    if (panguInstance && text) {
+      const spacedText = panguInstance.spacing(text);
       // 更新文字
       updateText(spacedText);
     }
