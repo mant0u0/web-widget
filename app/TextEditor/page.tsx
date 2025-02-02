@@ -532,8 +532,10 @@ const TextFormatter = () => {
   ];
 
   // 插入成對引號並將游標置於中間
-  const insertQuote = (quote) => {
-    const textArea = document.querySelector("textarea");
+  const insertQuote = (quote: { left: string; right: string }) => {
+    const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
+    if (!textArea) return;
+
     const start = textArea.selectionStart;
     const end = textArea.selectionEnd;
     const textBefore = text.substring(0, start);
