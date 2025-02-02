@@ -483,7 +483,9 @@ const TextFormatter = () => {
     item: SymbolItem,
     model: "Symbol" | "Emoji" | "Kaomoji" = "Symbol"
   ) => {
-    const textArea = document.querySelector("textarea");
+    const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
+    if (!textArea) return; // 如果找不到 textarea 就提早返回
+
     const start = textArea.selectionStart;
     const end = textArea.selectionEnd;
     const textBefore = text.substring(0, start);
