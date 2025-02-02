@@ -58,16 +58,6 @@ interface SymbolData {
   [category: string]: CategoryData;
 }
 
-// 定義組件的 Props 接口
-interface SymbolPickerProps {
-  data: SymbolData;
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  recentItems: SymbolItem[];
-  onSymbolSelect: (item: SymbolItem) => void;
-  placeholder: string;
-}
-
 // 共用的符號選擇器組件
 const SymbolPicker = ({
   data,
@@ -76,6 +66,24 @@ const SymbolPicker = ({
   recentItems,
   onSymbolSelect,
   placeholder,
+}: {
+  data: {
+    [category: string]: {
+      categoryTags: string[];
+      items: {
+        symbol: string;
+        tags: string[];
+      }[];
+    };
+  };
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  recentItems: {
+    symbol: string;
+    tags: string[];
+  }[];
+  onSymbolSelect: (item: { symbol: string; tags: string[] }) => void;
+  placeholder: string;
 }) => {
   // 過濾符號
   const filteredItems = useMemo(() => {
@@ -582,7 +590,10 @@ const TextFormatter = () => {
   ];
 
   // 圓圈數字陣列
-  const circleNumbers = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"];
+  const circleNumbers = useMemo(
+    () => ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
+    []
+  );
 
   // 在選取的行首插入符號
   const insertPrefix = useCallback(
