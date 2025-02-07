@@ -18,7 +18,7 @@ import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, History } from "lucide-react";
-import { SymbolItem, SymbolData } from "./types";
+// import { SymbolItem, SymbolData } from "./types";
 
 const SymbolButton = ({
   item,
