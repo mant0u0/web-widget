@@ -96,9 +96,9 @@ export const SymbolPicker: React.FC<{
   btnClassName?: string;
 }> = ({ data, onSelect, btnClassName }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [recentItems, setRecentItems] = useState([]);
+  const [recentItems, setRecentItems] = useState<SymbolItem[]>([]);
 
-  const handleSymbolSelect = (item) => {
+  const handleSymbolSelect = (item: SymbolItem) => {
     onSelect(item.symbol);
     setRecentItems((prev) => {
       if (prev.some((prevItem) => prevItem.symbol === item.symbol)) return prev;
