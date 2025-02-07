@@ -36,7 +36,17 @@ const SymbolButton = ({
 );
 
 // 分批載入
-const LazyLoadSection = ({ category, items, onSelect, btnClassName }) => {
+const LazyLoadSection = ({
+  category,
+  items,
+  onSelect,
+  btnClassName,
+}: {
+  category: string;
+  items: SymbolItem[];
+  onSelect: (item: SymbolItem) => void;
+  btnClassName?: string;
+}) => {
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_BATCH);
   const loadMoreRef = useRef(null);
 
