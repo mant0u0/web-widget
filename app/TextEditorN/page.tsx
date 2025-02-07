@@ -73,13 +73,16 @@ const TextFormatter = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full p-4 gap-4 border">
-      <div className="w-[70%] min-w-30">
-        <div className="flex flex-col gap-2">
-          <SymbolPicker data={symbolsData} onSelect={insertSymbol} />
-          <SymbolPicker data={emojiData} onSelect={insertSymbol} />
-          <SymbolPicker data={kaomojiData} onSelect={insertSymbol} />
-        </div>
+    <div className="flex h-[100vh] w-full p-4 gap-4">
+      <div className="w-[45.5%] min-w-30 h-full overflow-hidden flex flex-col gap-2">
+        <SymbolPicker
+          data={emojiData}
+          onSelect={insertSymbol}
+          btnClassName="w-[44px] h-[44px]"
+        />
+
+        {/* <SymbolPicker data={symbolsData} onSelect={insertSymbol} /> */}
+        {/* <SymbolPicker data={kaomojiData} onSelect={insertSymbol} /> */}
       </div>
 
       <div className="w-full flex flex-col gap-4 text-3xl">
@@ -87,7 +90,7 @@ const TextFormatter = () => {
           value={text}
           onChange={handleTextChange}
           placeholder="在這裡輸入或編輯文字..."
-          className="w-full h-[200px] p-2 !text-2xl bg-white resize-none "
+          className="w-full h-full p-2 !text-xl bg-white resize-none "
         />
 
         <div className="flex justify-between">
