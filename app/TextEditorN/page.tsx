@@ -1,6 +1,5 @@
 // page.tsx
 "use client";
-
 import React, { useState, useCallback, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +15,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+import { Type, Smile } from "lucide-react";
+
 import { SymbolPicker } from "./SymbolPicker";
 import { symbolsData, emojiData, kaomojiData } from "./symbolsData";
 
@@ -74,15 +83,42 @@ const TextFormatter = () => {
 
   return (
     <div className="flex h-[100vh] w-full p-4 gap-4">
-      <div className="w-[45.5%] min-w-30 h-full overflow-hidden flex flex-col gap-2">
-        <SymbolPicker
-          data={emojiData}
-          onSelect={insertSymbol}
-          btnClassName="w-[44px] h-[44px]"
-        />
+      <div className="w-[28%] min-w-30 h-full overflow-hidden flex flex-col gap-2">
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="!no-underline ">
+              <Type className="h-5 w-5 mr-1 !rotate-0" />
+              <p className="">插入符號</p>
+            </AccordionTrigger>
+            <AccordionContent>
+              <SymbolPicker data={symbolsData} onSelect={insertSymbol} />
+            </AccordionContent>
+          </AccordionItem>
 
-        {/* <SymbolPicker data={symbolsData} onSelect={insertSymbol} /> */}
-        {/* <SymbolPicker data={kaomojiData} onSelect={insertSymbol} /> */}
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="!no-underline ">
+              <Smile className="h-5 w-5 mr-1 !rotate-0" />
+              插入 Emoji
+            </AccordionTrigger>
+            <AccordionContent>
+              <SymbolPicker
+                data={emojiData}
+                onSelect={insertSymbol}
+                btnClassName="w-[44px] h-[44px]"
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-3">
+            <AccordionTrigger className="!no-underline ">
+              <Smile className="h-5 w-5 mr-1 !rotate-0" />
+              插入顏文字
+            </AccordionTrigger>
+            <AccordionContent>
+              <SymbolPicker data={kaomojiData} onSelect={insertSymbol} />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
 
       <div className="w-full flex flex-col gap-4 text-3xl">
@@ -90,7 +126,7 @@ const TextFormatter = () => {
           value={text}
           onChange={handleTextChange}
           placeholder="在這裡輸入或編輯文字..."
-          className="w-full h-full p-2 !text-xl bg-white resize-none "
+          className="w-full h-full p-2 !text-lg bg-white resize-none "
         />
 
         <div className="flex justify-between">

@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, History } from "lucide-react";
+import { Search } from "lucide-react";
 import { SymbolItem, SymbolData } from "./types";
 
 // 分批載入
-const ITEMS_PER_BATCH = 50;
+const ITEMS_PER_BATCH = 100;
 
 // 單個符號按鈕
 const SymbolButton = ({ item, onSelect, btnClassName }) => (
@@ -119,7 +119,7 @@ export const SymbolPicker = ({ data, onSelect, btnClassName }) => {
   }, [searchQuery, data]);
 
   return (
-    <div className="w-full h-full p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
+    <div className="w-full h-[600px] p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
       <div className="bg-background p-4 border-b">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
