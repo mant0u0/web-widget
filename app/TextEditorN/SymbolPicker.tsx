@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { SymbolItem, SymbolData } from "./types";
+// import { SymbolItem, SymbolData } from "./types";
 
 // 分批載入
 const ITEMS_PER_BATCH = 100;
