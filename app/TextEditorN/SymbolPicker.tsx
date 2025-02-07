@@ -8,7 +8,15 @@ import { Search } from "lucide-react";
 const ITEMS_PER_BATCH = 100;
 
 // 單個符號按鈕
-const SymbolButton = ({ item, onSelect, btnClassName }) => (
+const SymbolButton = ({
+  item,
+  onSelect,
+  btnClassName,
+}: {
+  item: SymbolItem;
+  onSelect: (item: SymbolItem) => void;
+  btnClassName?: string;
+}) => (
   <div className="relative group">
     <Button
       onClick={() => onSelect(item)}
@@ -72,7 +80,11 @@ const LazyLoadSection = ({ category, items, onSelect, btnClassName }) => {
 };
 
 // 符號選擇器
-export const SymbolPicker = ({ data, onSelect, btnClassName }) => {
+export const SymbolPicker: React.FC<{
+  data: SymbolData;
+  onSelect: (symbol: string) => void;
+  btnClassName?: string;
+}> = ({ data, onSelect, btnClassName }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [recentItems, setRecentItems] = useState([]);
 
