@@ -109,15 +109,19 @@ export const SymbolPicker: React.FC<{
   const filteredItems = useMemo(() => {
     if (!searchQuery) return data;
 
+    // 將搜尋詞轉換為小寫
     const searchTerms = new Set(searchQuery.toLowerCase().split(/\s+/));
-    const filtered = {};
+    // 將符號和標籤轉換為小寫
+    const filtered: SymbolData = {};
 
+    // 將符號和標籤轉換為小寫
     Object.entries(data).forEach(([category, { categoryTags, items }]) => {
       const categoryTagsLower = categoryTags.map((tag) => tag.toLowerCase());
       const categoryMatches = Array.from(searchTerms).some((term) =>
         categoryTagsLower.some((tag) => tag.includes(term))
       );
 
+      // 篩選符合搜尋條件的項目
       const matchedItems = items.filter((item) => {
         if (categoryMatches) return true;
         const itemTagsLower = item.tags.map((tag) => tag.toLowerCase());
@@ -129,6 +133,7 @@ export const SymbolPicker: React.FC<{
         );
       });
 
+      // 只保留符合搜尋條件的項目
       if (matchedItems.length > 0) {
         filtered[category] = {
           categoryTags,
