@@ -47,6 +47,8 @@ import { dataEmoji } from "./dataEmoji";
 import { dataKaomoji } from "./dataKaomoji";
 import { dataQuotes } from "./dataQuotes";
 
+import pangu from "pangu";
+
 const TextFormatter = () => {
   const [text, setText] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
@@ -203,7 +205,6 @@ const TextFormatter = () => {
 
   // 中英文間距
   const panguSpacing = (text: string): string => {
-    const pangu = require("pangu");
     return pangu.spacing(text);
   };
 
