@@ -72,6 +72,18 @@ body {
   }
 }
 
+.emoji-font{
+  font-family:  "Noto Color Emoji",  "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.noto-sans-font{
+  font-family: "Noto Sans TC", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -24,9 +24,11 @@ import {
 } from "@/components/ui/accordion";
 
 import { Type, Smile } from "lucide-react";
-
 import { SymbolPicker } from "./SymbolPicker";
-import { symbolsData, emojiData, kaomojiData } from "./symbolsData";
+// 符號數據
+import { symbolsData } from "./symbolsData";
+import { emojiData } from "./emojiData";
+import { kaomojiData } from "./kaomojiData";
 
 const TextFormatter = () => {
   const [text, setText] = useState<string>("");
@@ -91,7 +93,11 @@ const TextFormatter = () => {
               <p className="">插入符號</p>
             </AccordionTrigger>
             <AccordionContent>
-              <SymbolPicker data={symbolsData} onSelect={insertSymbol} />
+              <SymbolPicker 
+              data={symbolsData} 
+              onSelect={insertSymbol} 
+              btnClassName="w-[44px] h-[44px] noto-sans-font"
+              />
             </AccordionContent>
           </AccordionItem>
 
@@ -104,7 +110,7 @@ const TextFormatter = () => {
               <SymbolPicker
                 data={emojiData}
                 onSelect={insertSymbol}
-                btnClassName="w-[44px] h-[44px]"
+                btnClassName="w-[44px] h-[44px] emoji-font"
               />
             </AccordionContent>
           </AccordionItem>
