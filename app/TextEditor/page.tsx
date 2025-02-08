@@ -866,7 +866,7 @@ const TextFormatter = () => {
             className="flex items-center"
           >
             <UnfoldHorizontal className="h-5 w-5 mr-1" />
-            中英間距
+            <p>中英間距</p>
           </Button>
 
           {/* 簡轉繁按鈕 */}
