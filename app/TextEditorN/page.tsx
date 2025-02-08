@@ -48,6 +48,7 @@ import { dataKaomoji } from "./dataKaomoji";
 import { dataQuotes } from "./dataQuotes";
 
 import pangu from "pangu";
+import * as OpenCC from "opencc-js";
 
 const TextFormatter = () => {
   const [text, setText] = useState<string>("");
@@ -259,19 +260,19 @@ const TextFormatter = () => {
 
   // 簡轉繁體
   const convertToTraditional = async (text: string): string => {
-    const OpenCC = require("opencc-js");
+    // const OpenCC = require("opencc-js");
     const converter = OpenCC.Converter({ from: "cn", to: "tw" });
     return converter(text);
   };
   // 簡轉繁體 (台灣)
   const convertToTraditionalTW = async (text: string): string => {
-    const OpenCC = require("opencc-js");
+    // const OpenCC = require("opencc-js");
     const converter = OpenCC.Converter({ from: "cn", to: "twp" });
     return converter(text);
   };
   // 繁轉簡體
   const convertToSimplified = async (text: string): string => {
-    const OpenCC = require("opencc-js");
+    // const OpenCC = require("opencc-js");
     const converter = OpenCC.Converter({ from: "tw", to: "cn" });
     return converter(text);
   };
