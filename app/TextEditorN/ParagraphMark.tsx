@@ -17,11 +17,23 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
-export const ParagraphMark: React.FC<{
-  transformSelectedLine;
-  text;
-  updateText;
-}> = ({ transformSelectedLine, text, updateText }) => {
+type TransformFunction = (text: string) => string;
+
+interface ParagraphMarkProps {
+  transformSelectedLine: (
+    text: string,
+    transformer: TransformFunction,
+    updateText: (text: string) => void
+  ) => void;
+  text: string;
+  updateText: (text: string) => void;
+}
+
+export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
+  transformSelectedLine,
+  text,
+  updateText,
+}) => {
   // 首行加入符號功能：設定是否包含空行
   const [includeEmptyLines, setIncludeEmptyLines] = useState(true);
 
