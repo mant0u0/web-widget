@@ -13,7 +13,15 @@ import {
 import pangu from "pangu";
 import * as OpenCC from "opencc-js";
 
-const FunctionButton = ({ icon, text, onClick }: { icon; text; onClick }) => (
+const FunctionButton = ({
+  icon,
+  text,
+  onClick,
+}: {
+  icon: ReactNode;
+  text: string;
+  onClick: () => void | Promise<void>; // 因為使用了 async 函數
+}) => (
   <Button
     variant="outline"
     onClick={onClick}
@@ -28,9 +36,13 @@ const FunctionButton = ({ icon, text, onClick }: { icon; text; onClick }) => (
 
 // 文字處理
 export const TextFormatter: React.FC<{
-  transformSelectedText;
-  text;
-  updateText;
+  transformSelectedText: (
+    text: string,
+    transformer: TransformFunction,
+    updateText: (text: string) => void
+  ) => void;
+  text: string;
+  updateText: (text: string) => void;
 }> = ({ transformSelectedText, text, updateText }) => {
   // 中英文間距
   const panguSpacing = (text: string): string => {
