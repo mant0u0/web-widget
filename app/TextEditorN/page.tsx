@@ -1,16 +1,11 @@
 // page.tsx
 "use client";
-import React, { useState, useCallback, ChangeEvent, useMemo } from "react";
+import React, { useState, useCallback, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import {
-  Plus,
   Copy,
-  Pencil,
   CircleCheck,
   Undo,
   Trash,
@@ -19,8 +14,6 @@ import {
   Type,
   Smile,
   ListOrdered,
-  PilcrowLeft,
-  PilcrowRight,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -33,14 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
+
 import {
   Accordion,
   AccordionContent,
@@ -133,7 +119,7 @@ const TextEditor = () => {
       // 計算左右引號的長度
       const totalLength = quote.symbol.length;
       const leftSymbolLength = quote.center;
-      const rightSymbolLength = totalLength - leftSymbolLength;
+      // const rightSymbolLength = totalLength - leftSymbolLength;
 
       // 取得左右引號
       const leftQuote = quote.symbol.substring(0, leftSymbolLength);
