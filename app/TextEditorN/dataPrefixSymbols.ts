@@ -1,4 +1,16 @@
-export const prefixSymbols = [
+// 型別定義
+export type PrefixType = "repeat" | "format" | "order";
+
+export interface PrefixSymbol {
+  symbol: string;
+  name: string;
+  type: PrefixType;
+  editable: boolean;
+  format?: string;
+  order?: string[];
+}
+
+export const prefixSymbols: PrefixSymbol[] = [
   { symbol: " ", name: "半形空格", type: "repeat", editable: false },
   { symbol: "　", name: "全形空格", type: "repeat", editable: false },
   { symbol: "- ", name: "短橫線", type: "repeat", editable: false },
@@ -50,6 +62,7 @@ export const prefixSymbols = [
     name: "黑色圓圈數字",
     type: "order",
     order: ["➊ ", "➋ ", "➌ ", "➍ ", "➎ ", "➏ ", "➐ ", "➑ ", "➒ ", "➓ "],
+    editable: false,
   },
   {
     symbol: "㊀ ",
@@ -67,6 +80,7 @@ export const prefixSymbols = [
       "㊈ ",
       "㊉ ",
     ],
+    editable: false,
   },
   {
     symbol: "⑴ ",
@@ -104,6 +118,7 @@ export const prefixSymbols = [
       "㈨ ",
       "㈩ ",
     ],
+    editable: false,
   },
   {
     symbol: "a. ",
