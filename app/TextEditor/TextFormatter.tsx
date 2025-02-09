@@ -149,68 +149,117 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
       .join("\n");
   };
 
-  // 處理 URL
   const processUrl = (url: string): string => {
     try {
-      // 檢查是否為 Facebook 跳轉連結
-      if (url.includes("l.facebook.com/l.php")) {
-        const urlObject = new URL(url);
-        const params = new URLSearchParams(urlObject.search);
-        const originalUrl = params.get("u");
-
-        // 如果找到原始 URL，則解碼並繼續處理
-        if (originalUrl) {
-          return processUrl(decodeURIComponent(originalUrl));
+      // 特殊網址處理
+      const specialDomains = {
+        "l.facebook.com": (url: URL) => {
+          const originalUrl = url.searchParams.get("u");
+          return originalUrl ? processUrl(decodeURIComponent(originalUrl)) : url.toString();
+        },
+        "lm.facebook.com": (url: URL) => {
+          const originalUrl = url.searchParams.get("u");
+          return originalUrl ? processUrl(decodeURIComponent(originalUrl)) : url.toString();
+        },
+        "www.google.com": (url: URL) => {
+          // 只保留搜尋關鍵字
+          if (url.pathname === "/search") {
+            const q = url.searchParams.get("q");
+            return `${url.origin}/search${q ? `?q=${q}` : ""}`;
+          }
+          return url.toString();
         }
-      }
-
+      };
+  
       // 解析 URL
       const urlObject = new URL(url);
-
+  
+      // 檢查是否為特殊網域
+      const domainHandler = specialDomains[urlObject.hostname];
+      if (domainHandler) {
+        return domainHandler(urlObject);
+      }
+  
       // 追蹤參數列表
       const trackingParams = new Set([
         // Facebook
         "fbclid",
+        "fb_action_ids",
+        "fb_action_types",
+        "fb_source",
+        "fb_ref",
+        
         // Twitter/X
         "ref_src",
         "ref_url",
-        // Google Analytics
+        "s",
+        "t",
+        
+        // Google Analytics & Ads
         "utm_source",
         "utm_medium",
         "utm_campaign",
         "utm_term",
         "utm_content",
         "gclid",
+        "gclsrc",
+        "dclid",
+        "gbraid",
+        "wbraid",
+        
         // Others
         "_ga",
         "_gl",
+        "_hsenc",
+        "_hsmi",
         "ref",
         "source",
         "campaign",
         "track",
         "from",
+        "via",
+        "feature",
+        "sr_share",
+        "share",
+        "platform",
+        
+        // Google Search 特定參數
+        "ved",
+        "ei",
+        "bih",
+        "biw",
+        "uact",
+        "gs_lcp",
+        "sclient",
+        "sxsrf",
+        "oq",
+        
+        // 其他常見追蹤參數
+        "mc_cid",
+        "mc_eid",
+        "zanpid",
+        "_hsmi",
+        "_openstat",
+        "igshid",
+        "vero_id",
+        "yclid"
       ]);
-
+  
       // 解碼路徑名稱中的中文
       const decodedPathname = decodeURIComponent(urlObject.pathname);
-
-      // 創建新的 URLSearchParams，只保留非追蹤參數
-      const params = new URLSearchParams(urlObject.search);
+  
+      // 處理查詢參數
       const newParams = new URLSearchParams();
-
-      // 遍歷所有參數
-      for (const [key, value] of params.entries()) {
+      for (const [key, value] of urlObject.searchParams.entries()) {
         if (!trackingParams.has(key.toLowerCase())) {
           newParams.append(key, value);
         }
       }
-
+  
       // 組合新的 URL
       const newSearch = newParams.toString();
-      const result =
-        urlObject.origin + decodedPathname + (newSearch ? `?${newSearch}` : "");
-
-      return result;
+      return urlObject.origin + decodedPathname + (newSearch ? `?${newSearch}` : "");
+  
     } catch (error) {
       console.error("無效的 URL:", error);
       return url;

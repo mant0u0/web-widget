@@ -491,7 +491,7 @@ const TextEditor = () => {
   return (
     <div className="flex h-[100vh] w-full">
       {/* 功能列 */}
-      <div className="w-[28%] min-w-[290px] h-full p-4 overflow-hidden overflow-y-auto flex flex-col gap-2">
+      <div className="w-[30%] min-w-[320px] h-full p-4 overflow-hidden overflow-y-auto flex flex-col gap-2">
         <Accordion type="single" collapsible>
           {/* 插入符號 */}
           <AccordionItem value="item-1">
