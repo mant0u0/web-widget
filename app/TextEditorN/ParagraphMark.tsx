@@ -227,7 +227,10 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           <Checkbox
             id="terms"
             checked={includeEmptyLines}
-            onCheckedChange={(checked) => setIncludeEmptyLines(checked)}
+            // onCheckedChange={(checked) => setIncludeEmptyLines(checked)}
+            onCheckedChange={(checked: boolean) =>
+              setIncludeEmptyLines(checked)
+            }
           />
         </div>
         <p className="ml-1">包含空白行</p>
