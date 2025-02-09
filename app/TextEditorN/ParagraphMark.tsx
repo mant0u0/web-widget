@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 // 行首符號設定
-import { PrefixSymbol, PrefixType, prefixSymbols } from "./dataPrefixSymbols";
+import { PrefixSymbol, prefixSymbols } from "./dataPrefixSymbols";
 
 import { Plus, Pencil, PilcrowLeft } from "lucide-react";
 import {
