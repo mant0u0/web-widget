@@ -36,7 +36,7 @@ const FunctionButton = ({ icon, text, onClick }: FunctionButtonProps) => (
   <Button
     variant="outline"
     onClick={onClick}
-    className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+    className="h-[44px] rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
   >
     <div className="flex justify-start items-center w-full transition-opacity duration-200">
       {icon}

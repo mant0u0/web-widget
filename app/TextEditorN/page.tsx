@@ -1,10 +1,16 @@
 // page.tsx
 "use client";
-import React, { useState, useCallback, ChangeEvent } from "react";
+import React, { useState, useCallback, ChangeEvent, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+
 import {
+  Plus,
   Copy,
+  Pencil,
   CircleCheck,
   Undo,
   Trash,
@@ -12,6 +18,9 @@ import {
   SpellCheck2,
   Type,
   Smile,
+  ListOrdered,
+  PilcrowLeft,
+  PilcrowRight,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -24,7 +33,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
 import {
   Accordion,
   AccordionContent,
@@ -38,10 +54,20 @@ import { SymbolPicker } from "./SymbolPicker";
 import { dataSymbols } from "./dataSymbols";
 import { dataEmoji } from "./dataEmoji";
 import { dataKaomoji } from "./dataKaomoji";
-import { dataQuotes } from "./dataQuotes";
-
 // 文字處理
 import { TextFormatter } from "./TextFormatter";
+// 段落符號
+import { ParagraphMark } from "./ParagraphMark";
+// 引號
+import { QuotationmMarks } from "./QuotationmMarks";
+
+// 引號型別定義
+type Quote = {
+  symbol: string;
+  name: string;
+  center: number; // 游標位置
+  editable?: boolean;
+};
 
 const TextEditor = () => {
   const [text, setText] = useState<string>("");
@@ -54,6 +80,9 @@ const TextEditor = () => {
     (newText: string) => {
       // 更新文字
       setText(newText);
+
+      // 如果文字不變動，不更新還原歷史紀錄
+      if (newText === text) return;
 
       // 更新還原歷史紀錄
       const newHistory = [...history.slice(0, currentIndex + 1), newText];
@@ -89,40 +118,46 @@ const TextEditor = () => {
     });
   };
 
-  // 插入引號
-  const insertQuote = (quote: { symbol: string }) => {
-    // 選取 textArea
-    const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
-    if (!textArea) return;
+  // 插入引號函數
+  const insertQuote = useCallback(
+    (quote: Quote) => {
+      const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
+      if (!textArea) return;
 
-    // 取得游標位置
-    const start = textArea.selectionStart;
-    const end = textArea.selectionEnd;
-    const textBefore = text.substring(0, start);
-    const textAfter = text.substring(end);
-    const selectedText = text.substring(start, end);
+      const start = textArea.selectionStart;
+      const end = textArea.selectionEnd;
+      const textBefore = text.substring(0, start);
+      const textAfter = text.substring(end);
+      const selectedText = text.substring(start, end);
 
-    // 取得左右引號
-    const leftQuote = quote.symbol.charAt(0);
-    const rightQuote = quote.symbol.charAt(1);
+      // 計算左右引號的長度
+      const totalLength = quote.symbol.length;
+      const leftSymbolLength = quote.center;
+      const rightSymbolLength = totalLength - leftSymbolLength;
 
-    // 組合新文字
-    const newText =
-      textBefore + leftQuote + selectedText + rightQuote + textAfter;
-    updateText(newText);
+      // 取得左右引號
+      const leftQuote = quote.symbol.substring(0, leftSymbolLength);
+      const rightQuote = quote.symbol.substring(leftSymbolLength);
 
-    // 設定游標位置到引號中間
-    const newPosition =
-      selectedText.length > 0
-        ? start + leftQuote.length + selectedText.length // 如果有選取文字，游標放在選取文字後
-        : start + leftQuote.length; // 如果沒有選取文字，游標放在引號中間
+      // 組合新文字
+      const newText =
+        textBefore + leftQuote + selectedText + rightQuote + textAfter;
+      updateText(newText);
 
-    // 更新游標位置
-    setTimeout(() => {
-      textArea.focus();
-      textArea.setSelectionRange(newPosition, newPosition);
-    }, 0);
-  };
+      // 設定游標位置
+      const newPosition =
+        selectedText.length > 0
+          ? start + leftSymbolLength + selectedText.length // 如果有選取文字，游標放在選取文字後
+          : start + leftSymbolLength; // 如果沒有選取文字，游標放在指定位置
+
+      // 更新游標位置
+      requestAnimationFrame(() => {
+        textArea.focus();
+        textArea.setSelectionRange(newPosition, newPosition);
+      });
+    },
+    [text, updateText]
+  );
 
   // 選取轉換的文字
   const transformSelectedText = async (
@@ -170,6 +205,100 @@ const TextEditor = () => {
     }
   };
 
+  // 處理每行開頭的轉換函數
+  const transformSelectedLine = async (
+    text: string,
+    transformFn: (line: string) => string | Promise<string>,
+    updateText: (newText: string) => void
+  ) => {
+    // 取得 textarea 元素
+    const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
+    if (!textArea) return;
+
+    // 獲取選取範圍
+    const { selectionStart, selectionEnd } = textArea;
+    // 判斷是否有選取
+    const hasSelection = selectionStart !== selectionEnd;
+
+    try {
+      let newText: string;
+      if (hasSelection) {
+        // 找到選取範圍所在的完整行
+        const startLineStart = text.lastIndexOf("\n", selectionStart - 1) + 1;
+        const endLineEnd = text.indexOf("\n", selectionEnd);
+        const finalEndLineEnd = endLineEnd === -1 ? text.length : endLineEnd;
+
+        // 取得完整行的選取範圍
+        const beforeFullSelection = text.substring(0, startLineStart);
+        const fullSelectedText = text.substring(
+          startLineStart,
+          finalEndLineEnd
+        );
+        const afterFullSelection = text.substring(finalEndLineEnd);
+
+        // 將選取的文字分割成行
+        const lines = fullSelectedText.split("\n");
+
+        // 對每一行進行轉換
+        const transformedLines = await Promise.all(
+          lines.map(async (line) => await transformFn(line))
+        );
+
+        // 將轉換後的行重新組合
+        const transformedSelection = transformedLines.join("\n");
+
+        // 組合完整的新文字
+        newText =
+          beforeFullSelection + transformedSelection + afterFullSelection;
+
+        // 更新文字
+        updateText(newText);
+
+        // 更新選取範圍，保持完整行的選取
+        requestAnimationFrame(() => {
+          textArea.focus();
+          textArea.setSelectionRange(
+            startLineStart,
+            startLineStart + transformedSelection.length
+          );
+        });
+      } else {
+        // 如果沒有選取範圍，找到游標所在的完整行
+        const currentLineStart = text.lastIndexOf("\n", selectionStart - 1) + 1;
+        const currentLineEnd = text.indexOf("\n", selectionStart);
+        const finalCurrentLineEnd =
+          currentLineEnd === -1 ? text.length : currentLineEnd;
+
+        // 取得當前行的文字
+        const beforeCurrentLine = text.substring(0, currentLineStart);
+        const currentLine = text.substring(
+          currentLineStart,
+          finalCurrentLineEnd
+        );
+        const afterCurrentLine = text.substring(finalCurrentLineEnd);
+
+        // 轉換當前行
+        const transformedLine = await transformFn(currentLine);
+
+        // 組合新文字
+        newText = beforeCurrentLine + transformedLine + afterCurrentLine;
+
+        // 更新文字
+        updateText(newText);
+
+        // 游標位置更新至選取範圍的最後一個字符
+        const newCursorPosition = currentLineStart + transformedLine.length;
+
+        requestAnimationFrame(() => {
+          textArea.focus();
+          textArea.setSelectionRange(newCursorPosition, newCursorPosition);
+        });
+      }
+    } catch (error) {
+      console.error("轉換失敗:", error);
+    }
+  };
+
   // ===============================================
 
   // 處理文字變更
@@ -201,14 +330,14 @@ const TextEditor = () => {
   // ===============================================
 
   return (
-    <div className="flex h-[100vh] w-full p-4 gap-4">
+    <div className="flex h-[100vh] w-full">
       {/* 功能列 */}
-      <div className="w-[28%] min-w-[290px] h-full overflow-hidden flex flex-col gap-2">
+      <div className="w-[28%] min-w-[290px] h-full p-4 overflow-hidden overflow-y-auto flex flex-col gap-2">
         <Accordion type="single" collapsible>
           {/* 插入符號 */}
           <AccordionItem value="item-1">
             <AccordionTrigger className="!no-underline ">
-              <Type className="h-5 w-5 mr-1 !rotate-0" />
+              <Type className="h-5 w-[24px] mr-1 !rotate-0" />
               <p className="">插入符號</p>
             </AccordionTrigger>
             <AccordionContent>
@@ -223,7 +352,7 @@ const TextEditor = () => {
           {/* 插入 Emoji */}
           <AccordionItem value="item-2">
             <AccordionTrigger className="!no-underline ">
-              <Smile className="h-5 w-5 mr-1 !rotate-0" />
+              <Smile className="h-5 w-[24px] mr-1 !rotate-0" />
               插入 Emoji
             </AccordionTrigger>
             <AccordionContent>
@@ -238,7 +367,7 @@ const TextEditor = () => {
           {/* 插入顏文字 */}
           <AccordionItem value="item-3">
             <AccordionTrigger className="!no-underline ">
-              <Smile className="h-5 w-5 mr-1 !rotate-0" />
+              <Smile className="h-5 w-[24px] mr-1 !rotate-0" />
               插入顏文字
             </AccordionTrigger>
             <AccordionContent>
@@ -249,30 +378,37 @@ const TextEditor = () => {
           {/* 插入引號 */}
           <AccordionItem value="item-4">
             <AccordionTrigger className="!no-underline ">
-              <Quote className="h-5 w-5 mr-1 !rotate-0" />
+              <Quote className="h-5 w-[24px] mr-1 !rotate-0" />
               插入引號
             </AccordionTrigger>
             <AccordionContent>
-              <div className="w-full h-[600px] p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
-                {dataQuotes.map((quote) => (
-                  <Button
-                    key={quote.symbol}
-                    variant="outline"
-                    onClick={() => insertQuote(quote)}
-                    className="flex justify-start items-center h-11 w-full  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                  >
-                    <span className="mr-1 w-8">{quote.symbol}</span>
-                    {quote.name}
-                  </Button>
-                ))}
-              </div>
+              <QuotationmMarks
+                insertQuote={insertQuote}
+                text={text}
+                updateText={updateText}
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* 段落符號 */}
+          <AccordionItem value="item-5">
+            <AccordionTrigger className="!no-underline ">
+              <ListOrdered className="h-5 w-[24px] mr-1 !rotate-0" />
+              段落符號
+            </AccordionTrigger>
+            <AccordionContent>
+              <ParagraphMark
+                transformSelectedLine={transformSelectedLine}
+                text={text}
+                updateText={updateText}
+              />
             </AccordionContent>
           </AccordionItem>
 
           {/* 文字處理 */}
-          <AccordionItem value="item-5">
+          <AccordionItem value="item-6">
             <AccordionTrigger className="!no-underline ">
-              <SpellCheck2 className="h-5 w-5 mr-1 !rotate-0" />
+              <SpellCheck2 className="h-5 w-[24px] mr-1 !rotate-0" />
               文字處理
             </AccordionTrigger>
             <AccordionContent>
@@ -287,7 +423,7 @@ const TextEditor = () => {
       </div>
 
       {/* 文字編輯區 */}
-      <div className="w-full flex flex-col gap-4 text-3xl">
+      <div className="w-full flex flex-col gap-4 pt-4 pb-4 pr-4 text-3xl">
         <Textarea
           value={text}
           onChange={handleTextChange}
@@ -302,7 +438,7 @@ const TextEditor = () => {
                 variant="outline"
                 className="text-red-500 hover:text-red-600 hover:bg-red-50"
               >
-                <Trash className="h-5 w-5 mr-1" />
+                <Trash className="h-5 w-[24px] mr-1" />
                 刪除
               </Button>
             </AlertDialogTrigger>
@@ -332,7 +468,7 @@ const TextEditor = () => {
               disabled={currentIndex <= 0}
               className="flex items-center"
             >
-              <Undo className="h-5 w-5 mr-1" />
+              <Undo className="h-5 w-[24px] mr-1" />
               還原
             </Button>
             <Button
@@ -341,9 +477,9 @@ const TextEditor = () => {
               disabled={copyStatus || !text}
             >
               {copyStatus ? (
-                <CircleCheck className="h-5 w-5 mr-1" />
+                <CircleCheck className="h-5 w-[24px] mr-1" />
               ) : (
-                <Copy className="h-5 w-5 mr-1" />
+                <Copy className="h-5 w-[24px] mr-1" />
               )}
               {copyStatus ? "成功" : "複製"}
             </Button>
