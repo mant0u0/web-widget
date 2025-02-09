@@ -188,6 +188,7 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         "source",
         "campaign",
         "track",
+        "from",
       ]);
 
       // 解碼路徑名稱中的中文
