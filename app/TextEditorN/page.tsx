@@ -43,9 +43,6 @@ import { dataQuotes } from "./dataQuotes";
 // 文字處理
 import { TextFormatter } from "./TextFormatter";
 
-import pangu from "pangu";
-import * as OpenCC from "opencc-js";
-
 const TextEditor = () => {
   const [text, setText] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
