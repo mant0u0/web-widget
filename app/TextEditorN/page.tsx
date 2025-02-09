@@ -117,7 +117,7 @@ const TextEditor = () => {
       const selectedText = text.substring(start, end);
 
       // 計算左右引號的長度
-      const totalLength = quote.symbol.length;
+      // const totalLength = quote.symbol.length;
       const leftSymbolLength = quote.center;
       // const rightSymbolLength = totalLength - leftSymbolLength;
 
@@ -368,11 +368,7 @@ const TextEditor = () => {
               插入引號
             </AccordionTrigger>
             <AccordionContent>
-              <QuotationmMarks
-                insertQuote={insertQuote}
-                text={text}
-                updateText={updateText}
-              />
+              <QuotationmMarks insertQuote={insertQuote} text={text} />
             </AccordionContent>
           </AccordionItem>
 
