@@ -23,7 +23,7 @@ const SymbolButton = ({
       variant="outline"
       size="sm"
       className={
-        "h-10 flex items-center justify-center text-xl animate-fade-in " +
+        "h-10 flex items-center justify-center text-md animate-fade-in " +
         btnClassName
       }
     >

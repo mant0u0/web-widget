@@ -10,15 +10,8 @@ import {
   Trash,
   Quote,
   SpellCheck2,
-  UnfoldHorizontal,
   Type,
   Smile,
-  CaseUpper,
-  CaseLower,
-  ArrowBigUpDash,
-  ArrowBigDownDash,
-  CaseSensitive,
-  Languages,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -39,18 +32,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+// 符號選擇
 import { SymbolPicker } from "./SymbolPicker";
-
 // 符號資料
 import { dataSymbols } from "./dataSymbols";
 import { dataEmoji } from "./dataEmoji";
 import { dataKaomoji } from "./dataKaomoji";
 import { dataQuotes } from "./dataQuotes";
 
+// 文字處理
+import { TextFormatter } from "./TextFormatter";
+
 import pangu from "pangu";
 import * as OpenCC from "opencc-js";
 
-const TextFormatter = () => {
+const TextEditor = () => {
   const [text, setText] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
@@ -131,33 +127,6 @@ const TextFormatter = () => {
     }, 0);
   };
 
-  // 處理文字變更
-  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
-    updateText(e.target.value);
-
-  // 還原
-  const handleUndo = useCallback(() => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setText(history[currentIndex - 1]);
-    }
-  }, [currentIndex, history]);
-
-  // 刪除
-  const clearText = () => updateText("");
-
-  // 複製文字
-  const copyText = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopyStatus(true);
-      setTimeout(() => setCopyStatus(false), 1000);
-    } catch (err) {
-      console.error("複製失敗:", err);
-    }
-  };
-
-  // ===============================================
   // 選取轉換的文字
   const transformSelectedText = async (
     text: string,
@@ -204,128 +173,32 @@ const TextFormatter = () => {
     }
   };
 
-  // 中英文間距
-  const panguSpacing = (text: string): string => {
-    return pangu.spacing(text);
-  };
-
-  // 轉大寫
-  const toUpperCase = (text: string): string => {
-    return text.toUpperCase();
-  };
-
-  // 轉小寫
-  const toLowerCase = (text: string): string => {
-    return text.toLowerCase();
-  };
-
-  // 轉全形
-  const toFullWidth = (text: string): string => {
-    return text.replace(/[!-~]/g, (char) =>
-      String.fromCharCode(char.charCodeAt(0) + 0xfee0)
-    );
-  };
-
-  // 轉半形
-  const toHalfWidth = (text: string): string => {
-    return (
-      text
-        .replace(/[\uff01-\uff5e]/g, (char) =>
-          String.fromCharCode(char.charCodeAt(0) - 0xfee0)
-        )
-        // 特殊處理全形空格
-        .replace(/\u3000/g, " ")
-    );
-  };
-
-  // 轉句首大寫
-  const toSentenceCase = (text: string): string => {
-    // 將文字分割成句子
-    // 考慮 .!? 後面可能有 """''') 等結束符號，以及可能有多個空格
-    return text.replace(
-      /(^|[.!?][\]'")}]* +)([a-z])/gi,
-      (match, separator, letter) => separator + letter.toUpperCase()
-    );
-  };
-
-  // 轉單字首字大寫
-  const toTitleCase = (text: string): string => {
-    // 將每個單字的首字母轉為大寫
-    // 考慮單字可能被空格、連字符、底線分隔
-    return text.replace(
-      /(^|[^a-zA-Z\u4e00-\u9fa5'])([a-z])/g,
-      (match, separator, letter) => separator + letter.toUpperCase()
-    );
-  };
-
-  // 簡轉繁體
-  const convertToTraditional = async (text: string): Promise<string> => {
-    const converter = OpenCC.Converter({ from: "cn", to: "tw" });
-    return converter(text);
-  };
-
-  // 簡轉繁體 (台灣)
-  const convertToTraditionalTW = async (text: string): Promise<string> => {
-    const converter = OpenCC.Converter({ from: "cn", to: "twp" });
-    return converter(text);
-  };
-
-  // 繁轉簡體
-  const convertToSimplified = async (text: string): Promise<string> => {
-    const converter = OpenCC.Converter({ from: "tw", to: "cn" });
-    return converter(text);
-  };
-
   // ===============================================
 
-  // 中英間距
-  const handlePangu = () => {
-    transformSelectedText(text, panguSpacing, updateText);
-  };
+  // 處理文字變更
+  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
+    updateText(e.target.value);
 
-  // 轉大寫
-  const handleUpperCase = () => {
-    transformSelectedText(text, toUpperCase, updateText);
-  };
+  // 還原
+  const handleUndo = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      setText(history[currentIndex - 1]);
+    }
+  }, [currentIndex, history]);
 
-  // 轉小寫
-  const handleLowerCase = () => {
-    transformSelectedText(text, toLowerCase, updateText);
-  };
+  // 刪除
+  const clearText = () => updateText("");
 
-  // 轉全形
-  const handleFullWidth = () => {
-    transformSelectedText(text, toFullWidth, updateText);
-  };
-
-  // 轉半形
-  const handleHalfWidth = () => {
-    transformSelectedText(text, toHalfWidth, updateText);
-  };
-
-  // 句首大寫
-  const handleSentenceCase = () => {
-    transformSelectedText(text, toSentenceCase, updateText);
-  };
-
-  // 單字首字大寫
-  const handleTitleCase = () => {
-    transformSelectedText(text, toTitleCase, updateText);
-  };
-
-  // 簡轉繁體
-  const handleConvertToTraditional = async () => {
-    transformSelectedText(text, convertToTraditional, updateText);
-  };
-
-  // 簡轉繁體 (台灣)
-  const handleConvertToTraditionalTW = async () => {
-    transformSelectedText(text, convertToTraditionalTW, updateText);
-  };
-
-  // 繁轉簡體
-  const handleConvertToSimplified = async () => {
-    transformSelectedText(text, convertToSimplified, updateText);
+  // 複製文字
+  const copyText = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus(true);
+      setTimeout(() => setCopyStatus(false), 1000);
+    } catch (err) {
+      console.error("複製失敗:", err);
+    }
   };
 
   // ===============================================
@@ -335,6 +208,7 @@ const TextFormatter = () => {
       {/* 功能列 */}
       <div className="w-[28%] min-w-[290px] h-full overflow-hidden flex flex-col gap-2">
         <Accordion type="single" collapsible>
+          {/* 插入符號 */}
           <AccordionItem value="item-1">
             <AccordionTrigger className="!no-underline ">
               <Type className="h-5 w-5 mr-1 !rotate-0" />
@@ -349,6 +223,7 @@ const TextFormatter = () => {
             </AccordionContent>
           </AccordionItem>
 
+          {/* 插入 Emoji */}
           <AccordionItem value="item-2">
             <AccordionTrigger className="!no-underline ">
               <Smile className="h-5 w-5 mr-1 !rotate-0" />
@@ -358,11 +233,12 @@ const TextFormatter = () => {
               <SymbolPicker
                 data={dataEmoji}
                 onSelect={insertSymbol}
-                btnClassName="w-[44px] h-[44px] emoji-font"
+                btnClassName="w-[44px] h-[44px] emoji-font text-2xl"
               />
             </AccordionContent>
           </AccordionItem>
 
+          {/* 插入顏文字 */}
           <AccordionItem value="item-3">
             <AccordionTrigger className="!no-underline ">
               <Smile className="h-5 w-5 mr-1 !rotate-0" />
@@ -373,6 +249,7 @@ const TextFormatter = () => {
             </AccordionContent>
           </AccordionItem>
 
+          {/* 插入引號 */}
           <AccordionItem value="item-4">
             <AccordionTrigger className="!no-underline ">
               <Quote className="h-5 w-5 mr-1 !rotate-0" />
@@ -380,13 +257,6 @@ const TextFormatter = () => {
             </AccordionTrigger>
             <AccordionContent>
               <div className="w-full h-[600px] p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
-                {/* <Button
-                  variant="outline"
-                  className="flex justify-start items-center h-11 w-full  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <span className="mr-1 w-8">+</span>
-                  自訂符號
-                </Button> */}
                 {dataQuotes.map((quote) => (
                   <Button
                     key={quote.symbol}
@@ -402,123 +272,18 @@ const TextFormatter = () => {
             </AccordionContent>
           </AccordionItem>
 
+          {/* 文字處理 */}
           <AccordionItem value="item-5">
             <AccordionTrigger className="!no-underline ">
               <SpellCheck2 className="h-5 w-5 mr-1 !rotate-0" />
               文字處理
             </AccordionTrigger>
             <AccordionContent>
-              <div className="w-full h-[600px] p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
-                <Button
-                  variant="outline"
-                  onClick={handleConvertToTraditional}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <Languages className="h-5 w-5 mr-2" />
-                    <p>簡體轉繁體</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleConvertToTraditionalTW}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <Languages className="h-5 w-5 mr-2" />
-                    <p>簡體轉繁體（台灣用語）</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleConvertToSimplified}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <Languages className="h-5 w-5 mr-2" />
-                    <p>繁體轉簡體</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handlePangu}
-                  className="h-11 rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <UnfoldHorizontal className="h-5 w-5 mr-2" />
-                    <p>中文、英文加空格</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleUpperCase}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <CaseUpper className="h-5 w-5 mr-2" />
-                    <p>英文轉大寫</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleLowerCase}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <CaseLower className="h-5 w-5 mr-2" />
-                    <p>英文轉小寫</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleSentenceCase}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <CaseSensitive className="h-5 w-5 mr-2" />
-                    <p>英文句首大寫</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleTitleCase}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <CaseSensitive className="h-5 w-5 mr-2" />
-                    <p>英文單字字首大寫</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleFullWidth}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <ArrowBigUpDash className="h-5 w-5 mr-2" />
-                    <p>數字、英文轉全形</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={handleHalfWidth}
-                  className="h-11  rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
-                >
-                  <div className="flex justify-start items-center w-full transition-opacity duration-200">
-                    <ArrowBigDownDash className="h-5 w-5 mr-2" />
-                    <p>數字、英文轉半形</p>
-                  </div>
-                </Button>
-              </div>
+              <TextFormatter
+                transformSelectedText={transformSelectedText}
+                text={text}
+                updateText={updateText}
+              />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -592,4 +357,4 @@ const TextFormatter = () => {
   );
 };
 
-export default TextFormatter;
+export default TextEditor;
