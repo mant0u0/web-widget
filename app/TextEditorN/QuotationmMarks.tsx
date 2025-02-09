@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // 引號資料
-import { defaultQuotes } from "./dataQuotes";
+import { Quote, InsertQuoteFunction, defaultQuotes } from "./dataQuotes";
 
 import { Plus, Pencil } from "lucide-react";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 
 export const QuotationmMarks: React.FC<{
-  insertQuote;
+  insertQuote: InsertQuoteFunction;
 }> = ({ insertQuote }) => {
   // 自訂引號狀態
   const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);

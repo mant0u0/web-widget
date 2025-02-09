@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 // 行首符號設定
-import { prefixSymbols } from "./dataPrefixSymbols";
+import { PrefixSymbol, PrefixType, prefixSymbols } from "./dataPrefixSymbols";
 
 import { Plus, Pencil, PilcrowLeft } from "lucide-react";
 import {
@@ -27,17 +27,6 @@ interface ParagraphMarkProps {
   ) => void;
   text: string;
   updateText: (text: string) => void;
-}
-
-type PrefixType = "repeat" | "format" | "order";
-
-interface PrefixSymbol {
-  symbol: string;
-  name: string;
-  type: PrefixType;
-  editable: boolean;
-  format?: string;
-  order?: string[];
 }
 
 export const ParagraphMark: React.FC<ParagraphMarkProps> = ({

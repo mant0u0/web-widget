@@ -1,4 +1,16 @@
-export const defaultQuotes = [
+// 定義引號結構的介面
+export interface Quote {
+  symbol: string; // 引號符號
+  name: string; // 引號名稱
+  center: number; // 居中設定
+  editable?: boolean; // 是否可編輯
+}
+
+// 定義插入引號的函數類型
+export type InsertQuoteFunction = (quote: Quote) => void;
+
+// 預設引號數據
+export const defaultQuotes: Quote[] = [
   { symbol: "「」", name: "單引號", center: 1, editable: false },
   { symbol: "『』", name: "雙引號", center: 1, editable: false },
   { symbol: "（）", name: "全形圓括號", center: 1, editable: false },
