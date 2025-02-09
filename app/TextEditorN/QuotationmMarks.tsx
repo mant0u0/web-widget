@@ -17,8 +17,7 @@ import {
 
 export const QuotationmMarks: React.FC<{
   insertQuote;
-  text;
-}> = ({ insertQuote, text }) => {
+}> = ({ insertQuote }) => {
   // 自訂引號狀態
   const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);
   const [leftSymbol, setLeftSymbol] = useState("");

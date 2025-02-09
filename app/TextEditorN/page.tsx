@@ -368,7 +368,7 @@ const TextEditor = () => {
               插入引號
             </AccordionTrigger>
             <AccordionContent>
-              <QuotationmMarks insertQuote={insertQuote} text={text} />
+              <QuotationmMarks insertQuote={insertQuote} />
             </AccordionContent>
           </AccordionItem>
 
