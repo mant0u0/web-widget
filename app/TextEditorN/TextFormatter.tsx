@@ -1,8 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
-import { SymbolItem, SymbolData } from "./types";
 import {
   UnfoldHorizontal,
   CaseUpper,
