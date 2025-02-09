@@ -8,6 +8,8 @@ import {
   ArrowBigDownDash,
   CaseSensitive,
   Languages,
+  ChartNoAxesGantt,
+  Link,
 } from "lucide-react";
 
 import pangu from "pangu";
@@ -123,6 +125,122 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
     return converter(text);
   };
 
+  // 去除連續換行
+  const removeConsecutiveLineBreaks = (text: string): string => {
+    // 1. 先將文字以換行符號分割成陣列
+    const lines = text.split("\n");
+
+    // 2. 檢查每一行是否為空白行（只包含空白字元或完全空白）
+    const nonEmptyLines = lines.filter((line) => line.trim() !== "");
+
+    // 3. 將非空白行重新組合
+    return nonEmptyLines.join("\n");
+  };
+
+  // 去除連續空白
+  const removeConsecutiveSpaces = (text: string): string => {
+    // 將文字按換行符分割，分別處理每一行
+    return text
+      .split("\n")
+      .map((line) => {
+        // 使用正則表達式替換連續的空格和 tab 為單一空格
+        return line.replace(/[ \t]+/g, " ").trim();
+      })
+      .join("\n");
+  };
+
+  // 處理 URL
+  const processUrl = (url: string): string => {
+    try {
+      // 檢查是否為 Facebook 跳轉連結
+      if (url.includes("l.facebook.com/l.php")) {
+        const urlObject = new URL(url);
+        const params = new URLSearchParams(urlObject.search);
+        const originalUrl = params.get("u");
+
+        // 如果找到原始 URL，則解碼並繼續處理
+        if (originalUrl) {
+          return processUrl(decodeURIComponent(originalUrl));
+        }
+      }
+
+      // 解析 URL
+      const urlObject = new URL(url);
+
+      // 追蹤參數列表
+      const trackingParams = new Set([
+        // Facebook
+        "fbclid",
+        // Twitter/X
+        "ref_src",
+        "ref_url",
+        // Google Analytics
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content",
+        "gclid",
+        // Others
+        "_ga",
+        "_gl",
+        "ref",
+        "source",
+        "campaign",
+        "track",
+      ]);
+
+      // 解碼路徑名稱中的中文
+      const decodedPathname = decodeURIComponent(urlObject.pathname);
+
+      // 創建新的 URLSearchParams，只保留非追蹤參數
+      const params = new URLSearchParams(urlObject.search);
+      const newParams = new URLSearchParams();
+
+      // 遍歷所有參數
+      for (const [key, value] of params.entries()) {
+        if (!trackingParams.has(key.toLowerCase())) {
+          newParams.append(key, value);
+        }
+      }
+
+      // 組合新的 URL
+      const newSearch = newParams.toString();
+      const result =
+        urlObject.origin + decodedPathname + (newSearch ? `?${newSearch}` : "");
+
+      return result;
+    } catch (error) {
+      console.error("無效的 URL:", error);
+      return url;
+    }
+  };
+  const processUrlsInText = (text: string): string => {
+    const urlRegex = /(https?:\/\/[^\s<>"]+)/g;
+    return text.replace(urlRegex, (match) => processUrl(match));
+  };
+
+  // 提取 URL
+  const extractUrls = (text: string): string[] => {
+    // URL 正則表達式：匹配 http/https 開頭的連結
+    const urlRegex = /(https?:\/\/[^\s<>"\]\[]+)/g;
+
+    // 使用正則表達式匹配所有連結
+    const matches = text.match(urlRegex);
+
+    // 如果沒有找到連結，返回空陣列
+    if (!matches) {
+      return [];
+    }
+
+    // 返回找到的連結陣列
+    return matches;
+  };
+  const extractUrlsAsString = (text: string): string => {
+    const urls = extractUrls(text);
+    return urls.join("\n");
+  };
+
   return (
     <div className="w-full h-[600px] p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
       {/* 簡體轉繁體 */}
@@ -212,6 +330,42 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         text="數字、英文轉半形"
         onClick={() => {
           transformSelectedText(text, toHalfWidth, updateText);
+        }}
+      />
+
+      {/* 去除連續換行 */}
+      <FunctionButton
+        icon={<ChartNoAxesGantt className="h-5 w-5 mr-2" />}
+        text="去除連續換行"
+        onClick={() => {
+          transformSelectedText(text, removeConsecutiveLineBreaks, updateText);
+        }}
+      />
+
+      {/* 去除連續空白 */}
+      <FunctionButton
+        icon={<ChartNoAxesGantt className="h-5 w-5 mr-2" />}
+        text="去除連續空白"
+        onClick={() => {
+          transformSelectedText(text, removeConsecutiveSpaces, updateText);
+        }}
+      />
+
+      {/* 精簡網址連結  */}
+      <FunctionButton
+        icon={<Link className="h-5 w-5 mr-2" />}
+        text="精簡網址連結（移除追蹤碼）"
+        onClick={() => {
+          transformSelectedText(text, processUrlsInText, updateText);
+        }}
+      />
+
+      {/* 只保留網址連結  */}
+      <FunctionButton
+        icon={<Link className="h-5 w-5 mr-2" />}
+        text="僅保留網址連結"
+        onClick={() => {
+          transformSelectedText(text, extractUrlsAsString, updateText);
         }}
       />
     </div>
