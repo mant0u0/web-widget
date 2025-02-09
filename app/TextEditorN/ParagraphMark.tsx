@@ -29,13 +29,15 @@ interface ParagraphMarkProps {
   updateText: (text: string) => void;
 }
 
+type PrefixType = "repeat" | "format" | "order";
+
 interface PrefixSymbol {
   symbol: string;
   name: string;
-  type: "repeat" | "format" | "order";
+  type: PrefixType;
   editable: boolean;
-  format?: string; // 對於 type="format" 的情況
-  order?: string[]; // 對於 type="order" 的情況
+  format?: string;
+  order?: string[];
 }
 
 export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
