@@ -18,6 +18,14 @@ import * as OpenCC from "opencc-js";
 // 定義類型
 type TransformFunction = (text: string) => string | Promise<string>;
 
+// 定義域名處理函數的類型
+type DomainHandler = (url: URL) => string;
+
+// 定義特殊域名處理器的類型
+interface SpecialDomains {
+  [key: string]: DomainHandler;
+}
+
 interface FunctionButtonProps {
   icon: ReactNode;
   text: string;
@@ -152,14 +160,18 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
   const processUrl = (url: string): string => {
     try {
       // 特殊網址處理
-      const specialDomains = {
+      const specialDomains: SpecialDomains = {
         "l.facebook.com": (url: URL) => {
           const originalUrl = url.searchParams.get("u");
-          return originalUrl ? processUrl(decodeURIComponent(originalUrl)) : url.toString();
+          return originalUrl
+            ? processUrl(decodeURIComponent(originalUrl))
+            : url.toString();
         },
         "lm.facebook.com": (url: URL) => {
           const originalUrl = url.searchParams.get("u");
-          return originalUrl ? processUrl(decodeURIComponent(originalUrl)) : url.toString();
+          return originalUrl
+            ? processUrl(decodeURIComponent(originalUrl))
+            : url.toString();
         },
         "www.google.com": (url: URL) => {
           // 只保留搜尋關鍵字
@@ -168,18 +180,18 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
             return `${url.origin}/search${q ? `?q=${q}` : ""}`;
           }
           return url.toString();
-        }
+        },
       };
-  
+
       // 解析 URL
       const urlObject = new URL(url);
-  
+
       // 檢查是否為特殊網域
       const domainHandler = specialDomains[urlObject.hostname];
       if (domainHandler) {
         return domainHandler(urlObject);
       }
-  
+
       // 追蹤參數列表
       const trackingParams = new Set([
         // Facebook
@@ -188,13 +200,13 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         "fb_action_types",
         "fb_source",
         "fb_ref",
-        
+
         // Twitter/X
         "ref_src",
         "ref_url",
         "s",
         "t",
-        
+
         // Google Analytics & Ads
         "utm_source",
         "utm_medium",
@@ -206,7 +218,7 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         "dclid",
         "gbraid",
         "wbraid",
-        
+
         // Others
         "_ga",
         "_gl",
@@ -222,7 +234,7 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         "sr_share",
         "share",
         "platform",
-        
+
         // Google Search 特定參數
         "ved",
         "ei",
@@ -233,7 +245,7 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         "sclient",
         "sxsrf",
         "oq",
-        
+
         // 其他常見追蹤參數
         "mc_cid",
         "mc_eid",
@@ -242,12 +254,12 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
         "_openstat",
         "igshid",
         "vero_id",
-        "yclid"
+        "yclid",
       ]);
-  
+
       // 解碼路徑名稱中的中文
       const decodedPathname = decodeURIComponent(urlObject.pathname);
-  
+
       // 處理查詢參數
       const newParams = new URLSearchParams();
       for (const [key, value] of urlObject.searchParams.entries()) {
@@ -255,11 +267,12 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
           newParams.append(key, value);
         }
       }
-  
+
       // 組合新的 URL
       const newSearch = newParams.toString();
-      return urlObject.origin + decodedPathname + (newSearch ? `?${newSearch}` : "");
-  
+      return (
+        urlObject.origin + decodedPathname + (newSearch ? `?${newSearch}` : "")
+      );
     } catch (error) {
       console.error("無效的 URL:", error);
       return url;
