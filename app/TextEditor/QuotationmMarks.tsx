@@ -74,11 +74,9 @@ export const QuotationmMarks: React.FC<{
     setEditingRight("");
   }, [editingLeft, editingRight, editingIndex]);
 
-  // 先顯示自訂引號，再顯示預設引號
-  const allQuotes = [...customQuotes, ...defaultQuotes];
-
   return (
     <div className="w-full h-[600px] p-0 overflow-y-auto overflow-x-hidden pb-5 rounded-md border border-input bg-zinc-50 flex flex-col">
+      {/* Add Custom Quote Button */}
       <Dialog>
         <DialogTrigger asChild>
           <div className="flex">
@@ -120,6 +118,7 @@ export const QuotationmMarks: React.FC<{
         </DialogContent>
       </Dialog>
 
+      {/* Custom Quotes */}
       {customQuotes.map((quote, index) => (
         <div key={`custom-${index}`} className="flex">
           <Button
@@ -127,10 +126,10 @@ export const QuotationmMarks: React.FC<{
             variant="outline"
             className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
           >
-            <span>
-              {quote.name.slice(0, quote.center) +
-                "　" +
-                quote.name.slice(quote.center)}
+            <span className="flex-1 text-left">
+              {quote.name.slice(0, quote.center)}
+              <span className="mx-1" />
+              {quote.name.slice(quote.center)}
             </span>
           </Button>
 
@@ -184,6 +183,7 @@ export const QuotationmMarks: React.FC<{
         </div>
       ))}
 
+      {/* Default Quotes */}
       {defaultQuotes.map((quote, index) => (
         <div key={`default-${index}`} className="flex">
           <Button
@@ -194,7 +194,7 @@ export const QuotationmMarks: React.FC<{
             <span className="h-5 w-[24px] flex-none text-center">
               {quote.symbol}
             </span>
-            <span>{quote.name}</span>
+            <span className="flex-1 text-left">{quote.name}</span>
           </Button>
         </div>
       ))}

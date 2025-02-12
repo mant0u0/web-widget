@@ -80,7 +80,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
       transformSelectedLine(text, transformLine, updateText);
     },
-    [text, updateText, includeEmptyLines]
+    [text, updateText, includeEmptyLines, transformSelectedLine]
   );
 
   // 檢查並移除行首前綴
@@ -121,7 +121,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
       transformSelectedLine(text, transformLine, updateText);
     },
-    [text, updateText]
+    [text, updateText, transformSelectedLine]
   );
 
   // 新增自訂符號
