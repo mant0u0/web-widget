@@ -36,6 +36,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+
 // 符號選擇
 import { SymbolPicker } from "./SymbolPicker";
 // 符號資料
@@ -84,7 +93,7 @@ const TextEditor = () => {
       setHistory(newHistory);
       setCurrentIndex(newHistory.length - 1);
     },
-    [history, currentIndex]
+    [history, currentIndex],
   );
 
   // ===============================================
@@ -94,6 +103,9 @@ const TextEditor = () => {
     // 選取 textArea
     const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
     if (!textArea) return;
+
+    // 儲存當前卷軸位置
+    const scrollTop = textArea.scrollTop;
 
     // 取得游標位置 (selectionStart 和 selectionEnd 是游標起點和結束位置)
     const { selectionStart, selectionEnd } = textArea;
@@ -105,11 +117,13 @@ const TextEditor = () => {
     // 更新文字
     updateText(newText);
 
-    // 更新游標位置
+    // 更新游標位置並恢復卷軸位置
     requestAnimationFrame(() => {
       const newPosition = selectionStart + symbol.length;
       textArea.focus();
       textArea.setSelectionRange(newPosition, newPosition);
+      // 恢復卷軸位置
+      textArea.scrollTop = scrollTop;
     });
   };
 
@@ -139,6 +153,9 @@ const TextEditor = () => {
         textBefore + leftQuote + selectedText + rightQuote + textAfter;
       updateText(newText);
 
+      // 儲存當前卷軸位置
+      const scrollTop = textArea.scrollTop;
+
       // 設定游標位置
       const newPosition =
         selectedText.length > 0
@@ -149,20 +166,25 @@ const TextEditor = () => {
       requestAnimationFrame(() => {
         textArea.focus();
         textArea.setSelectionRange(newPosition, newPosition);
+        // 恢復卷軸位置
+        textArea.scrollTop = scrollTop;
       });
     },
-    [text, updateText]
+    [text, updateText],
   );
 
   // 選取轉換的文字
   const transformSelectedText = async (
     text: string,
     transformFn: (text: string) => string | Promise<string>,
-    updateText: (newText: string) => void
+    updateText: (newText: string) => void,
   ) => {
     // 取得 textarea 元素
     const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
     if (!textArea) return;
+
+    // 儲存當前卷軸位置
+    const scrollTop = textArea.scrollTop;
 
     // 獲取選取範圍
     const { selectionStart, selectionEnd } = textArea;
@@ -194,6 +216,8 @@ const TextEditor = () => {
       requestAnimationFrame(() => {
         textArea.focus();
         textArea.setSelectionRange(newPosition, newPosition);
+        // 恢復卷軸位置
+        textArea.scrollTop = scrollTop;
       });
     } catch (error) {
       console.error("轉換失敗:", error);
@@ -204,12 +228,13 @@ const TextEditor = () => {
   const transformSelectedLine = async (
     text: string,
     transformFn: (line: string) => string | Promise<string>,
-    updateText: (newText: string) => void
+    updateText: (newText: string) => void,
   ) => {
     // 取得 textarea 元素
     const textArea = document.querySelector<HTMLTextAreaElement>("textarea");
     if (!textArea) return;
-
+    // 儲存當前卷軸位置
+    const scrollTop = textArea.scrollTop;
     // 獲取選取範圍
     const { selectionStart, selectionEnd } = textArea;
     // 判斷是否有選取
@@ -227,7 +252,7 @@ const TextEditor = () => {
         const beforeFullSelection = text.substring(0, startLineStart);
         const fullSelectedText = text.substring(
           startLineStart,
-          finalEndLineEnd
+          finalEndLineEnd,
         );
         const afterFullSelection = text.substring(finalEndLineEnd);
 
@@ -236,7 +261,7 @@ const TextEditor = () => {
 
         // 對每一行進行轉換
         const transformedLines = await Promise.all(
-          lines.map(async (line) => await transformFn(line))
+          lines.map(async (line) => await transformFn(line)),
         );
 
         // 將轉換後的行重新組合
@@ -254,8 +279,10 @@ const TextEditor = () => {
           textArea.focus();
           textArea.setSelectionRange(
             startLineStart,
-            startLineStart + transformedSelection.length
+            startLineStart + transformedSelection.length,
           );
+          // 恢復卷軸位置
+          textArea.scrollTop = scrollTop;
         });
       } else {
         // 如果沒有選取範圍，找到游標所在的完整行
@@ -268,7 +295,7 @@ const TextEditor = () => {
         const beforeCurrentLine = text.substring(0, currentLineStart);
         const currentLine = text.substring(
           currentLineStart,
-          finalCurrentLineEnd
+          finalCurrentLineEnd,
         );
         const afterCurrentLine = text.substring(finalCurrentLineEnd);
 
@@ -287,6 +314,8 @@ const TextEditor = () => {
         requestAnimationFrame(() => {
           textArea.focus();
           textArea.setSelectionRange(newCursorPosition, newCursorPosition);
+          // 恢復卷軸位置
+          textArea.scrollTop = scrollTop;
         });
       }
     } catch (error) {
@@ -378,7 +407,7 @@ const TextEditor = () => {
       textArea.focus();
       textArea.setSelectionRange(
         textArea.selectionStart,
-        textArea.selectionStart
+        textArea.selectionStart,
       );
     }
     if (matchPositions.length > 0) {
@@ -489,101 +518,121 @@ const TextEditor = () => {
   // ===============================================
 
   return (
-    <div className="flex h-[100vh] w-full">
-      {/* 功能列 */}
-      <div className="w-[30%] min-w-[320px] h-full p-4 overflow-hidden overflow-y-auto flex flex-col gap-2">
-        <Accordion type="single" collapsible>
-          {/* 插入符號 */}
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="!no-underline ">
-              <Type className="h-5 w-[24px] mr-1 !rotate-0" />
-              <p className="">插入符號</p>
-            </AccordionTrigger>
-            <AccordionContent>
+    <div className="flex h-screen w-screen flex-col">
+      <ResizablePanelGroup direction="vertical">
+        {/* 文字編輯區 */}
+        <ResizablePanel>
+          <Textarea
+            value={text}
+            onChange={handleTextChange}
+            placeholder="在這裡輸入或編輯文字..."
+            className="h-full w-full resize-none rounded-none bg-white p-2 text-lg focus-visible:ring-0"
+          />
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        {/* 工具選擇區 */}
+        <ResizablePanel>
+          <Tabs
+            defaultValue="account"
+            className="flex h-full w-full flex-col overflow-hidden"
+          >
+            {/* 工具列 */}
+            <ScrollArea className="h-fit w-full flex-none p-2">
+              <TabsList className="gap-1">
+                <TabsTrigger value="插入符號" className="gap-2">
+                  <Type className="w-4" />
+                  <p className="whitespace-nowrap text-sm">插入符號</p>
+                </TabsTrigger>
+                <TabsTrigger value="插入 Emoji" className="gap-2">
+                  <Smile className="w-4" />
+                  <p className="whitespace-nowrap text-sm">插入 Emoji</p>
+                </TabsTrigger>
+                <TabsTrigger value="插入顏文字" className="gap-2">
+                  <Smile className="w-4" />
+                  <p className="whitespace-nowrap text-sm">插入顏文字</p>
+                </TabsTrigger>
+                <TabsTrigger value="插入引號" className="gap-2">
+                  <Quote className="w-4" />
+                  <p className="whitespace-nowrap text-sm">插入引號</p>
+                </TabsTrigger>
+                <TabsTrigger value="段落符號" className="gap-2">
+                  <ListOrdered className="w-4" />
+                  <p className="whitespace-nowrap text-sm">段落符號</p>
+                </TabsTrigger>
+                <TabsTrigger value="文字處理" className="gap-2">
+                  <SpellCheck2 className="w-4" />
+                  <p className="whitespace-nowrap text-sm">文字處理</p>
+                </TabsTrigger>
+                <TabsTrigger value="搜尋取代" className="gap-2">
+                  <Search className="w-4" />
+                  <p className="whitespace-nowrap text-sm">搜尋取代</p>
+                </TabsTrigger>
+                <ScrollBar orientation="horizontal" />
+              </TabsList>
+            </ScrollArea>
+
+            {/* 工作列內容 */}
+
+            <TabsContent
+              value="插入符號"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
               <SymbolPicker
                 data={dataSymbols}
                 onSelect={insertSymbol}
                 btnClassName="w-[44px] h-[44px] noto-sans-font"
               />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 插入 Emoji */}
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="!no-underline ">
-              <Smile className="h-5 w-[24px] mr-1 !rotate-0" />
-              插入 Emoji
-            </AccordionTrigger>
-            <AccordionContent>
+            </TabsContent>
+            <TabsContent
+              value="插入 Emoji"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
               <SymbolPicker
                 data={dataEmoji}
                 onSelect={insertSymbol}
                 btnClassName="w-[44px] h-[44px] emoji-font text-2xl"
               />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 插入顏文字 */}
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="!no-underline ">
-              <Smile className="h-5 w-[24px] mr-1 !rotate-0" />
-              插入顏文字
-            </AccordionTrigger>
-            <AccordionContent>
+            </TabsContent>
+            <TabsContent
+              value="插入顏文字"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
               <SymbolPicker data={dataKaomoji} onSelect={insertSymbol} />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 插入引號 */}
-          <AccordionItem value="item-4">
-            <AccordionTrigger className="!no-underline ">
-              <Quote className="h-5 w-[24px] mr-1 !rotate-0" />
-              插入引號
-            </AccordionTrigger>
-            <AccordionContent>
+            </TabsContent>
+            <TabsContent
+              value="插入引號"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
               <QuotationmMarks insertQuote={insertQuote} />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 段落符號 */}
-          <AccordionItem value="item-5">
-            <AccordionTrigger className="!no-underline ">
-              <ListOrdered className="h-5 w-[24px] mr-1 !rotate-0" />
-              段落符號
-            </AccordionTrigger>
-            <AccordionContent>
+            </TabsContent>
+            <TabsContent
+              value="段落符號"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
               <ParagraphMark
                 transformSelectedLine={transformSelectedLine}
                 text={text}
                 updateText={updateText}
               />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 文字處理 */}
-          <AccordionItem value="item-6">
-            <AccordionTrigger className="!no-underline ">
-              <SpellCheck2 className="h-5 w-[24px] mr-1 !rotate-0" />
-              文字處理
-            </AccordionTrigger>
-            <AccordionContent>
+            </TabsContent>
+            <TabsContent
+              value="文字處理"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
               <TextFormatter
                 transformSelectedText={transformSelectedText}
                 text={text}
                 updateText={updateText}
               />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 搜尋取代 */}
-          <AccordionItem value="item-7">
-            <AccordionTrigger className="!no-underline ">
-              <Search className="h-5 w-[24px] mr-1 !rotate-0" />
-              搜尋取代 (測試)
-            </AccordionTrigger>
-
-            <AccordionContent>
-              <div className="w-full flex flex-col gap-2 p-4 px-2">
+            </TabsContent>
+            <TabsContent
+              value="搜尋取代"
+              className="mt-0 h-full w-full flex-1 overflow-y-auto"
+            >
+              {" "}
+              <div className="flex w-full flex-col gap-2 p-4 px-2">
                 {/* 搜尋輸入框 */}
                 <div className="flex gap-2">
                   <Input
@@ -682,14 +731,14 @@ const TextEditor = () => {
                   </div>
                 )}
 
-                <div className="pt-4 flex flex-col gap-1">
+                <div className="flex flex-col gap-1 pt-4">
                   {/* 字數統計 */}
                   <div className="text-sm text-gray-500">
                     目前總共 {characterCount} 個字，共 {lineCount} 行。
                   </div>
 
                   {characterCount > 500 ? (
-                    <div className="text-sm  text-red-500">
+                    <div className="text-sm text-red-500">
                       Threads 文字上限 {characterCount} / 500 字，超過{" "}
                       {characterCount - 500} 字。
                     </div>
@@ -700,7 +749,7 @@ const TextEditor = () => {
                   )}
 
                   {twitterCount.count > 280 ? (
-                    <div className="text-sm  text-red-500">
+                    <div className="text-sm text-red-500">
                       Twitter 發文上限 {twitterCount.count} / 280 字符，超過{" "}
                       {twitterCount.count - 280} 字。
                     </div>
@@ -711,73 +760,62 @@ const TextEditor = () => {
                   )}
                 </div>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
-
-      {/* 文字編輯區 */}
-      <div className="w-full flex flex-col gap-4 pt-4 pb-4 pr-4 text-3xl">
-        <Textarea
-          value={text}
-          onChange={handleTextChange}
-          placeholder="在這裡輸入或編輯文字..."
-          className="w-full h-full p-2 !text-lg bg-white resize-none "
-        />
-
-        <div className="flex justify-between">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+            </TabsContent>
+          </Tabs>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+      <div className="flex justify-between border-t border-gray-200 p-2">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+            >
+              <Trash className="mr-1 h-5 w-[24px]" />
+              刪除
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>確定要刪除文字嗎？</AlertDialogTitle>
+              <AlertDialogDescription>
+                此操作將刪除所有已輸入的文字內容，且無法復原。
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>取消</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-500 hover:bg-red-600"
+                onClick={clearText}
               >
-                <Trash className="h-5 w-[24px] mr-1" />
                 刪除
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>確定要刪除文字嗎？</AlertDialogTitle>
-                <AlertDialogDescription>
-                  此操作將刪除所有已輸入的文字內容，且無法復原。
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>取消</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-red-500 hover:bg-red-600"
-                  onClick={clearText}
-                >
-                  刪除
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={handleUndo}
-              disabled={currentIndex <= 0}
-              className="flex items-center"
-            >
-              <Undo className="h-5 w-[24px] mr-1" />
-              還原
-            </Button>
-            <Button
-              onClick={copyText}
-              variant="outline"
-              disabled={copyStatus || !text}
-            >
-              {copyStatus ? (
-                <CircleCheck className="h-5 w-[24px] mr-1" />
-              ) : (
-                <Copy className="h-5 w-[24px] mr-1" />
-              )}
-              {copyStatus ? "成功" : "複製"}
-            </Button>
-          </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleUndo}
+            disabled={currentIndex <= 0}
+            className="flex items-center"
+          >
+            <Undo className="mr-1 h-5 w-[24px]" />
+            還原
+          </Button>
+          <Button
+            onClick={copyText}
+            variant="outline"
+            disabled={copyStatus || !text}
+          >
+            {copyStatus ? (
+              <CircleCheck className="mr-1 h-5 w-[24px]" />
+            ) : (
+              <Copy className="mr-1 h-5 w-[24px]" />
+            )}
+            {copyStatus ? "成功" : "複製"}
+          </Button>
         </div>
       </div>
     </div>

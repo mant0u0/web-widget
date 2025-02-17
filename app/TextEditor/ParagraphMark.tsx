@@ -14,6 +14,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type TransformFunction = (text: string) => string;
 
@@ -21,7 +22,7 @@ interface ParagraphMarkProps {
   transformSelectedLine: (
     text: string,
     transformer: TransformFunction,
-    updateText: (text: string) => void
+    updateText: (text: string) => void,
   ) => void;
   text: string;
   updateText: (text: string) => void;
@@ -80,7 +81,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
       transformSelectedLine(text, transformLine, updateText);
     },
-    [text, updateText, includeEmptyLines, transformSelectedLine]
+    [text, updateText, includeEmptyLines, transformSelectedLine],
   );
 
   // 檢查並移除行首前綴
@@ -121,7 +122,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
       transformSelectedLine(text, transformLine, updateText);
     },
-    [text, updateText, transformSelectedLine]
+    [text, updateText, transformSelectedLine],
   );
 
   // 新增自訂符號
@@ -159,7 +160,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           };
         }
         return symbol;
-      })
+      }),
     );
 
     setEditingSymbol("");
@@ -174,9 +175,9 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
   }, []);
 
   return (
-    <div className="w-full h-[600px] p-0 overflow-y-auto overflow-x-hidden pb-5 rounded-md border border-input bg-zinc-50 flex flex-col">
-      <Label className="flex justify-start items-center w-full bg-background text-md p-4 gap-1 h-[44px] border-input border-b cursor-pointer hover:bg-accent">
-        <div className="h-5 w-[24px] flex-none flex justify-center items-center">
+    <ScrollArea className="h-full w-full">
+      <Label className="text-md flex h-[48px] w-full cursor-pointer items-center justify-start gap-1 border-b border-input bg-background p-4 hover:bg-accent">
+        <div className="flex h-5 w-[24px] flex-none items-center justify-center">
           <Checkbox
             id="terms"
             checked={includeEmptyLines}
@@ -185,7 +186,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
             }
           />
         </div>
-        <p className="ml-1">包含空白行</p>
+        <p className="ml-1 text-sm">包含空白行</p>
       </Label>
 
       <Dialog>
@@ -193,12 +194,12 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           <div className="flex">
             <Button
               variant="outline"
-              className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+              className="text-md flex h-[44px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
             >
-              <div className="h-5 w-[24px] flex-none flex justify-center items-center">
+              <div className="flex h-5 w-[24px] flex-none items-center justify-center">
                 <Plus />
               </div>
-              <p>自訂符號</p>
+              <p className="text-sm">自訂符號</p>
             </Button>
           </div>
         </DialogTrigger>
@@ -229,12 +230,12 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           <Button
             onClick={() => insertPrefix(symbol)}
             variant="outline"
-            className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+            className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
           >
-            <span className="h-5 w-[24px] flex-none text-center truncate">
+            <span className="h-5 w-[24px] flex-none truncate text-center">
               {symbol.symbol}
             </span>
-            <p>{symbol.name}</p>
+            <p className="text-sm">{symbol.name}</p>
           </Button>
 
           <Dialog>
@@ -242,7 +243,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
               <Button
                 onClick={() => startEdit(symbol, index)}
                 variant="outline"
-                className="flex justify-start items-center h-11 rounded-none border-l-1 border-r-0 border-t-0 text-md animate-fade-in"
+                className="border-l-1 text-md flex h-[48px] animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
               >
                 <Pencil className="h-5 w-[24px] text-center" />
               </Button>
@@ -283,7 +284,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           <Button
             onClick={() => removePrefix(symbol)}
             variant="outline"
-            className="flex justify-start items-center h-11 rounded-none border-l-1 border-r-0 border-t-0 text-md animate-fade-in"
+            className="border-l-1 flex h-[48px] animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
           >
             <PilcrowLeft className="h-5 w-[24px] text-center" />
           </Button>
@@ -296,24 +297,24 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           <Button
             onClick={() => insertPrefix(symbol)}
             variant="outline"
-            className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+            className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
           >
             <span className="h-5 w-[24px] flex-none text-center">
               {symbol.symbol}
             </span>
-            <p>{symbol.name}</p>
+            <p className="text-sm">{symbol.name}</p>
           </Button>
 
           <Button
             onClick={() => removePrefix(symbol)}
             variant="outline"
-            className="flex justify-start items-center h-11 rounded-none border-l-1 border-r-0 border-t-0 text-md animate-fade-in"
+            className="border-l-1 text-md flex h-[48px] animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
           >
             <PilcrowLeft className="h-5 w-[24px] text-center" />
           </Button>
         </div>
       ))}
-    </div>
+    </ScrollArea>
   );
 };
 

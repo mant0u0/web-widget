@@ -1,19 +1,13 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ChevronDown, ChevronRight } from "lucide-react";
+import { Search, ChevronDown, ChevronRight, CircleDashed } from "lucide-react";
 import { SymbolItem, SymbolData } from "./types";
-
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // 每次載入的項目數量
 const ITEMS_PER_BATCH = 20;
 
-/**
- * 單個符號按鈕組件
- * @param item - 符號項目資料
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- */
-
+// 單個符號按鈕組件
 const SymbolButton = ({
   item,
   onSelect,
@@ -23,100 +17,82 @@ const SymbolButton = ({
   onSelect: (item: SymbolItem) => void;
   btnClassName?: string;
 }) => (
-  <div className="relative group">
-    {/* 符號按鈕 */}
+  <div className="group relative">
     <Button
       onClick={() => onSelect(item)}
       variant="outline"
       size="sm"
       className={
-        "h-10 flex items-center justify-center text-md animate-fade-in " +
+        "text-md flex h-10 animate-fade-in items-center justify-center " +
         btnClassName
       }
     >
       {item.symbol}
     </Button>
-    {/* 懸停時顯示的提示框 */}
-    <div className="absolute bottom-full h-auto left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
+    <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 h-auto -translate-x-1/2 transform whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
       {item.tags[0]}
     </div>
   </div>
 );
 
-/**
- * 可折疊的分類區塊組件，支持懶加載
- * @param category - 分類名稱
- * @param items - 該分類下的符號項目
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- */
+// 可折疊的分類區塊組件
 const LazyLoadSection = ({
   category,
   items,
   onSelect,
   btnClassName,
+  defaultExpanded = true,
 }: {
   category: string;
   items: SymbolItem[];
   onSelect: (item: SymbolItem) => void;
   btnClassName?: string;
+  defaultExpanded?: boolean;
 }) => {
-  // 控制已顯示的項目數量
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_BATCH);
-  // 控制分類的展開/摺疊狀態
-  const [isExpanded, setIsExpanded] = useState(true);
-  // 用於觀察加載更多的觸發點
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const loadMoreRef = useRef(null);
 
-  // 設置 Intersection Observer 用於懶加載
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // 當觀察點進入視窗且還有更多項目時，增加顯示數量
         if (entries[0].isIntersecting && visibleItems < items.length) {
           setVisibleItems((prev) =>
-            Math.min(prev + ITEMS_PER_BATCH, items.length)
+            Math.min(prev + ITEMS_PER_BATCH, items.length),
           );
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (loadMoreRef.current) {
       observer.observe(loadMoreRef.current);
     }
 
-    // 清理 observer
     return () => observer.disconnect();
   }, [visibleItems, items.length]);
 
   return (
     <div className="">
-      {/* 可點擊的分類標題 */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="sticky top-0 left-0 z-10 w-full text-left text-sm font-semibold py-3 px-3 flex items-center gap-2 bg-zinc-50 hover:bg-zinc-100 transition-colors"
+        className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-3 py-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
       >
-        {/* 展開/摺疊狀態指示器 */}
         {isExpanded ? (
           <ChevronDown className="h-4 w-4" />
         ) : (
           <ChevronRight className="h-4 w-4" />
         )}
         <p className="">{category}</p>
-
-        {/* 符號數量 */}
         <span className="text-xs text-zinc-400">{items.length}</span>
       </button>
-      {/* 符號列表容器，帶有展開/摺疊動畫 */}
       <div
         className={`flex flex-wrap gap-1 ${
           isExpanded
-            ? "opacity-100 p-3"
-            : "opacity-0 h-0 overflow-hidden px-3 py-0"
+            ? "p-3 opacity-100"
+            : "h-0 overflow-hidden px-3 py-0 opacity-0"
         }`}
       >
-        {/* 渲染可見的符號按鈕 */}
         {items.slice(0, visibleItems).map((item) => (
           <SymbolButton
             key={item.symbol}
@@ -125,7 +101,6 @@ const LazyLoadSection = ({
             btnClassName={btnClassName}
           />
         ))}
-        {/* 懶加載觸發點 */}
         {visibleItems < items.length && (
           <div ref={loadMoreRef} className="h-4" />
         )}
@@ -134,26 +109,16 @@ const LazyLoadSection = ({
   );
 };
 
-/**
- * 主要的符號選擇器組件
- * @param data - 符號數據
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- */
+// 主要的符號選擇器組件
 export const SymbolPicker: React.FC<{
   data: SymbolData;
   onSelect: (symbol: string) => void;
   btnClassName?: string;
 }> = ({ data, onSelect, btnClassName }) => {
-  // 搜尋查詢
   const [searchQuery, setSearchQuery] = useState("");
-  // 最近使用的符號
   const [recentItems, setRecentItems] = useState<SymbolItem[]>([]);
+  const [isExpanded, setIsExpanded] = useState(true);
 
-  /**
-   * 處理符號選擇事件
-   * 選擇符號時更新最近使用列表
-   */
   const handleSymbolSelect = (item: SymbolItem) => {
     onSelect(item.symbol);
     setRecentItems((prev) => {
@@ -162,37 +127,29 @@ export const SymbolPicker: React.FC<{
     });
   };
 
-  /**
-   * 根據搜尋條件過濾符號
-   * 使用 useMemo 優化性能
-   */
   const filteredItems = useMemo(() => {
     if (!searchQuery) return data;
 
     const searchTerms = new Set(searchQuery.toLowerCase().split(/\s+/));
     const filtered: SymbolData = {};
 
-    // 遍歷所有分類和項目進行過濾
     Object.entries(data).forEach(([category, { categoryTags, items }]) => {
       const categoryTagsLower = categoryTags.map((tag) => tag.toLowerCase());
-      // 檢查分類標籤是否匹配
       const categoryMatches = Array.from(searchTerms).some((term) =>
-        categoryTagsLower.some((tag) => tag.includes(term))
+        categoryTagsLower.some((tag) => tag.includes(term)),
       );
 
-      // 過濾符合條件的項目
       const matchedItems = items.filter((item) => {
         if (categoryMatches) return true;
         const itemTagsLower = item.tags.map((tag) => tag.toLowerCase());
         return (
           item.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
           itemTagsLower.some((tag) =>
-            Array.from(searchTerms).some((term) => tag.includes(term))
+            Array.from(searchTerms).some((term) => tag.includes(term)),
           )
         );
       });
 
-      // 只保留有匹配項目的分類
       if (matchedItems.length > 0) {
         filtered[category] = {
           categoryTags,
@@ -205,9 +162,8 @@ export const SymbolPicker: React.FC<{
   }, [searchQuery, data]);
 
   return (
-    <div className="w-full h-[600px] p-0 overflow-hidden rounded-md border border-input bg-zinc-50 flex flex-col">
-      {/* 搜尋欄 */}
-      <div className="bg-background p-4 border-b">
+    <div className="flex h-full w-full flex-1 flex-col overflow-hidden border-input bg-zinc-50 p-0">
+      <div className="border-b bg-background p-4">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
           <Input
@@ -220,28 +176,49 @@ export const SymbolPicker: React.FC<{
         </div>
       </div>
 
-      {/* 符號列表區域 */}
-      <div className="overflow-y-auto overflow-x-hidden h-full">
-        {/* 最近使用的符號區域 */}
-        {recentItems.length > 0 && !searchQuery && (
+      <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
+        {!searchQuery && (
           <div className="">
-            <h3 className="sticky top-0 left-0 z-10 w-full text-left text-sm font-semibold py-3 px-3 flex items-center gap-2 bg-zinc-50 transition-colors">
-              最近使用
-            </h3>
-            <div className="flex flex-wrap gap-1 p-3">
-              {recentItems.map((item, index) => (
-                <SymbolButton
-                  key={`${item.symbol}-${index}`}
-                  item={item}
-                  onSelect={handleSymbolSelect}
-                  btnClassName={btnClassName}
-                />
-              ))}
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-3 py-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
+            >
+              {isExpanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+              <p className="">最近使用</p>
+              <span className="text-xs text-zinc-400">
+                {recentItems.length}
+              </span>
+            </button>
+            <div
+              className={`flex flex-wrap gap-1 ${
+                isExpanded
+                  ? "p-3 opacity-100"
+                  : "h-0 overflow-hidden px-3 py-0 opacity-0"
+              }`}
+            >
+              {recentItems.length > 0 ? (
+                recentItems.map((item, index) => (
+                  <SymbolButton
+                    key={`${item.symbol}-${index}`}
+                    item={item}
+                    onSelect={handleSymbolSelect}
+                    btnClassName={btnClassName}
+                  />
+                ))
+              ) : (
+                <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
+                  <CircleDashed className="h-5 w-4" />
+                  沒有最近使用的符號
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* 分類符號列表 */}
         {Object.entries(filteredItems).map(([category, { items }]) => (
           <LazyLoadSection
             key={category}
@@ -251,7 +228,9 @@ export const SymbolPicker: React.FC<{
             btnClassName={btnClassName}
           />
         ))}
-      </div>
+
+        <ScrollBar className="z-10" />
+      </ScrollArea>
     </div>
   );
 };

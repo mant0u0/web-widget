@@ -12,6 +12,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const QuotationmMarks: React.FC<{
   insertQuote: InsertQuoteFunction;
@@ -66,7 +67,7 @@ export const QuotationmMarks: React.FC<{
           };
         }
         return quote;
-      })
+      }),
     );
 
     setEditingIndex(-1);
@@ -75,19 +76,18 @@ export const QuotationmMarks: React.FC<{
   }, [editingLeft, editingRight, editingIndex]);
 
   return (
-    <div className="w-full h-[600px] p-0 overflow-y-auto overflow-x-hidden pb-5 rounded-md border border-input bg-zinc-50 flex flex-col">
-      {/* Add Custom Quote Button */}
+    <ScrollArea className="h-full w-full">
       <Dialog>
         <DialogTrigger asChild>
           <div className="flex">
             <Button
               variant="outline"
-              className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+              className="text-md flex h-[44px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
             >
-              <div className="h-5 w-[24px] flex-none flex justify-center items-center">
+              <div className="flex h-5 w-[24px] flex-none items-center justify-center">
                 <Plus />
               </div>
-              <p>自訂符號</p>
+              <p className="text-sm">自訂符號</p>
             </Button>
           </div>
         </DialogTrigger>
@@ -117,14 +117,13 @@ export const QuotationmMarks: React.FC<{
           </DialogClose>
         </DialogContent>
       </Dialog>
-
       {/* Custom Quotes */}
       {customQuotes.map((quote, index) => (
         <div key={`custom-${index}`} className="flex">
           <Button
             onClick={() => insertQuote(quote)}
             variant="outline"
-            className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+            className="text-md flex h-[44px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
           >
             <span className="flex-1 text-left">
               {quote.name.slice(0, quote.center)}
@@ -138,7 +137,7 @@ export const QuotationmMarks: React.FC<{
               <Button
                 onClick={() => startEdit(quote, index)}
                 variant="outline"
-                className="flex justify-start items-center h-11 rounded-none border-l-1 border-r-0 border-t-0 text-md animate-fade-in"
+                className="border-l-1 text-md flex h-11 animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
               >
                 <Pencil className="h-5 w-[24px] text-center" />
               </Button>
@@ -189,16 +188,18 @@ export const QuotationmMarks: React.FC<{
           <Button
             onClick={() => insertQuote(quote)}
             variant="outline"
-            className="flex justify-start items-center h-[44px] w-full rounded-none border-l-0 border-r-0 border-t-0 text-md animate-fade-in"
+            className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
           >
-            <span className="h-5 w-[24px] flex-none text-center">
+            <p className="h-5 w-[24px] flex-none text-center text-sm">
               {quote.symbol}
-            </span>
-            <span className="flex-1 text-left">{quote.name}</span>
+            </p>
+            <p className="flex-1 text-left text-sm">{quote.name}</p>
           </Button>
         </div>
       ))}
-    </div>
+
+      <ScrollBar className="z-10" />
+    </ScrollArea>
   );
 };
 
