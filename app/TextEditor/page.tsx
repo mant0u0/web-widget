@@ -519,30 +519,34 @@ const TextEditor = () => {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  const handleWheel = (e) => {
+  const handleWheel = (e: WheelEvent) => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollLeft += e.deltaY;
     }
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     setIsMouseDown(true);
     const slider = scrollContainerRef.current;
-    const startPosition = e.pageX - slider.offsetLeft;
-    setStartX(startPosition);
-    setScrollLeft(slider.scrollLeft);
+    if (slider) {
+      const startPosition = e.pageX - slider.offsetLeft;
+      setStartX(startPosition);
+      setScrollLeft(slider.scrollLeft);
+    }
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!isMouseDown) return;
     e.preventDefault();
     const slider = scrollContainerRef.current;
-    const x = e.pageX - slider.offsetLeft;
-    const distance = x - startX;
-    slider.scrollLeft = scrollLeft - distance;
+    if (slider) {
+      const x = e.pageX - slider.offsetLeft;
+      const distance = x - startX;
+      slider.scrollLeft = scrollLeft - distance;
+    }
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e: MouseEvent<HTMLDivElement>) => {
     setIsMouseDown(false);
   };
 
