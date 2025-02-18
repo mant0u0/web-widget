@@ -516,12 +516,12 @@ const TextEditor = () => {
   // ===============================================
   // 工具列滑鼠左右滾動
 
-  const scrollContainerRef = useRef(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  const handleWheel = (e: WheelEvent) => {
+  const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollLeft += e.deltaY;
     }
