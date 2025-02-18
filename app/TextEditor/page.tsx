@@ -1,6 +1,12 @@
 // page.tsx
 "use client";
-import React, { useState, useCallback, ChangeEvent, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  ChangeEvent,
+  useMemo,
+  useRef,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -516,62 +522,111 @@ const TextEditor = () => {
   }, [text]);
 
   // ===============================================
+  const scrollContainerRef = useRef(null);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
+  const handleWheel = (e) => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    setIsMouseDown(true);
+    const slider = scrollContainerRef.current;
+    const startPosition = e.pageX - slider.offsetLeft;
+    setStartX(startPosition);
+    setScrollLeft(slider.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isMouseDown) return;
+    e.preventDefault();
+    const slider = scrollContainerRef.current;
+    const x = e.pageX - slider.offsetLeft;
+    const distance = x - startX;
+    slider.scrollLeft = scrollLeft - distance;
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+  };
+
+  // ===============================================
   return (
     <div className="flex h-screen w-screen flex-col">
-      <ResizablePanelGroup direction="vertical">
+      <ResizablePanelGroup
+        direction="vertical"
+        // direction="horizontal"
+        // direction={direction}
+      >
         {/* 文字編輯區 */}
-        <ResizablePanel>
+        <ResizablePanel defaultSize={50}>
           <Textarea
             value={text}
             onChange={handleTextChange}
             placeholder="在這裡輸入或編輯文字..."
-            className="h-full w-full resize-none rounded-none bg-white p-2 text-lg focus-visible:ring-0"
+            className="h-full w-full resize-none rounded-none bg-white p-2 !text-lg focus-visible:ring-0"
           />
         </ResizablePanel>
 
         <ResizableHandle withHandle />
 
         {/* 工具選擇區 */}
-        <ResizablePanel>
+        <ResizablePanel defaultSize={50}>
           <Tabs
-            defaultValue="account"
+            defaultValue="插入符號"
             className="flex h-full w-full flex-col overflow-hidden"
           >
-            {/* 工具列 */}
-            <ScrollArea className="h-fit w-full flex-none p-2">
-              <TabsList className="gap-1">
-                <TabsTrigger value="插入符號" className="gap-2">
-                  <Type className="w-4" />
-                  <p className="whitespace-nowrap text-sm">插入符號</p>
-                </TabsTrigger>
-                <TabsTrigger value="插入 Emoji" className="gap-2">
-                  <Smile className="w-4" />
-                  <p className="whitespace-nowrap text-sm">插入 Emoji</p>
-                </TabsTrigger>
-                <TabsTrigger value="插入顏文字" className="gap-2">
-                  <Smile className="w-4" />
-                  <p className="whitespace-nowrap text-sm">插入顏文字</p>
-                </TabsTrigger>
-                <TabsTrigger value="插入引號" className="gap-2">
-                  <Quote className="w-4" />
-                  <p className="whitespace-nowrap text-sm">插入引號</p>
-                </TabsTrigger>
-                <TabsTrigger value="段落符號" className="gap-2">
-                  <ListOrdered className="w-4" />
-                  <p className="whitespace-nowrap text-sm">段落符號</p>
-                </TabsTrigger>
-                <TabsTrigger value="文字處理" className="gap-2">
-                  <SpellCheck2 className="w-4" />
-                  <p className="whitespace-nowrap text-sm">文字處理</p>
-                </TabsTrigger>
-                <TabsTrigger value="搜尋取代" className="gap-2">
-                  <Search className="w-4" />
-                  <p className="whitespace-nowrap text-sm">搜尋取代</p>
-                </TabsTrigger>
-                <ScrollBar orientation="horizontal" />
-              </TabsList>
-            </ScrollArea>
+            <div
+              ref={scrollContainerRef}
+              onWheel={handleWheel}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              className="cursor-grab select-none overflow-x-scroll rounded-md border p-2 [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]"
+              style={{
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+              }}
+            >
+              <div className="flex cursor-grab select-none">
+                <TabsList className="gap-1">
+                  <TabsTrigger value="插入符號" className="cursor-grab gap-2">
+                    <Type className="w-4" />
+                    <p className="whitespace-nowrap text-sm">插入符號</p>
+                  </TabsTrigger>
+                  <TabsTrigger value="插入 Emoji" className="cursor-grab gap-2">
+                    <Smile className="w-4" />
+                    <p className="whitespace-nowrap text-sm">插入 Emoji</p>
+                  </TabsTrigger>
+                  <TabsTrigger value="插入顏文字" className="cursor-grab gap-2">
+                    <Smile className="w-4" />
+                    <p className="whitespace-nowrap text-sm">插入顏文字</p>
+                  </TabsTrigger>
+                  <TabsTrigger value="插入引號" className="cursor-grab gap-2">
+                    <Quote className="w-4" />
+                    <p className="whitespace-nowrap text-sm">插入引號</p>
+                  </TabsTrigger>
+                  <TabsTrigger value="段落符號" className="cursor-grab gap-2">
+                    <ListOrdered className="w-4" />
+                    <p className="whitespace-nowrap text-sm">段落符號</p>
+                  </TabsTrigger>
+                  <TabsTrigger value="文字處理" className="cursor-grab gap-2">
+                    <SpellCheck2 className="w-4" />
+                    <p className="whitespace-nowrap text-sm">文字處理</p>
+                  </TabsTrigger>
+                  <TabsTrigger value="搜尋取代" className="cursor-grab gap-2">
+                    <Search className="w-4" />
+                    <p className="whitespace-nowrap text-sm">搜尋取代</p>
+                  </TabsTrigger>
+                  <div className="w-10"></div>
+                </TabsList>
+              </div>
+            </div>
 
             {/* 工作列內容 */}
 

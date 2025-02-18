@@ -1,17 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Color+Emoji&family=Noto+Sans+TC:wght@100..900&display=swap");
 
-* {
-  font-family: "Inter", "Noto Sans TC", "Noto Color Emoji", "微軟正黑體",
-    "Microsoft JhengHei", "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
+:root {
+  --font-fallback:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 body {
+  font-family:
+    var(--font-inter), var(--font-noto-sans-tc), var(--font-fallback);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -72,17 +72,17 @@ body {
   }
 }
 
-.emoji-font{
-  font-family:  "Noto Color Emoji",  "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+.emoji-font {
+  font-family:
+    "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
-.noto-sans-font{
+.noto-sans-font {
   font-family: "Noto Sans TC", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
-
 
 @layer base {
   :root {
