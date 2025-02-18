@@ -1,3 +1,5 @@
+// layout.tsx
+
 import type { Metadata } from "next";
 import "./globals.scss";
 import { Inter, Noto_Sans_TC } from "next/font/google";

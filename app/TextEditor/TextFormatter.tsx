@@ -12,7 +12,7 @@ import {
   Link,
   Asterisk,
 } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import pangu from "pangu";
 import * as OpenCC from "opencc-js";
 
