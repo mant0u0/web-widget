@@ -11,6 +11,7 @@ import {
   ChartNoAxesGantt,
   Link,
   Asterisk,
+  Binary,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import pangu from "pangu";
@@ -171,6 +172,20 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
       .join("\n");
   };
 
+  // 數字加千分位
+  const numAddCommas = (text: string): string => {
+    // 用 lookbehind 和 lookahead 來確保更精確的匹配
+    return text.replace(/\d+/g, (match, index, original) => {
+      // 檢查是否是年份格式（四位數字後面接空白或直接接年）
+      if (match.length === 4 && /^(\s+)?年/.test(original.slice(index + 4))) {
+        return match;
+      }
+      // 其他數字加上千分位
+      return match.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    });
+  };
+
+  // 處理 URL
   const processUrl = (url: string): string => {
     try {
       // 特殊網址處理
@@ -487,6 +502,17 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
           text="文字遮蔽"
           onClick={() => {
             transformSelectedText(text, maskText, updateText);
+          }}
+        />
+
+        {/* 數字千分位 */}
+        <FunctionButton
+          icon={
+            <Binary className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
+          text="數字千分位"
+          onClick={() => {
+            transformSelectedText(text, numAddCommas, updateText);
           }}
         />
       </div>
