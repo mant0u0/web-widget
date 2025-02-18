@@ -194,7 +194,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           <div className="flex">
             <Button
               variant="outline"
-              className="text-md flex h-[44px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
+              className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
             >
               <div className="flex h-5 w-[24px] flex-none items-center justify-center">
                 <Plus />

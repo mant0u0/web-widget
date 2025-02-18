@@ -43,11 +43,12 @@ interface TextFormatterProps {
   updateText: (text: string) => void;
 }
 
+// 功能按鈕
 const FunctionButton = ({ icon, text, onClick }: FunctionButtonProps) => (
   <Button
     variant="outline"
     onClick={onClick}
-    className="text-md h-[48px] animate-fade-in rounded-none border-l-0 border-r-0 border-t-0"
+    className="text-md min-h-[48px] animate-fade-in rounded-none border-l-0 border-r-0 border-t-0"
   >
     <div className="flex w-full items-center justify-start transition-opacity duration-200">
       {icon}
@@ -319,10 +320,12 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
   return (
     <ScrollArea className="h-full w-full">
-      <div className="flex h-[600px] w-full flex-col overflow-hidden rounded-md border border-input bg-zinc-50 p-0">
+      <div className="flex w-full flex-col overflow-hidden rounded-md border-input bg-zinc-50 p-0 pb-20">
         {/* 簡體轉繁體 */}
         <FunctionButton
-          icon={<Languages className="mr-2 h-5 w-5" />}
+          icon={
+            <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="簡體轉繁體"
           onClick={async () => {
             transformSelectedText(text, convertToTraditional, updateText);
@@ -331,7 +334,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 簡體轉繁體 (台灣用語) */}
         <FunctionButton
-          icon={<Languages className="mr-2 h-5 w-5" />}
+          icon={
+            <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="簡體轉繁體（台灣用語）"
           onClick={async () => {
             transformSelectedText(text, convertToTraditionalTW, updateText);
@@ -340,7 +345,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 繁體轉簡體 */}
         <FunctionButton
-          icon={<Languages className="mr-2 h-5 w-5" />}
+          icon={
+            <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="繁體轉簡體"
           onClick={async () => {
             transformSelectedText(text, convertToSimplified, updateText);
@@ -349,7 +356,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 中文、英文加空格 */}
         <FunctionButton
-          icon={<UnfoldHorizontal className="mr-2 h-5 w-5" />}
+          icon={
+            <UnfoldHorizontal className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="中文、英文加空格"
           onClick={() => {
             transformSelectedText(text, panguSpacing, updateText);
@@ -358,7 +367,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 英文轉大寫 */}
         <FunctionButton
-          icon={<CaseUpper className="mr-2 h-5 w-5" />}
+          icon={
+            <CaseUpper className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="英文轉大寫"
           onClick={() => {
             transformSelectedText(text, toUpperCase, updateText);
@@ -367,7 +378,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 英文轉小寫 */}
         <FunctionButton
-          icon={<CaseLower className="mr-2 h-5 w-5" />}
+          icon={
+            <CaseLower className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="英文轉小寫"
           onClick={() => {
             transformSelectedText(text, toLowerCase, updateText);
@@ -376,7 +389,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 英文句首大寫 */}
         <FunctionButton
-          icon={<CaseSensitive className="mr-2 h-5 w-5" />}
+          icon={
+            <CaseSensitive className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="英文句首大寫"
           onClick={() => {
             transformSelectedText(text, toSentenceCase, updateText);
@@ -385,7 +400,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 英文單字字首大寫 */}
         <FunctionButton
-          icon={<CaseSensitive className="mr-2 h-5 w-5" />}
+          icon={
+            <CaseSensitive className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="英文單字字首大寫"
           onClick={() => {
             transformSelectedText(text, toTitleCase, updateText);
@@ -394,7 +411,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 數字、英文轉全形 */}
         <FunctionButton
-          icon={<ArrowBigUpDash className="mr-2 h-5 w-5" />}
+          icon={
+            <ArrowBigUpDash className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="數字、英文轉全形"
           onClick={() => {
             transformSelectedText(text, toFullWidth, updateText);
@@ -403,7 +422,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 數字、英文轉半形 */}
         <FunctionButton
-          icon={<ArrowBigDownDash className="mr-2 h-5 w-5" />}
+          icon={
+            <ArrowBigDownDash className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="數字、英文轉半形"
           onClick={() => {
             transformSelectedText(text, toHalfWidth, updateText);
@@ -412,7 +433,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 去除連續換行 */}
         <FunctionButton
-          icon={<ChartNoAxesGantt className="mr-2 h-5 w-5" />}
+          icon={
+            <ChartNoAxesGantt className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="去除連續換行"
           onClick={() => {
             transformSelectedText(
@@ -425,7 +448,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 去除連續空白 */}
         <FunctionButton
-          icon={<ChartNoAxesGantt className="mr-2 h-5 w-5" />}
+          icon={
+            <ChartNoAxesGantt className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="去除連續空白"
           onClick={() => {
             transformSelectedText(text, removeConsecutiveSpaces, updateText);
@@ -434,7 +459,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 精簡網址連結  */}
         <FunctionButton
-          icon={<Link className="mr-2 h-5 w-5" />}
+          icon={
+            <Link className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="精簡網址連結（移除追蹤碼）"
           onClick={() => {
             transformSelectedText(text, processUrlsInText, updateText);
@@ -443,7 +470,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 只保留網址連結  */}
         <FunctionButton
-          icon={<Link className="mr-2 h-5 w-5" />}
+          icon={
+            <Link className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="僅保留網址連結"
           onClick={() => {
             transformSelectedText(text, extractUrlsAsString, updateText);
@@ -452,7 +481,9 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
         {/* 文字遮蔽  */}
         <FunctionButton
-          icon={<Asterisk className="mr-2 h-5 w-5" />}
+          icon={
+            <Asterisk className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+          }
           text="文字遮蔽"
           onClick={() => {
             transformSelectedText(text, maskText, updateText);

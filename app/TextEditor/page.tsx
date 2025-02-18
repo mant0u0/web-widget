@@ -17,6 +17,7 @@ import {
   Copy,
   CircleCheck,
   Undo,
+  Redo,
   Trash,
   Quote,
   SpellCheck2,
@@ -337,6 +338,14 @@ const TextEditor = () => {
     }
   }, [currentIndex, history]);
 
+  // 取消還原
+  const handleRedo = useCallback(() => {
+    if (currentIndex < history.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setText(history[currentIndex + 1]);
+    }
+  }, [currentIndex, history]);
+
   // 刪除
   const clearText = () => updateText("");
 
@@ -568,7 +577,7 @@ const TextEditor = () => {
             value={text}
             onChange={handleTextChange}
             placeholder="在這裡輸入或編輯文字..."
-            className="h-full w-full resize-none rounded-none bg-white p-2 !text-lg focus-visible:ring-0"
+            className="textarea h-full w-full resize-none rounded-none bg-white p-2 !text-lg focus-visible:ring-0"
           />
         </ResizablePanel>
 
@@ -637,7 +646,7 @@ const TextEditor = () => {
               <SymbolPicker
                 data={dataSymbols}
                 onSelect={insertSymbol}
-                btnClassName="w-[44px] h-[44px] noto-sans-font"
+                btnClassName="w-[44px] h-[48px] noto-sans-font"
               />
             </TabsContent>
             <TabsContent
@@ -647,7 +656,7 @@ const TextEditor = () => {
               <SymbolPicker
                 data={dataEmoji}
                 onSelect={insertSymbol}
-                btnClassName="w-[44px] h-[44px] emoji-font text-2xl"
+                btnClassName="w-[44px] h-[48px] emoji-font text-2xl"
               />
             </TabsContent>
             <TabsContent
@@ -686,7 +695,6 @@ const TextEditor = () => {
               value="搜尋取代"
               className="mt-0 h-full w-full flex-1 overflow-y-auto"
             >
-              {" "}
               <div className="flex w-full flex-col gap-2 p-4 px-2">
                 {/* 搜尋輸入框 */}
                 <div className="flex gap-2">
@@ -819,6 +827,8 @@ const TextEditor = () => {
           </Tabs>
         </ResizablePanel>
       </ResizablePanelGroup>
+
+      {/* Footer */}
       <div className="flex justify-between border-t border-gray-200 p-2">
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -858,6 +868,15 @@ const TextEditor = () => {
           >
             <Undo className="mr-1 h-5 w-[24px]" />
             還原
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleRedo}
+            disabled={currentIndex >= history.length - 1}
+            className="flex items-center"
+          >
+            <Redo className="mr-1 h-5 w-[24px]" />
+            取消
           </Button>
           <Button
             onClick={copyText}
