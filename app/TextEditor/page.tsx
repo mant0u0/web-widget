@@ -4,7 +4,6 @@ import React, {
   useState,
   useCallback,
   ChangeEvent,
-  useMemo,
   useRef,
   MouseEvent,
   WheelEvent,
@@ -330,7 +329,7 @@ const TextEditor = () => {
       setCurrentIndex(currentIndex - 1);
       setText(history[currentIndex - 1]);
     }
-  }, [currentIndex, history, text]);
+  }, [currentIndex, history]);
 
   // 取消還原
   const handleRedo = useCallback(() => {
@@ -338,7 +337,7 @@ const TextEditor = () => {
       setCurrentIndex(currentIndex + 1);
       setText(history[currentIndex + 1]);
     }
-  }, [currentIndex, history, text]);
+  }, [currentIndex, history]);
 
   // 刪除
   const clearText = () => updateText("");
@@ -414,7 +413,7 @@ const TextEditor = () => {
         <ResizableHandle withHandle />
 
         {/* 工具選擇區 */}
-        <ResizablePanel defaultSize={50} minSize={10}>
+        <ResizablePanel defaultSize={50}>
           <Tabs
             defaultValue="插入符號"
             className="flex h-full w-full flex-col overflow-hidden"

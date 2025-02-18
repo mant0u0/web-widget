@@ -15,11 +15,27 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export const SearchReplace = ({
-  // transformSelectedText,
-  text,
-  updateText,
-}) => {
+// 檢查字符是否為 CJK 字符
+const isCJK = (char: string): boolean => {
+  const code = char.charCodeAt(0);
+  return (
+    (code >= 0x4e00 && code <= 0x9fff) || // CJK 統一表意文字
+    (code >= 0x3040 && code <= 0x309f) || // 平假名
+    (code >= 0x30a0 && code <= 0x30ff) || // 片假名
+    (code >= 0xac00 && code <= 0xd7af) || // 諺文音節
+    (code >= 0xf900 && code <= 0xfaff) || // CJK 兼容表意文字
+    (code >= 0xff00 && code <= 0xffef) // 全形字符
+  );
+};
+
+// 計算 Twitter 字數
+const countTwitterLength = (text: string): number => {
+  return Array.from(text).reduce((count, char) => {
+    return count + (isCJK(char) ? 2 : 1);
+  }, 0);
+};
+
+export const SearchReplace = ({ text, updateText }) => {
   // 搜尋功能相關狀態
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
@@ -157,26 +173,6 @@ export const SearchReplace = ({
 
   // 行數計算
   const lineCount = useMemo(() => text.split("\n").length, [text]);
-
-  // 檢查字符是否為 CJK 字符
-  const isCJK = (char: string): boolean => {
-    const code = char.charCodeAt(0);
-    return (
-      (code >= 0x4e00 && code <= 0x9fff) || // CJK 統一表意文字
-      (code >= 0x3040 && code <= 0x309f) || // 平假名
-      (code >= 0x30a0 && code <= 0x30ff) || // 片假名
-      (code >= 0xac00 && code <= 0xd7af) || // 諺文音節
-      (code >= 0xf900 && code <= 0xfaff) || // CJK 兼容表意文字
-      (code >= 0xff00 && code <= 0xffef) // 全形字符
-    );
-  };
-
-  // 計算 Twitter 字數
-  const countTwitterLength = (text: string): number => {
-    return Array.from(text).reduce((count, char) => {
-      return count + (isCJK(char) ? 2 : 1);
-    }, 0);
-  };
 
   // 使用 useMemo 計算 Twitter 字數
   const twitterCount = useMemo(() => {
