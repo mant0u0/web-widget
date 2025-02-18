@@ -546,7 +546,7 @@ const TextEditor = () => {
     }
   };
 
-  const handleMouseUp = (e: MouseEvent<HTMLDivElement>) => {
+  const handleMouseUp = () => {
     setIsMouseDown(false);
   };
 
