@@ -11,7 +11,6 @@ import React, {
 } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 
 import {
   Copy,
@@ -331,7 +330,7 @@ const TextEditor = () => {
       setCurrentIndex(currentIndex - 1);
       setText(history[currentIndex - 1]);
     }
-  }, [currentIndex, history]);
+  }, [currentIndex, history, text]);
 
   // 取消還原
   const handleRedo = useCallback(() => {
@@ -339,7 +338,7 @@ const TextEditor = () => {
       setCurrentIndex(currentIndex + 1);
       setText(history[currentIndex + 1]);
     }
-  }, [currentIndex, history]);
+  }, [currentIndex, history, text]);
 
   // 刪除
   const clearText = () => updateText("");
@@ -415,7 +414,7 @@ const TextEditor = () => {
         <ResizableHandle withHandle />
 
         {/* 工具選擇區 */}
-        <ResizablePanel defaultSize={50}>
+        <ResizablePanel defaultSize={50} minSize={10}>
           <Tabs
             defaultValue="插入符號"
             className="flex h-full w-full flex-col overflow-hidden"
