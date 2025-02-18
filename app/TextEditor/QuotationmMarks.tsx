@@ -24,12 +24,15 @@ export const QuotationmMarks: React.FC<{
   const [editingLeft, setEditingLeft] = useState("");
   const [editingRight, setEditingRight] = useState("");
 
+  // 新增自訂引號
   const addCustomQuote = useCallback(() => {
-    if (!leftSymbol.trim() || !rightSymbol.trim()) return;
+    // 判斷條件：只要左右符號其中一個有值就可以
+    if (!leftSymbol.trim() && !rightSymbol.trim()) return;
 
+    // 建立新的引號
     const newQuote: Quote = {
       symbol: leftSymbol + rightSymbol,
-      name: `${leftSymbol}${rightSymbol}`,
+      name: `${leftSymbol || ""}${rightSymbol || ""}`,
       center: leftSymbol.length,
       editable: true,
     };
@@ -39,11 +42,13 @@ export const QuotationmMarks: React.FC<{
     setRightSymbol("");
   }, [leftSymbol, rightSymbol]);
 
+  // 刪除自訂引號
   const deleteCustomQuote = useCallback((index: number) => {
     setCustomQuotes((prev) => prev.filter((_, i) => i !== index));
     setEditingIndex(-1);
   }, []);
 
+  // 編輯自訂引號
   const startEdit = useCallback((quote: Quote, index: number) => {
     setEditingIndex(index);
     const leftPart = quote.symbol.substring(0, quote.center);
@@ -52,8 +57,10 @@ export const QuotationmMarks: React.FC<{
     setEditingRight(rightPart);
   }, []);
 
+  // 儲存編輯
   const saveEdit = useCallback(() => {
-    if (!editingLeft.trim() || !editingRight.trim() || editingIndex === -1)
+    // 修改編輯時的判斷條件：只要左右符號其中一個有值就可以
+    if ((!editingLeft.trim() && !editingRight.trim()) || editingIndex === -1)
       return;
 
     setCustomQuotes((prev) =>
@@ -61,7 +68,7 @@ export const QuotationmMarks: React.FC<{
         if (index === editingIndex) {
           return {
             symbol: editingLeft + editingRight,
-            name: `${editingLeft}${editingRight}`,
+            name: `${editingLeft || ""}${editingRight || ""}`,
             center: editingLeft.length,
             editable: true,
           };
@@ -113,7 +120,12 @@ export const QuotationmMarks: React.FC<{
           </div>
 
           <DialogClose asChild>
-            <Button onClick={addCustomQuote}>新增</Button>
+            <Button
+              onClick={addCustomQuote}
+              disabled={!leftSymbol && !rightSymbol}
+            >
+              新增
+            </Button>
           </DialogClose>
         </DialogContent>
       </Dialog>
@@ -172,7 +184,11 @@ export const QuotationmMarks: React.FC<{
                   >
                     刪除
                   </Button>
-                  <Button onClick={saveEdit} className="flex-1">
+                  <Button
+                    onClick={saveEdit}
+                    disabled={!editingLeft && !editingRight}
+                    className="flex-1"
+                  >
                     儲存
                   </Button>
                 </div>
