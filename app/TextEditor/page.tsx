@@ -6,6 +6,8 @@ import React, {
   ChangeEvent,
   useMemo,
   useRef,
+  MouseEvent,
+  WheelEvent,
 } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
