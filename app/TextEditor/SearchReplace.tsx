@@ -15,6 +15,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+// 定義 props 的介面
+interface SearchReplaceProps {
+  text: string;
+  updateText: (newText: string) => void;
+}
+
 // 檢查字符是否為 CJK 字符
 const isCJK = (char: string): boolean => {
   const code = char.charCodeAt(0);
@@ -35,7 +41,10 @@ const countTwitterLength = (text: string): number => {
   }, 0);
 };
 
-export const SearchReplace = ({ text, updateText }) => {
+export const SearchReplace: React.FC<SearchReplaceProps> = ({
+  text,
+  updateText,
+}) => {
   // 搜尋功能相關狀態
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
