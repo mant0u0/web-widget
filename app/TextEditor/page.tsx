@@ -514,6 +514,8 @@ const TextEditor = () => {
   }, [text]);
 
   // ===============================================
+  // 工具列滑鼠左右滾動
+
   const scrollContainerRef = useRef(null);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
