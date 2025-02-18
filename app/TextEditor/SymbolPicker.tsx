@@ -163,7 +163,7 @@ export const SymbolPicker: React.FC<{
 
   return (
     <div className="flex h-full w-full flex-1 flex-col overflow-hidden border-input bg-zinc-50 p-0">
-      <div className="border-b bg-background p-4">
+      <div className="border-b bg-background p-3">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
           <Input
