@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, RefreshCw } from "lucide-react";
+
+type Currency = "TWD" | "USD" | "JPY" | "EUR" | "GBP" | "CNY";
 
 interface Fee {
   id: number;
   name: string;
   amount: string;
-  currency: "TWD" | "JPY";
+  currency: Currency;
 }
 
 interface CalculationResults {
@@ -16,15 +18,77 @@ interface CalculationResults {
   final: string;
   profit: string;
   feesTotal: string;
+  baseForMarkup: string;
 }
 
+interface CurrencyInfo {
+  label: string;
+  defaultRate: number;
+  symbol: string;
+}
+
+const CURRENCY_INFO: Record<Currency, CurrencyInfo> = {
+  TWD: { label: "台幣", defaultRate: 1, symbol: "NT$" },
+  USD: { label: "美金", defaultRate: 31.5, symbol: "$" },
+  JPY: { label: "日圓", defaultRate: 0.22, symbol: "¥" },
+  EUR: { label: "歐元", defaultRate: 34.5, symbol: "€" },
+  GBP: { label: "英鎊", defaultRate: 40.2, symbol: "£" },
+  CNY: { label: "人民幣", defaultRate: 4.4, symbol: "¥" },
+};
+
 const PurchaseCalculator: React.FC = () => {
-  const [japanPrice, setJapanPrice] = useState<string>("");
+  const [foreignPrice, setForeignPrice] = useState<string>("");
+  const [sourceCurrency, setSourceCurrency] = useState<Currency>("JPY");
   const [markup, setMarkup] = useState<string>("30");
-  const [exchangeRate, setExchangeRate] = useState<string>("0.22");
+  const [exchangeRate, setExchangeRate] = useState<string>(
+    CURRENCY_INFO.JPY.defaultRate.toString(),
+  );
+  const [includeFeesInMarkup, setIncludeFeesInMarkup] = useState<boolean>(true);
   const [fees, setFees] = useState<Fee[]>([
     { id: 1, name: "運費", amount: "", currency: "TWD" },
   ]);
+  const [isLoadingRates, setIsLoadingRates] = useState<boolean>(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState<string>("");
+
+  const fetchExchangeRates = async (currency: Currency) => {
+    setIsLoadingRates(true);
+    try {
+      const response = await fetch(
+        `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`,
+      );
+      if (!response.ok) throw new Error("匯率資料取得失敗");
+
+      const data = await response.json();
+
+      // Coinbase 回傳的匯率是以當前貨幣為基準，需要進行轉換
+      const twdRate = parseFloat(data.data.rates.TWD);
+      let newRate: number;
+
+      if (currency === "TWD") {
+        newRate = 1;
+      } else {
+        // 將其他貨幣轉換為對台幣的匯率
+        newRate = twdRate;
+      }
+
+      setExchangeRate(newRate.toFixed(currency === "JPY" ? 3 : 2));
+      setLastUpdateTime(new Date().toLocaleString());
+    } catch (error) {
+      console.error("匯率更新失敗:", error);
+      alert("匯率更新失敗，請稍後再試或手動輸入匯率");
+    } finally {
+      setIsLoadingRates(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExchangeRates(sourceCurrency);
+  }, [sourceCurrency]);
+
+  const handleSourceCurrencyChange = (newCurrency: Currency): void => {
+    setSourceCurrency(newCurrency);
+    // 匯率會通過 useEffect 自動更新
+  };
 
   const addFee = (): void => {
     const newId = Math.max(0, ...fees.map((f) => f.id)) + 1;
@@ -43,17 +107,30 @@ const PurchaseCalculator: React.FC = () => {
         if (field === "currency") {
           const currentAmount = parseFloat(fee.amount);
           if (!isNaN(currentAmount)) {
-            const rate = parseFloat(exchangeRate);
+            const targetCurrency = value as Currency;
+            const currentCurrency = fee.currency;
+
+            // 先轉換為台幣，再轉換為目標幣別
+            const amountInTWD =
+              currentCurrency === "TWD"
+                ? currentAmount
+                : currentAmount *
+                  parseFloat(
+                    CURRENCY_INFO[currentCurrency].defaultRate.toString(),
+                  );
+
             let newAmount: string;
-            if (fee.currency === "TWD" && value === "JPY") {
-              // 台幣轉日圓
-              newAmount = Math.round(currentAmount / rate).toString();
-            } else if (fee.currency === "JPY" && value === "TWD") {
-              // 日圓轉台幣
-              newAmount = (currentAmount * rate).toFixed(2);
+            if (targetCurrency === "TWD") {
+              newAmount = amountInTWD.toFixed(2);
             } else {
-              return fee;
+              const targetRate = parseFloat(
+                CURRENCY_INFO[targetCurrency].defaultRate.toString(),
+              );
+              newAmount = (amountInTWD / targetRate).toFixed(
+                targetCurrency === "JPY" ? 0 : 2,
+              );
             }
+
             return { ...fee, [field]: value, amount: newAmount };
           }
         }
@@ -64,25 +141,37 @@ const PurchaseCalculator: React.FC = () => {
   };
 
   const calculatePrice = (): CalculationResults => {
-    if (!japanPrice)
-      return { cost: "0", final: "0", profit: "0", feesTotal: "0" };
+    if (!foreignPrice)
+      return {
+        cost: "0",
+        final: "0",
+        profit: "0",
+        feesTotal: "0",
+        baseForMarkup: "0",
+      };
 
-    const priceInYen = parseFloat(japanPrice);
+    const priceInForeign = parseFloat(foreignPrice);
     const rate = parseFloat(exchangeRate);
     const markupRate = parseFloat(markup) / 100;
 
     // Calculate base cost in TWD
-    const baseCost = priceInYen * rate;
+    const baseCost = priceInForeign * rate;
 
     // Calculate additional fees in TWD
     const totalFees = fees.reduce((sum, fee) => {
       if (!fee.amount) return sum;
       const amount = parseFloat(fee.amount);
-      return sum + (fee.currency === "JPY" ? amount * rate : amount);
+      if (fee.currency === "TWD") return sum + amount;
+      return (
+        sum +
+        amount * parseFloat(CURRENCY_INFO[fee.currency].defaultRate.toString())
+      );
     }, 0);
 
     const totalCost = baseCost + totalFees;
-    const finalPrice = totalCost * (1 + markupRate);
+    const baseForMarkup = includeFeesInMarkup ? totalCost : baseCost;
+    const markupAmount = baseForMarkup * markupRate;
+    const finalPrice = totalCost + markupAmount;
     const profit = finalPrice - totalCost;
 
     return {
@@ -90,37 +179,8 @@ const PurchaseCalculator: React.FC = () => {
       final: finalPrice.toFixed(2),
       profit: profit.toFixed(2),
       feesTotal: totalFees.toFixed(2),
+      baseForMarkup: baseForMarkup.toFixed(2),
     };
-  };
-
-  const handleExchangeRateChange = (newRate: string): void => {
-    setExchangeRate(newRate);
-    const oldRate = parseFloat(exchangeRate);
-    const newRateNum = parseFloat(newRate);
-
-    if (isNaN(newRateNum) || isNaN(oldRate)) return;
-
-    setFees(
-      fees.map((fee) => {
-        if (fee.currency === "JPY" && fee.amount) {
-          const amount = parseFloat(fee.amount);
-          if (!isNaN(amount)) {
-            return {
-              ...fee,
-              amount: Math.round(amount * (newRateNum / oldRate)).toString(),
-            };
-          }
-        }
-        return fee;
-      }),
-    );
-  };
-
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    setter: (value: string) => void,
-  ): void => {
-    setter(e.target.value);
   };
 
   const results = calculatePrice();
@@ -130,49 +190,95 @@ const PurchaseCalculator: React.FC = () => {
       <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">
-            日本代購價格計算器
+            代購價格計算器
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="block text-sm font-medium">
-                商品日本售價 (日圓)
-              </label>
-              <input
-                type="number"
-                value={japanPrice}
-                onChange={(e) => handleInputChange(e, setJapanPrice)}
-                className="w-full rounded border p-2"
-                placeholder="請輸入日本售價"
-              />
+              <label className="block text-sm font-medium">商品原價</label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  value={foreignPrice}
+                  onChange={(e) => setForeignPrice(e.target.value)}
+                  className="flex-1 rounded border p-2"
+                  placeholder={`請輸入${CURRENCY_INFO[sourceCurrency].label}金額`}
+                />
+                <select
+                  value={sourceCurrency}
+                  onChange={(e) =>
+                    handleSourceCurrencyChange(e.target.value as Currency)
+                  }
+                  className="w-24 rounded border p-2"
+                >
+                  {Object.entries(CURRENCY_INFO).map(([code, info]) => (
+                    <option key={code} value={code}>
+                      {info.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">
-                匯率 (日圓兌台幣)
-              </label>
-              <input
-                type="number"
-                value={exchangeRate}
-                onChange={(e) => handleExchangeRateChange(e.target.value)}
-                className="w-full rounded border p-2"
-                step="0.01"
-                placeholder="請輸入匯率"
-              />
+              <label className="block text-sm font-medium">匯率設定</label>
+              <div className="flex items-start gap-2">
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={exchangeRate}
+                      onChange={(e) => setExchangeRate(e.target.value)}
+                      className="w-full rounded border p-2"
+                      step="0.001"
+                      placeholder="請輸入匯率"
+                    />
+                    <button
+                      onClick={() => fetchExchangeRates(sourceCurrency)}
+                      className="p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+                      disabled={isLoadingRates}
+                      title="更新即時匯率"
+                    >
+                      <RefreshCw
+                        size={20}
+                        className={isLoadingRates ? "animate-spin" : ""}
+                      />
+                    </button>
+                  </div>
+                  {lastUpdateTime && (
+                    <p className="text-xs text-gray-500">
+                      最後更新: {lastUpdateTime}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">
-                加價百分比 (%)
-              </label>
-              <input
-                type="number"
-                value={markup}
-                onChange={(e) => handleInputChange(e, setMarkup)}
-                className="w-full rounded border p-2"
-                placeholder="請輸入加價百分比"
-              />
+              <label className="block text-sm font-medium">加價設定</label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="number"
+                  value={markup}
+                  onChange={(e) => setMarkup(e.target.value)}
+                  className="w-32 rounded border p-2"
+                  placeholder="百分比"
+                />
+                <span className="text-sm">%</span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="includeFeesInMarkup"
+                    checked={includeFeesInMarkup}
+                    onChange={(e) => setIncludeFeesInMarkup(e.target.checked)}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor="includeFeesInMarkup" className="text-sm">
+                    包含額外費用在加價計算中
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-3">
@@ -208,16 +314,15 @@ const PurchaseCalculator: React.FC = () => {
                   <select
                     value={fee.currency}
                     onChange={(e) =>
-                      updateFee(
-                        fee.id,
-                        "currency",
-                        e.target.value as "TWD" | "JPY",
-                      )
+                      updateFee(fee.id, "currency", e.target.value as Currency)
                     }
                     className="w-24 rounded border p-2"
                   >
-                    <option value="TWD">台幣</option>
-                    <option value="JPY">日圓</option>
+                    {Object.entries(CURRENCY_INFO).map(([code, info]) => (
+                      <option key={code} value={code}>
+                        {info.label}
+                      </option>
+                    ))}
                   </select>
                   <button
                     onClick={() => removeFee(fee.id)}
@@ -239,7 +344,7 @@ const PurchaseCalculator: React.FC = () => {
                 <span className="font-medium">
                   NT${" "}
                   {(
-                    parseFloat(japanPrice || "0") * parseFloat(exchangeRate)
+                    parseFloat(foreignPrice || "0") * parseFloat(exchangeRate)
                   ).toFixed(2)}
                 </span>
               </p>
@@ -250,6 +355,20 @@ const PurchaseCalculator: React.FC = () => {
               <p className="flex justify-between">
                 <span>成本總額:</span>
                 <span className="font-medium">NT$ {results.cost}</span>
+              </p>
+              <p className="flex justify-between">
+                <span>加價基準金額:</span>
+                <span className="font-medium">NT$ {results.baseForMarkup}</span>
+              </p>
+              <p className="flex justify-between">
+                <span>加價金額 ({markup}%):</span>
+                <span className="font-medium">
+                  NT${" "}
+                  {(
+                    (parseFloat(results.baseForMarkup) * parseFloat(markup)) /
+                    100
+                  ).toFixed(2)}
+                </span>
               </p>
               <p className="flex justify-between">
                 <span>建議售價:</span>
