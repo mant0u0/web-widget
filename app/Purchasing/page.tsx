@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Trash2, Plus, RefreshCw } from "lucide-react";
 
-type Currency = "TWD" | "USD" | "JPY" | "EUR" | "GBP" | "CNY";
+type Currency = "TWD" | "KRW" | "USD" | "JPY" | "EUR" | "GBP" | "CNY";
 
 interface Fee {
   id: number;
@@ -28,12 +28,13 @@ interface CurrencyInfo {
 }
 
 const CURRENCY_INFO: Record<Currency, CurrencyInfo> = {
-  TWD: { label: "台幣", defaultRate: 1, symbol: "NT$" },
-  USD: { label: "美金", defaultRate: 31.5, symbol: "$" },
   JPY: { label: "日圓", defaultRate: 0.22, symbol: "¥" },
+  KRW: { label: "韓元", defaultRate: 0.028, symbol: "₩" },
+  CNY: { label: "人民幣", defaultRate: 4.4, symbol: "¥" },
+  USD: { label: "美金", defaultRate: 31.5, symbol: "$" },
   EUR: { label: "歐元", defaultRate: 34.5, symbol: "€" },
   GBP: { label: "英鎊", defaultRate: 40.2, symbol: "£" },
-  CNY: { label: "人民幣", defaultRate: 4.4, symbol: "¥" },
+  TWD: { label: "台幣", defaultRate: 1, symbol: "NT$" },
 };
 
 const PurchaseCalculator: React.FC = () => {
@@ -108,27 +109,29 @@ const PurchaseCalculator: React.FC = () => {
 
         if (
           field === "currency" &&
-          Object.keys(CURRENCY_INFO).includes(value)
+          (value === "TWD" || value === sourceCurrency)
         ) {
           const currentAmount = parseFloat(fee.amount);
           if (!isNaN(currentAmount)) {
             const targetCurrency = value as Currency;
             const currentCurrency = fee.currency;
 
-            // 先轉換為台幣，再轉換為目標幣別
-            const amountInTWD =
-              currentCurrency === "TWD"
-                ? currentAmount
-                : currentAmount * CURRENCY_INFO[currentCurrency].defaultRate;
-
+            // 只在台幣和商品原價幣別之間轉換
             let newAmount: string;
-            if (targetCurrency === "TWD") {
-              newAmount = amountInTWD.toFixed(2);
-            } else {
-              const targetRate = CURRENCY_INFO[targetCurrency].defaultRate;
-              newAmount = (amountInTWD / targetRate).toFixed(
-                targetCurrency === "JPY" ? 0 : 2,
+            if (
+              currentCurrency === "TWD" &&
+              targetCurrency === sourceCurrency
+            ) {
+              newAmount = (currentAmount / parseFloat(exchangeRate)).toFixed(
+                sourceCurrency === "JPY" ? 0 : 2,
               );
+            } else if (
+              currentCurrency === sourceCurrency &&
+              targetCurrency === "TWD"
+            ) {
+              newAmount = (currentAmount * parseFloat(exchangeRate)).toFixed(2);
+            } else {
+              newAmount = fee.amount;
             }
 
             return { ...fee, currency: targetCurrency, amount: newAmount };
@@ -163,10 +166,7 @@ const PurchaseCalculator: React.FC = () => {
       if (!fee.amount) return sum;
       const amount = parseFloat(fee.amount);
       if (fee.currency === "TWD") return sum + amount;
-      return (
-        sum +
-        amount * parseFloat(CURRENCY_INFO[fee.currency].defaultRate.toString())
-      );
+      return sum + amount * parseFloat(exchangeRate); // 使用當前匯率設定
     }, 0);
 
     const totalCost = baseCost + totalFees;
@@ -230,7 +230,10 @@ const PurchaseCalculator: React.FC = () => {
                     <input
                       type="number"
                       value={exchangeRate}
-                      onChange={(e) => setExchangeRate(e.target.value)}
+                      onChange={(e) => {
+                        setExchangeRate(e.target.value);
+                        setLastUpdateTime(""); // Clear last update time when manually editing
+                      }}
                       className="w-full rounded border p-2"
                       step="0.001"
                       placeholder="請輸入匯率"
@@ -319,11 +322,10 @@ const PurchaseCalculator: React.FC = () => {
                     }
                     className="w-24 rounded border p-2"
                   >
-                    {Object.entries(CURRENCY_INFO).map(([code, info]) => (
-                      <option key={code} value={code}>
-                        {info.label}
-                      </option>
-                    ))}
+                    <option value="TWD">{CURRENCY_INFO["TWD"].label}</option>
+                    <option value={sourceCurrency}>
+                      {CURRENCY_INFO[sourceCurrency].label}
+                    </option>
                   </select>
                   <button
                     onClick={() => removeFee(fee.id)}
@@ -341,44 +343,87 @@ const PurchaseCalculator: React.FC = () => {
             <h3 className="mb-4 text-lg font-semibold">計算結果</h3>
             <div className="space-y-2">
               <p className="flex justify-between">
-                <span>商品成本:</span>
+                <span>商品成本：</span>
                 <span className="font-medium">
                   NT${" "}
-                  {(
-                    parseFloat(foreignPrice || "0") * parseFloat(exchangeRate)
-                  ).toFixed(2)}
+                  {Number.isFinite(
+                    parseFloat(foreignPrice || "0") *
+                      parseFloat(exchangeRate || "0"),
+                  )
+                    ? (
+                        parseFloat(foreignPrice || "0") *
+                        parseFloat(exchangeRate || "0")
+                      ).toFixed(2)
+                    : "0.00"}
                 </span>
               </p>
               <p className="flex justify-between">
-                <span>費用總額:</span>
-                <span className="font-medium">NT$ {results.feesTotal}</span>
-              </p>
-              <p className="flex justify-between">
-                <span>成本總額:</span>
-                <span className="font-medium">NT$ {results.cost}</span>
-              </p>
-              <p className="flex justify-between">
-                <span>加價基準金額:</span>
-                <span className="font-medium">NT$ {results.baseForMarkup}</span>
-              </p>
-              <p className="flex justify-between">
-                <span>加價金額 ({markup}%):</span>
+                <span>費用總額：</span>
                 <span className="font-medium">
                   NT${" "}
-                  {(
-                    (parseFloat(results.baseForMarkup) * parseFloat(markup)) /
-                    100
-                  ).toFixed(2)}
+                  {Number.isFinite(parseFloat(results.feesTotal))
+                    ? results.feesTotal
+                    : "0.00"}
                 </span>
               </p>
               <p className="flex justify-between">
-                <span>建議售價:</span>
-                <span className="font-medium">NT$ {results.final}</span>
+                <span>成本總額：</span>
+                <span className="font-medium">
+                  NT${" "}
+                  {Number.isFinite(parseFloat(results.cost))
+                    ? results.cost
+                    : "0.00"}
+                </span>
               </p>
               <p className="flex justify-between">
-                <span>預估利潤:</span>
-                <span className="font-medium text-green-600">
-                  NT$ {results.profit}
+                <span>加價基準金額：</span>
+                <span className="font-medium">
+                  NT${" "}
+                  {Number.isFinite(parseFloat(results.baseForMarkup))
+                    ? results.baseForMarkup
+                    : "0.00"}
+                </span>
+              </p>
+              <p className="flex justify-between">
+                <span>加價金額 ({markup || "0"}%)：</span>
+                <span className="font-medium">
+                  NT${" "}
+                  {Number.isFinite(
+                    (parseFloat(results.baseForMarkup) *
+                      parseFloat(markup || "0")) /
+                      100,
+                  )
+                    ? (
+                        (parseFloat(results.baseForMarkup) *
+                          parseFloat(markup || "0")) /
+                        100
+                      ).toFixed(2)
+                    : "0.00"}
+                </span>
+              </p>
+              <p className="flex justify-between">
+                <span>建議售價：</span>
+                <span className="font-medium">
+                  NT${" "}
+                  {Number.isFinite(parseFloat(results.final))
+                    ? results.final
+                    : "0.00"}
+                </span>
+              </p>
+              <p className="flex justify-between">
+                <span>預估利潤：</span>
+                <span
+                  className={`font-medium ${
+                    Number.isFinite(parseFloat(results.profit)) &&
+                    parseFloat(results.profit) > 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  NT${" "}
+                  {Number.isFinite(parseFloat(results.profit))
+                    ? results.profit
+                    : "0.00"}
                 </span>
               </p>
             </div>
