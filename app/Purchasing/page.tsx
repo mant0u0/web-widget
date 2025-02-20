@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Trash2, Plus, RefreshCw } from "lucide-react";
 
@@ -50,6 +50,7 @@ const PurchaseCalculator: React.FC = () => {
   const [isLoadingRates, setIsLoadingRates] = useState<boolean>(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<string>("");
 
+  // 取得即時匯率
   const fetchExchangeRates = async (currency: Currency) => {
     setIsLoadingRates(true);
     try {
@@ -59,15 +60,12 @@ const PurchaseCalculator: React.FC = () => {
       if (!response.ok) throw new Error("匯率資料取得失敗");
 
       const data = await response.json();
-
-      // Coinbase 回傳的匯率是以當前貨幣為基準，需要進行轉換
       const twdRate = parseFloat(data.data.rates.TWD);
       let newRate: number;
 
       if (currency === "TWD") {
         newRate = 1;
       } else {
-        // 將其他貨幣轉換為對台幣的匯率
         newRate = twdRate;
       }
 
@@ -81,30 +79,37 @@ const PurchaseCalculator: React.FC = () => {
     }
   };
 
+  // 當幣別改變時自動更新匯率
   useEffect(() => {
     fetchExchangeRates(sourceCurrency);
   }, [sourceCurrency]);
 
-  const handleSourceCurrencyChange = (newCurrency: Currency): void => {
-    setSourceCurrency(newCurrency);
-    // 匯率會通過 useEffect 自動更新
-  };
-
-  const addFee = (): void => {
+  // 新增費用項目
+  const addFee = () => {
     const newId = Math.max(0, ...fees.map((f) => f.id)) + 1;
     setFees([...fees, { id: newId, name: "", amount: "", currency: "TWD" }]);
   };
 
-  const removeFee = (id: number): void => {
+  // 刪除費用項目
+  const removeFee = (id: number) => {
     setFees(fees.filter((fee) => fee.id !== id));
   };
 
-  const updateFee = (id: number, field: keyof Fee, value: string): void => {
+  // 更新幣別
+  const handleSourceCurrencyChange = (newCurrency: Currency) => {
+    setSourceCurrency(newCurrency);
+  };
+
+  // 更新費用項目
+  const updateFee = (id: number, field: keyof Fee, value: string) => {
     setFees(
       fees.map((fee) => {
         if (fee.id !== id) return fee;
 
-        if (field === "currency") {
+        if (
+          field === "currency" &&
+          Object.keys(CURRENCY_INFO).includes(value)
+        ) {
           const currentAmount = parseFloat(fee.amount);
           if (!isNaN(currentAmount)) {
             const targetCurrency = value as Currency;
@@ -114,24 +119,19 @@ const PurchaseCalculator: React.FC = () => {
             const amountInTWD =
               currentCurrency === "TWD"
                 ? currentAmount
-                : currentAmount *
-                  parseFloat(
-                    CURRENCY_INFO[currentCurrency].defaultRate.toString(),
-                  );
+                : currentAmount * CURRENCY_INFO[currentCurrency].defaultRate;
 
             let newAmount: string;
             if (targetCurrency === "TWD") {
               newAmount = amountInTWD.toFixed(2);
             } else {
-              const targetRate = parseFloat(
-                CURRENCY_INFO[targetCurrency].defaultRate.toString(),
-              );
+              const targetRate = CURRENCY_INFO[targetCurrency].defaultRate;
               newAmount = (amountInTWD / targetRate).toFixed(
                 targetCurrency === "JPY" ? 0 : 2,
               );
             }
 
-            return { ...fee, [field]: value, amount: newAmount };
+            return { ...fee, currency: targetCurrency, amount: newAmount };
           }
         }
 
@@ -140,6 +140,7 @@ const PurchaseCalculator: React.FC = () => {
     );
   };
 
+  // 計算價格
   const calculatePrice = (): CalculationResults => {
     if (!foreignPrice)
       return {
@@ -154,10 +155,10 @@ const PurchaseCalculator: React.FC = () => {
     const rate = parseFloat(exchangeRate);
     const markupRate = parseFloat(markup) / 100;
 
-    // Calculate base cost in TWD
+    // 計算商品成本（台幣）
     const baseCost = priceInForeign * rate;
 
-    // Calculate additional fees in TWD
+    // 計算額外費用總和（台幣）
     const totalFees = fees.reduce((sum, fee) => {
       if (!fee.amount) return sum;
       const amount = parseFloat(fee.amount);
