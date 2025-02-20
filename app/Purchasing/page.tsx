@@ -106,44 +106,26 @@ const PurchaseCalculator: React.FC = () => {
     setFees(
       fees.map((fee) => {
         if (fee.id !== id) return fee;
-
-        if (
-          field === "currency" &&
-          (value === "TWD" || value === sourceCurrency)
-        ) {
-          const currentAmount = parseFloat(fee.amount);
-          if (!isNaN(currentAmount)) {
-            const targetCurrency = value as Currency;
-            const currentCurrency = fee.currency;
-
-            // 只在台幣和商品原價幣別之間轉換
-            let newAmount: string;
-            if (
-              currentCurrency === "TWD" &&
-              targetCurrency === sourceCurrency
-            ) {
-              newAmount = (currentAmount / parseFloat(exchangeRate)).toFixed(
-                sourceCurrency === "JPY" ? 0 : 2,
-              );
-            } else if (
-              currentCurrency === sourceCurrency &&
-              targetCurrency === "TWD"
-            ) {
-              newAmount = (currentAmount * parseFloat(exchangeRate)).toFixed(2);
-            } else {
-              newAmount = fee.amount;
-            }
-
-            return { ...fee, currency: targetCurrency, amount: newAmount };
-          }
-        }
-
         return { ...fee, [field]: value };
       }),
     );
   };
 
   // 計算價格
+
+  // ------------------------------
+
+  // 首先添加新的類型定義
+  type PricingMethod = "percentage" | "exchange_fee";
+
+  // 在 PurchaseCalculator 組件中添加新的 state
+  const [pricingMethod, setPricingMethod] =
+    useState<PricingMethod>("percentage");
+  const [customExchangeRate, setCustomExchangeRate] =
+    useState<string>(exchangeRate);
+  const [handlingFee, setHandlingFee] = useState<string>("0");
+
+  // 修改計算價格的函數
   const calculatePrice = (): CalculationResults => {
     if (!foreignPrice)
       return {
@@ -166,26 +148,42 @@ const PurchaseCalculator: React.FC = () => {
       if (!fee.amount) return sum;
       const amount = parseFloat(fee.amount);
       if (fee.currency === "TWD") return sum + amount;
-      return sum + amount * parseFloat(exchangeRate); // 使用當前匯率設定
+      return sum + amount * parseFloat(exchangeRate);
     }, 0);
 
     const totalCost = baseCost + totalFees;
-    const baseForMarkup = includeFeesInMarkup ? totalCost : baseCost;
-    const markupAmount = baseForMarkup * markupRate;
-    const finalPrice = totalCost + markupAmount;
-    const profit = finalPrice - totalCost;
+    let finalPrice = totalCost;
+    let profit = 0;
+
+    if (pricingMethod === "percentage") {
+      // 百分比加價方式
+      const baseForMarkup = includeFeesInMarkup ? totalCost : baseCost;
+      const markupAmount = baseForMarkup * markupRate;
+      finalPrice = totalCost + markupAmount;
+      profit = finalPrice - totalCost;
+    } else if (pricingMethod === "exchange_fee") {
+      // 自訂匯率加手續費方式
+      const customRate = parseFloat(customExchangeRate);
+      const fee = parseFloat(handlingFee);
+
+      // 使用自訂匯率計算商品價格
+      const customBaseCost = priceInForeign * customRate;
+      finalPrice = customBaseCost + totalFees + fee;
+      profit = finalPrice - totalCost;
+    }
 
     return {
       cost: totalCost.toFixed(2),
       final: finalPrice.toFixed(2),
       profit: profit.toFixed(2),
       feesTotal: totalFees.toFixed(2),
-      baseForMarkup: baseForMarkup.toFixed(2),
+      baseForMarkup: (includeFeesInMarkup ? totalCost : baseCost).toFixed(2),
     };
   };
 
   const results = calculatePrice();
 
+  // -------------------------------
   return (
     <div className="p-8">
       <Card className="mx-auto w-full max-w-2xl">
@@ -259,35 +257,13 @@ const PurchaseCalculator: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">加價設定</label>
-              <div className="flex items-center gap-4">
-                <input
-                  type="number"
-                  value={markup}
-                  onChange={(e) => setMarkup(e.target.value)}
-                  className="w-32 rounded border p-2"
-                  placeholder="百分比"
-                />
-                <span className="text-sm">%</span>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="includeFeesInMarkup"
-                    checked={includeFeesInMarkup}
-                    onChange={(e) => setIncludeFeesInMarkup(e.target.checked)}
-                    className="h-4 w-4"
-                  />
-                  <label htmlFor="includeFeesInMarkup" className="text-sm">
-                    包含額外費用在加價計算中
-                  </label>
-                </div>
-              </div>
-            </div>
+            <hr />
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium">費用項目</label>
+                <label className="block text-sm font-medium">
+                  額外費用項目
+                </label>
                 <button
                   onClick={addFee}
                   className="flex items-center text-sm text-blue-600 hover:text-blue-800"
@@ -336,6 +312,78 @@ const PurchaseCalculator: React.FC = () => {
                   </button>
                 </div>
               ))}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">獲利加價方式</label>
+              <select
+                value={pricingMethod}
+                onChange={(e) =>
+                  setPricingMethod(e.target.value as PricingMethod)
+                }
+                className="mb-4 w-full rounded border p-2"
+              >
+                <option value="percentage">百分比加價</option>
+                <option value="exchange_fee">自訂匯率+手續費</option>
+              </select>
+
+              {pricingMethod === "percentage" ? (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">
+                    百分比加價
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="number"
+                      value={markup}
+                      onChange={(e) => setMarkup(e.target.value)}
+                      className="w-30 rounded border p-2"
+                      placeholder="百分比"
+                    />
+                    <span className="text-sm">%</span>
+                    <div className="flex w-60 items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="includeFeesInMarkup"
+                        checked={includeFeesInMarkup}
+                        onChange={(e) =>
+                          setIncludeFeesInMarkup(e.target.checked)
+                        }
+                        className="h-4 w-4"
+                      />
+                      <label htmlFor="includeFeesInMarkup" className="text-sm">
+                        包含額外費用
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium">
+                      自訂匯率
+                    </label>
+                    <input
+                      type="number"
+                      value={customExchangeRate}
+                      onChange={(e) => setCustomExchangeRate(e.target.value)}
+                      className="w-full rounded border p-2"
+                      step="0.001"
+                      placeholder="請輸入自訂匯率"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium">手續費</label>
+                    <input
+                      type="number"
+                      value={handlingFee}
+                      onChange={(e) => setHandlingFee(e.target.value)}
+                      className="w-full rounded border p-2"
+                      placeholder="請輸入手續費金額"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
