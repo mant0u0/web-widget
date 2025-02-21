@@ -391,7 +391,7 @@ const PurchaseCalculator: React.FC = () => {
             <h3 className="mb-4 text-lg font-semibold">計算結果</h3>
             <div className="space-y-2">
               <p className="flex justify-between">
-                <span>商品成本：</span>
+                <span>商品原價：</span>
                 <span className="font-medium">
                   NT${" "}
                   {Number.isFinite(
@@ -406,7 +406,7 @@ const PurchaseCalculator: React.FC = () => {
                 </span>
               </p>
               <p className="flex justify-between">
-                <span>費用總額：</span>
+                <span>額外費用：</span>
                 <span className="font-medium">
                   NT${" "}
                   {Number.isFinite(parseFloat(results.feesTotal))
@@ -423,41 +423,7 @@ const PurchaseCalculator: React.FC = () => {
                     : "0.00"}
                 </span>
               </p>
-              <p className="flex justify-between">
-                <span>加價基準金額：</span>
-                <span className="font-medium">
-                  NT${" "}
-                  {Number.isFinite(parseFloat(results.baseForMarkup))
-                    ? results.baseForMarkup
-                    : "0.00"}
-                </span>
-              </p>
-              <p className="flex justify-between">
-                <span>加價金額 ({markup || "0"}%)：</span>
-                <span className="font-medium">
-                  NT${" "}
-                  {Number.isFinite(
-                    (parseFloat(results.baseForMarkup) *
-                      parseFloat(markup || "0")) /
-                      100,
-                  )
-                    ? (
-                        (parseFloat(results.baseForMarkup) *
-                          parseFloat(markup || "0")) /
-                        100
-                      ).toFixed(2)
-                    : "0.00"}
-                </span>
-              </p>
-              <p className="flex justify-between">
-                <span>建議售價：</span>
-                <span className="font-medium">
-                  NT${" "}
-                  {Number.isFinite(parseFloat(results.final))
-                    ? results.final
-                    : "0.00"}
-                </span>
-              </p>
+              <hr />
               <p className="flex justify-between">
                 <span>預估利潤：</span>
                 <span
@@ -471,6 +437,15 @@ const PurchaseCalculator: React.FC = () => {
                   NT${" "}
                   {Number.isFinite(parseFloat(results.profit))
                     ? results.profit
+                    : "0.00"}
+                </span>
+              </p>
+              <p className="flex justify-between">
+                <span>建議售價：</span>
+                <span className="font-medium">
+                  NT${" "}
+                  {Number.isFinite(parseFloat(results.final))
+                    ? results.final
                     : "0.00"}
                 </span>
               </p>
