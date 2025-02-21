@@ -257,8 +257,6 @@ const PurchaseCalculator: React.FC = () => {
               </div>
             </div>
 
-            <hr />
-
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="block text-sm font-medium">
@@ -313,6 +311,7 @@ const PurchaseCalculator: React.FC = () => {
                 </div>
               ))}
             </div>
+            <hr />
 
             <div className="space-y-2">
               <label className="block text-sm font-medium">獲利加價方式</label>
