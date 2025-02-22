@@ -101,9 +101,7 @@ const TextEditor = () => {
       const selectedText = text.substring(start, end);
 
       // 計算左右引號的長度
-      // const totalLength = quote.symbol.length;
       const leftSymbolLength = quote.center;
-      // const rightSymbolLength = totalLength - leftSymbolLength;
 
       // 取得左右引號
       const leftQuote = quote.symbol.substring(0, leftSymbolLength);
