@@ -1,27 +1,10 @@
 // page.tsx
 "use client";
-import React, {
-  useState,
-  useCallback,
-  ChangeEvent,
-  useRef,
-  MouseEvent,
-  WheelEvent,
-} from "react";
+import React, { useState, useCallback, ChangeEvent, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import {
-  Copy,
-  CircleCheck,
-  Undo,
-  Redo,
-  Trash,
-  SpellCheck2,
-  Type,
-  Smile,
-  Search,
-} from "lucide-react";
+import { Copy, CircleCheck, Undo, Redo, Trash } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
