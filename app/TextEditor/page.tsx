@@ -1,6 +1,6 @@
 // page.tsx
 "use client";
-import React, { useState, useCallback, ChangeEvent } from "react";
+import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 
 import {
@@ -14,6 +14,47 @@ import { Toolbar } from "./Toolbar";
 // 頁尾
 import { Footer } from "./Footer";
 
+// 常數定義
+const STORAGE_KEY = "textEditor";
+const HISTORY_KEY = "textEditorHistory";
+const HISTORY_INDEX_KEY = "textEditorHistoryIndex";
+
+// 本地儲存相關函數
+const saveToLocalStorage = (
+  text: string,
+  history: string[],
+  currentIndex: number,
+) => {
+  if (typeof window === "undefined") return;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, text);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    localStorage.setItem(HISTORY_INDEX_KEY, currentIndex.toString());
+  } catch (error) {
+    console.error("保存到 localStorage 失敗:", error);
+  }
+};
+
+// 從本地儲存讀取數據
+const loadFromLocalStorage = () => {
+  if (typeof window === "undefined") {
+    return { savedText: "", savedHistory: [], savedIndex: -1 };
+  }
+
+  try {
+    const savedText = localStorage.getItem(STORAGE_KEY) || "";
+    const savedHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+    const savedIndex = parseInt(
+      localStorage.getItem(HISTORY_INDEX_KEY) || "-1",
+    );
+    return { savedText, savedHistory, savedIndex };
+  } catch (error) {
+    console.error("從 localStorage 讀取失敗:", error);
+    return { savedText: "", savedHistory: [], savedIndex: -1 };
+  }
+};
+
 // 引號型別定義
 type Quote = {
   symbol: string;
@@ -22,11 +63,29 @@ type Quote = {
   editable?: boolean;
 };
 
+// 文字編輯器
 const TextEditor = () => {
   const [text, setText] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [copyStatus, setCopyStatus] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // 在 useEffect 中從 localStorage 讀取數據
+  useEffect(() => {
+    const { savedText, savedHistory, savedIndex } = loadFromLocalStorage();
+    setText(savedText);
+    setHistory(savedHistory);
+    setCurrentIndex(savedIndex);
+    setIsLoaded(true);
+  }, []);
+
+  // 當文字、歷史記錄或當前索引改變時，保存到 localStorage
+  useEffect(() => {
+    if (isLoaded) {
+      saveToLocalStorage(text, history, currentIndex);
+    }
+  }, [text, history, currentIndex, isLoaded]);
 
   // 更新文字
   const updateText = useCallback(
@@ -42,7 +101,7 @@ const TextEditor = () => {
       setHistory(newHistory);
       setCurrentIndex(newHistory.length - 1);
     },
-    [history, currentIndex],
+    [history, currentIndex, text],
   );
 
   // 插入符號
@@ -289,7 +348,15 @@ const TextEditor = () => {
   }, [currentIndex, history]);
 
   // 刪除
-  const clearText = () => updateText("");
+  const clearText = useCallback(() => {
+    updateText("");
+    // 清除 localStorage
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(HISTORY_KEY);
+      localStorage.removeItem(HISTORY_INDEX_KEY);
+    }
+  }, [updateText]);
 
   // 複製文字
   const copyText = async () => {
