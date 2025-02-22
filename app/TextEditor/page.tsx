@@ -26,6 +26,14 @@ import {
 // 工具列
 import { Toolbar } from "./Toolbar";
 
+// 引號型別定義
+type Quote = {
+  symbol: string;
+  name: string;
+  center: number; // 游標位置
+  editable?: boolean;
+};
+
 const TextEditor = () => {
   const [text, setText] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
