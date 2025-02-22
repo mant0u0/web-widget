@@ -17,11 +17,9 @@ import {
   Undo,
   Redo,
   Trash,
-  Quote,
   SpellCheck2,
   Type,
   Smile,
-  ListOrdered,
   Search,
 } from "lucide-react";
 import {
@@ -36,36 +34,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
-// 符號選擇
-import { SymbolPicker } from "./SymbolPicker";
-// 符號資料
-import { dataSymbols } from "./dataSymbols";
-import { dataEmoji } from "./dataEmoji";
-import { dataKaomoji } from "./dataKaomoji";
-// 文字處理
-import { TextFormatter } from "./TextFormatter";
-// 段落符號
-import { ParagraphMark } from "./ParagraphMark";
-// 引號
-import { QuotationmMarks } from "./QuotationmMarks";
-// 搜尋取代
-import { SearchReplace } from "./SearchReplace";
-
-// 引號型別定義
-type Quote = {
-  symbol: string;
-  name: string;
-  center: number; // 游標位置
-  editable?: boolean;
-};
+// 工具列
+import { Toolbar } from "./Toolbar";
 
 const TextEditor = () => {
   const [text, setText] = useState<string>("");
@@ -354,52 +330,9 @@ const TextEditor = () => {
   };
 
   // ===============================================
-  // 工具列滑鼠左右滾動
-
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-
-  const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollLeft += e.deltaY;
-    }
-  };
-
-  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    setIsMouseDown(true);
-    const slider = scrollContainerRef.current;
-    if (slider) {
-      const startPosition = e.pageX - slider.offsetLeft;
-      setStartX(startPosition);
-      setScrollLeft(slider.scrollLeft);
-    }
-  };
-
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!isMouseDown) return;
-    e.preventDefault();
-    const slider = scrollContainerRef.current;
-    if (slider) {
-      const x = e.pageX - slider.offsetLeft;
-      const distance = x - startX;
-      slider.scrollLeft = scrollLeft - distance;
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsMouseDown(false);
-  };
-
-  // ===============================================
   return (
     <div className="flex h-screen w-screen flex-col">
-      <ResizablePanelGroup
-        direction="vertical"
-        // direction="horizontal"
-        // direction={direction}
-      >
+      <ResizablePanelGroup direction="vertical">
         {/* 文字編輯區 */}
         <ResizablePanel defaultSize={50}>
           <Textarea
@@ -414,122 +347,14 @@ const TextEditor = () => {
 
         {/* 工具選擇區 */}
         <ResizablePanel defaultSize={50}>
-          <Tabs
-            defaultValue="插入符號"
-            className="flex h-full w-full flex-col overflow-hidden"
-          >
-            <div
-              ref={scrollContainerRef}
-              onWheel={handleWheel}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              className="cursor-grab select-none overflow-x-scroll rounded-md border p-2 [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]"
-              style={{
-                msOverflowStyle: "none",
-                scrollbarWidth: "none",
-              }}
-            >
-              <div className="flex cursor-grab select-none">
-                <TabsList className="gap-1">
-                  <TabsTrigger value="插入符號" className="cursor-grab gap-2">
-                    <Type className="w-4" />
-                    <p className="whitespace-nowrap text-sm">插入符號</p>
-                  </TabsTrigger>
-                  <TabsTrigger value="插入 Emoji" className="cursor-grab gap-2">
-                    <Smile className="w-4" />
-                    <p className="whitespace-nowrap text-sm">插入 Emoji</p>
-                  </TabsTrigger>
-                  <TabsTrigger value="插入顏文字" className="cursor-grab gap-2">
-                    <Smile className="w-4" />
-                    <p className="whitespace-nowrap text-sm">插入顏文字</p>
-                  </TabsTrigger>
-                  <TabsTrigger value="插入引號" className="cursor-grab gap-2">
-                    <Quote className="w-4" />
-                    <p className="whitespace-nowrap text-sm">插入引號</p>
-                  </TabsTrigger>
-                  <TabsTrigger value="段落符號" className="cursor-grab gap-2">
-                    <ListOrdered className="w-4" />
-                    <p className="whitespace-nowrap text-sm">段落符號</p>
-                  </TabsTrigger>
-                  <TabsTrigger value="文字處理" className="cursor-grab gap-2">
-                    <SpellCheck2 className="w-4" />
-                    <p className="whitespace-nowrap text-sm">文字處理</p>
-                  </TabsTrigger>
-                  <TabsTrigger value="搜尋取代" className="cursor-grab gap-2">
-                    <Search className="w-4" />
-                    <p className="whitespace-nowrap text-sm">搜尋取代</p>
-                  </TabsTrigger>
-                  <div className="w-10"></div>
-                </TabsList>
-              </div>
-            </div>
-
-            {/* 工作列內容 */}
-
-            <TabsContent
-              value="插入符號"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <SymbolPicker
-                data={dataSymbols}
-                onSelect={insertSymbol}
-                btnClassName="w-[44px] h-[48px] noto-sans-font"
-              />
-            </TabsContent>
-            <TabsContent
-              value="插入 Emoji"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <SymbolPicker
-                data={dataEmoji}
-                onSelect={insertSymbol}
-                btnClassName="w-[44px] h-[48px] emoji-font text-2xl"
-              />
-            </TabsContent>
-            <TabsContent
-              value="插入顏文字"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <SymbolPicker data={dataKaomoji} onSelect={insertSymbol} />
-            </TabsContent>
-            <TabsContent
-              value="插入引號"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <QuotationmMarks insertQuote={insertQuote} />
-            </TabsContent>
-            <TabsContent
-              value="段落符號"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <ParagraphMark
-                transformSelectedLine={transformSelectedLine}
-                text={text}
-                updateText={updateText}
-              />
-            </TabsContent>
-            <TabsContent
-              value="文字處理"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <TextFormatter
-                transformSelectedText={transformSelectedText}
-                text={text}
-                updateText={updateText}
-              />
-            </TabsContent>
-            <TabsContent
-              value="搜尋取代"
-              className="mt-0 h-full w-full flex-1 overflow-y-auto"
-            >
-              <SearchReplace
-                text={text}
-                updateText={updateText}
-              ></SearchReplace>
-            </TabsContent>
-          </Tabs>
+          <Toolbar
+            text={text}
+            updateText={updateText}
+            insertSymbol={insertSymbol}
+            insertQuote={insertQuote}
+            transformSelectedText={transformSelectedText}
+            transformSelectedLine={transformSelectedLine}
+          />
         </ResizablePanel>
       </ResizablePanelGroup>
 
