@@ -4,19 +4,6 @@ import React, { useState, useCallback, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import { Copy, CircleCheck, Undo, Redo, Trash } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
 import {
   ResizableHandle,
   ResizablePanel,
@@ -25,6 +12,8 @@ import {
 
 // 工具列
 import { Toolbar } from "./Toolbar";
+// 頁尾
+import { Footer } from "./Footer";
 
 // 引號型別定義
 type Quote = {
@@ -56,8 +45,6 @@ const TextEditor = () => {
     },
     [history, currentIndex],
   );
-
-  // ===============================================
 
   // 插入符號
   const insertSymbol = (symbol: string) => {
@@ -282,8 +269,6 @@ const TextEditor = () => {
     }
   };
 
-  // ===============================================
-
   // 處理文字變更
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
     updateText(e.target.value);
@@ -348,69 +333,16 @@ const TextEditor = () => {
       </ResizablePanelGroup>
 
       {/* Footer */}
-      <div className="flex justify-between border-t border-gray-200 p-2">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="outline"
-              className="text-red-500 hover:bg-red-50 hover:text-red-600"
-            >
-              <Trash className="mr-1 h-5 w-[24px]" />
-              刪除
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>確定要刪除文字嗎？</AlertDialogTitle>
-              <AlertDialogDescription>
-                此操作將刪除所有已輸入的文字內容，且無法復原。
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-red-500 hover:bg-red-600"
-                onClick={clearText}
-              >
-                刪除
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={handleUndo}
-            disabled={currentIndex <= 0}
-            className="flex items-center"
-          >
-            <Undo className="mr-1 h-5 w-[24px]" />
-            還原
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleRedo}
-            disabled={currentIndex >= history.length - 1}
-            className="flex items-center"
-          >
-            <Redo className="mr-1 h-5 w-[24px]" />
-            取消
-          </Button>
-          <Button
-            onClick={copyText}
-            variant="outline"
-            disabled={copyStatus || !text}
-          >
-            {copyStatus ? (
-              <CircleCheck className="mr-1 h-5 w-[24px]" />
-            ) : (
-              <Copy className="mr-1 h-5 w-[24px]" />
-            )}
-            {copyStatus ? "成功" : "複製"}
-          </Button>
-        </div>
-      </div>
+      <Footer
+        text={text}
+        copyStatus={copyStatus}
+        currentIndex={currentIndex}
+        historyLength={history.length}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
+        onCopy={copyText}
+        onClear={clearText}
+      />
     </div>
   );
 };
