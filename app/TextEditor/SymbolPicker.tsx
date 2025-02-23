@@ -136,13 +136,6 @@ const LazyLoadSection = ({
   );
 };
 
-/**
- * 主要的符號選擇器組件
- * 提供搜尋、最近使用和分類瀏覽功能
- * @param data - 符號資料物件
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- */
 export const SymbolPicker: React.FC<{
   data: SymbolData;
   onSelect: (symbol: string) => void;
@@ -214,79 +207,81 @@ export const SymbolPicker: React.FC<{
   }, [searchQuery, data]);
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col overflow-hidden border-input bg-zinc-50 p-0">
-      {/* 搜尋欄 */}
-      <div className="border-b bg-background p-3">
-        <div className="relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="搜尋符號"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-      </div>
-
-      {/* 符號列表區域 */}
-      <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
-        {/* 最近使用區塊（僅在未搜尋時顯示） */}
-        {!searchQuery && (
-          <div className="">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-3 py-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
-            >
-              {isExpanded ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-              <p className="">最近使用</p>
-              <span className="text-xs text-zinc-400">
-                {recentItems.length}
-              </span>
-            </button>
-            <div
-              className={`flex flex-wrap gap-1 ${
-                isExpanded
-                  ? "p-3 opacity-100"
-                  : "h-0 overflow-hidden px-3 py-0 opacity-0"
-              }`}
-            >
-              {recentItems.length > 0 ? (
-                recentItems.map((item, index) => (
-                  <SymbolButton
-                    key={`${item.symbol}-${index}`}
-                    item={item}
-                    onSelect={handleSymbolSelect}
-                    btnClassName={btnClassName}
-                  />
-                ))
-              ) : (
-                <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
-                  <CircleDashed className="h-5 w-4" />
-                  沒有最近使用的符號
-                </div>
-              )}
-            </div>
+    <div className="h-full w-full overflow-hidden p-2 pt-0">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+        {/* 搜尋欄 */}
+        <div className="border-b bg-background p-3">
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="搜尋符號"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8"
+            />
           </div>
-        )}
+        </div>
 
-        {/* 符號分類列表 */}
-        {Object.entries(filteredItems).map(([category, { items }]) => (
-          <LazyLoadSection
-            key={category}
-            category={category}
-            items={items}
-            onSelect={handleSymbolSelect}
-            btnClassName={btnClassName}
-          />
-        ))}
+        {/* 符號列表區域 */}
+        <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
+          {/* 最近使用區塊（僅在未搜尋時顯示） */}
+          {!searchQuery && (
+            <div className="">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-3 py-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+                <p className="">最近使用</p>
+                <span className="text-xs text-zinc-400">
+                  {recentItems.length}
+                </span>
+              </button>
+              <div
+                className={`flex flex-wrap gap-1 ${
+                  isExpanded
+                    ? "p-3 opacity-100"
+                    : "h-0 overflow-hidden px-3 py-0 opacity-0"
+                }`}
+              >
+                {recentItems.length > 0 ? (
+                  recentItems.map((item, index) => (
+                    <SymbolButton
+                      key={`${item.symbol}-${index}`}
+                      item={item}
+                      onSelect={handleSymbolSelect}
+                      btnClassName={btnClassName}
+                    />
+                  ))
+                ) : (
+                  <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
+                    <CircleDashed className="h-5 w-4" />
+                    沒有最近使用的符號
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
-        <ScrollBar className="z-10" />
-      </ScrollArea>
+          {/* 符號分類列表 */}
+          {Object.entries(filteredItems).map(([category, { items }]) => (
+            <LazyLoadSection
+              key={category}
+              category={category}
+              items={items}
+              onSelect={handleSymbolSelect}
+              btnClassName={btnClassName}
+            />
+          ))}
+
+          <ScrollBar className="z-10" />
+        </ScrollArea>
+      </div>
     </div>
   );
 };

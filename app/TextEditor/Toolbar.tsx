@@ -106,39 +106,61 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className="mt-2 cursor-grab select-none overflow-x-scroll rounded-md p-2 pb-4 [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]"
+          className="relative top-0 z-0 cursor-grab select-none overflow-x-scroll p-2"
+          // [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]
           style={{
             msOverflowStyle: "none",
             scrollbarWidth: "none",
           }}
         >
           <div className="flex cursor-grab select-none">
-            <TabsList className="gap-1">
-              <TabsTrigger value="插入符號" className="cursor-grab gap-2">
+            <TabsList className="h-10 gap-2 bg-transparent p-0">
+              <TabsTrigger
+                value="插入符號"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <Type className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入符號</p>
               </TabsTrigger>
-              <TabsTrigger value="插入 Emoji" className="cursor-grab gap-2">
+              <TabsTrigger
+                value="插入 Emoji"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <Smile className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入 Emoji</p>
               </TabsTrigger>
-              <TabsTrigger value="插入顏文字" className="cursor-grab gap-2">
+              <TabsTrigger
+                value="插入顏文字"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <Smile className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入顏文字</p>
               </TabsTrigger>
-              <TabsTrigger value="插入引號" className="cursor-grab gap-2">
+              <TabsTrigger
+                value="插入引號"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <Quote className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入引號</p>
               </TabsTrigger>
-              <TabsTrigger value="段落符號" className="cursor-grab gap-2">
+              <TabsTrigger
+                value="段落符號"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <ListOrdered className="w-4" />
                 <p className="whitespace-nowrap text-sm">段落符號</p>
               </TabsTrigger>
-              <TabsTrigger value="文字處理" className="cursor-grab gap-2">
+              <TabsTrigger
+                value="文字處理"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <SpellCheck2 className="w-4" />
                 <p className="whitespace-nowrap text-sm">文字處理</p>
               </TabsTrigger>
-              <TabsTrigger value="搜尋取代" className="cursor-grab gap-2">
+              <TabsTrigger
+                value="搜尋取代"
+                className="h-full cursor-grab gap-2 rounded-full border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+              >
                 <Search className="w-4" />
                 <p className="whitespace-nowrap text-sm">搜尋取代</p>
               </TabsTrigger>

@@ -1,11 +1,11 @@
 "use client";
 import React, { useCallback, ChangeEvent } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+// import {
+//   ResizableHandle,
+//   ResizablePanel,
+//   ResizablePanelGroup,
+// } from "@/components/ui/resizable";
 
 // 工具列
 import { Toolbar } from "./Toolbar";
@@ -267,32 +267,23 @@ const TextEditor = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col">
-      <ResizablePanelGroup direction="vertical">
-        {/* 文字編輯區 */}
-        <ResizablePanel defaultSize={50}>
-          <Textarea
-            value={text}
-            onChange={handleTextChange}
-            placeholder="在這裡輸入或編輯文字..."
-            className="textarea h-full w-full resize-none rounded-none bg-white p-2 !text-lg focus-visible:ring-0"
-          />
-        </ResizablePanel>
+      <div className="h-full w-full p-2 pb-0">
+        <Textarea
+          value={text}
+          onChange={handleTextChange}
+          placeholder="在這裡輸入或編輯文字..."
+          className="textarea h-full w-full resize-none rounded-xl bg-white p-2 !text-lg focus-visible:ring-0"
+        />
+      </div>
 
-        <ResizableHandle withHandle />
-
-        {/* 工具選擇區 */}
-        <ResizablePanel defaultSize={50}>
-          <Toolbar
-            text={text}
-            updateText={updateText}
-            insertSymbol={insertSymbol}
-            insertQuote={insertQuote}
-            transformSelectedText={transformSelectedText}
-            transformSelectedLine={transformSelectedLine}
-          />
-        </ResizablePanel>
-      </ResizablePanelGroup>
-
+      <Toolbar
+        text={text}
+        updateText={updateText}
+        insertSymbol={insertSymbol}
+        insertQuote={insertQuote}
+        transformSelectedText={transformSelectedText}
+        transformSelectedLine={transformSelectedLine}
+      />
       {/* Footer */}
       <Footer
         text={text}
