@@ -106,7 +106,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className="relative top-0 z-0 cursor-grab select-none overflow-x-scroll p-2"
+          className="relative top-0 z-0 cursor-grab select-none overflow-x-scroll py-2"
           // [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]
           style={{
             msOverflowStyle: "none",

@@ -266,24 +266,28 @@ const TextEditor = () => {
   );
 
   return (
-    <div className="flex h-screen w-screen flex-col">
-      <div className="h-full w-full p-2 pb-0">
-        <Textarea
-          value={text}
-          onChange={handleTextChange}
-          placeholder="在這裡輸入或編輯文字..."
-          className="textarea h-full w-full resize-none rounded-xl bg-white p-2 !text-lg focus-visible:ring-0"
-        />
-      </div>
+    <div className="flex h-screen w-screen flex-col items-center overflow-hidden border-2 border-[#0f0]">
+      <div className="flex h-[80%] w-full flex-col border-2 border-black">
+        <div className="h-[50%] w-full border-2 border-black p-2 pb-0">
+          <Textarea
+            value={text}
+            onChange={handleTextChange}
+            placeholder="在這裡輸入或編輯文字..."
+            className="textarea h-full w-full resize-none rounded-xl bg-white p-2 !text-lg focus-visible:ring-0"
+          />
+        </div>
 
-      <Toolbar
-        text={text}
-        updateText={updateText}
-        insertSymbol={insertSymbol}
-        insertQuote={insertQuote}
-        transformSelectedText={transformSelectedText}
-        transformSelectedLine={transformSelectedLine}
-      />
+        <div className="h-[50%] w-full border-2 border-black p-2 pb-0">
+          <Toolbar
+            text={text}
+            updateText={updateText}
+            insertSymbol={insertSymbol}
+            insertQuote={insertQuote}
+            transformSelectedText={transformSelectedText}
+            transformSelectedLine={transformSelectedLine}
+          />
+        </div>
+      </div>
       {/* Footer */}
       <Footer
         text={text}

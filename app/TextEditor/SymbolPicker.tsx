@@ -207,7 +207,7 @@ export const SymbolPicker: React.FC<{
   }, [searchQuery, data]);
 
   return (
-    <div className="h-full w-full overflow-hidden p-2 pt-0">
+    <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
         {/* 搜尋欄 */}
         <div className="border-b bg-background p-3">
@@ -230,7 +230,7 @@ export const SymbolPicker: React.FC<{
             <div className="">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-3 py-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
+                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
               >
                 {isExpanded ? (
                   <ChevronDown className="h-4 w-4" />
