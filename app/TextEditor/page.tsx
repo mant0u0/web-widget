@@ -266,9 +266,10 @@ const TextEditor = () => {
   );
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center overflow-hidden border-2 border-[#0f0]">
-      <div className="flex h-[80%] w-full flex-col border-2 border-black">
-        <div className="h-[50%] w-full border-2 border-black p-2 pb-0">
+    <div className="flex h-screen w-screen flex-col items-center overflow-hidden">
+      {/* content  */}
+      <div className="md: flex h-full w-full flex-col overflow-hidden md:flex-row-reverse">
+        <div className="h-full w-full overflow-hidden p-2 pb-0">
           <Textarea
             value={text}
             onChange={handleTextChange}
@@ -276,8 +277,7 @@ const TextEditor = () => {
             className="textarea h-full w-full resize-none rounded-xl bg-white p-2 !text-lg focus-visible:ring-0"
           />
         </div>
-
-        <div className="h-[50%] w-full border-2 border-black p-2 pb-0">
+        <div className="h-full w-full overflow-hidden p-2 pb-0">
           <Toolbar
             text={text}
             updateText={updateText}
