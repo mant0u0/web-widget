@@ -1,11 +1,7 @@
 "use client";
-import React, { useCallback, ChangeEvent } from "react";
+import React, { useCallback, ChangeEvent, useMemo, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-// import {
-//   ResizableHandle,
-//   ResizablePanel,
-//   ResizablePanelGroup,
-// } from "@/components/ui/resizable";
+import { Text } from "lucide-react";
 
 // 工具列
 import { Toolbar } from "./Toolbar";
@@ -20,6 +16,26 @@ type Quote = {
   name: string;
   center: number; // 游標位置
   editable?: boolean;
+};
+
+// 檢查字符是否為 CJK 字符
+const isCJK = (char: string): boolean => {
+  const code = char.charCodeAt(0);
+  return (
+    (code >= 0x4e00 && code <= 0x9fff) || // CJK 統一表意文字
+    (code >= 0x3040 && code <= 0x309f) || // 平假名
+    (code >= 0x30a0 && code <= 0x30ff) || // 片假名
+    (code >= 0xac00 && code <= 0xd7af) || // 諺文音節
+    (code >= 0xf900 && code <= 0xfaff) || // CJK 兼容表意文字
+    (code >= 0xff00 && code <= 0xffef) // 全形字符
+  );
+};
+
+// 計算 Twitter 字數
+const countTwitterLength = (text: string): number => {
+  return Array.from(text).reduce((count, char) => {
+    return count + (isCJK(char) ? 2 : 1);
+  }, 0);
 };
 
 // 文字編輯器
@@ -265,17 +281,91 @@ const TextEditor = () => {
     [updateText],
   );
 
+  // ================================================
+  // 在 TextEditor 元件中添加一個狀態來追踪當前顯示的統計類型
+  const [statDisplayType, setStatDisplayType] = useState<
+    "general" | "threads" | "twitter"
+  >("general");
+
+  // 切換統計顯示類型的功能
+  const toggleStatDisplay = useCallback(() => {
+    setStatDisplayType((current) => {
+      switch (current) {
+        case "general":
+          return "threads";
+        case "threads":
+          return "twitter";
+        case "twitter":
+          return "general";
+        default:
+          return "general";
+      }
+    });
+  }, []);
+
+  // 字符數計算
+  const characterCount = useMemo(() => text.length, [text]);
+
+  // 行數計算
+  const lineCount = useMemo(() => text.split("\n").length, [text]);
+
+  // 使用 useMemo 計算 Twitter 字數
+  const twitterCount = useMemo(() => {
+    const count = countTwitterLength(text);
+    const remaining = 280 - count;
+    return {
+      count,
+      remaining,
+      isOverLimit: remaining < 0,
+    };
+  }, [text]);
+
   return (
     <div className="flex h-screen w-screen flex-col items-center overflow-hidden">
       {/* content  */}
       <div className="flex h-full w-full flex-col overflow-hidden p-3 md:flex-row-reverse md:gap-3">
-        <div className="h-full w-full overflow-hidden md:w-[80%]">
-          <Textarea
-            value={text}
-            onChange={handleTextChange}
-            placeholder="在這裡輸入或編輯文字..."
-            className="textarea h-full w-full resize-none rounded-xl bg-white p-4 !text-lg focus-visible:ring-0"
-          />
+        <div className="flex h-full w-full flex-col overflow-hidden md:w-[80%]">
+          <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-input bg-white">
+            <div className="relative flex-1 overflow-hidden">
+              <Textarea
+                value={text}
+                onChange={handleTextChange}
+                placeholder="在這裡輸入或編輯文字..."
+                className="absolute inset-0 resize-none rounded-none border-l-0 border-r-0 border-t-0 bg-white p-4 !text-lg focus-visible:ring-0"
+              />
+            </div>
+
+            <div className="bg-zinc-50 px-3 py-2.5">
+              <div
+                className="flex w-fit cursor-pointer items-center gap-2 text-sm text-gray-500 hover:text-gray-600"
+                onClick={toggleStatDisplay}
+              >
+                <Text className="h-4 w-4" />
+                {statDisplayType === "general" && (
+                  <div>
+                    共 {characterCount} 字，共 {lineCount} 行
+                  </div>
+                )}
+
+                {statDisplayType === "threads" && (
+                  <div className={characterCount > 500 ? "text-red-500" : ""}>
+                    Threads 文字上限 {characterCount} / 500 字
+                    {characterCount > 500 && `（-${characterCount - 500}）`}
+                  </div>
+                )}
+
+                {statDisplayType === "twitter" && (
+                  <div
+                    className={twitterCount.count > 280 ? "text-red-500" : ""}
+                  >
+                    Twitter 文字上限 {twitterCount.count} / 280 字符
+                    {twitterCount.count > 280 &&
+                      `（-${twitterCount.count - 280}）`}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
         <div className="h-full w-full overflow-hidden md:w-[20%] md:min-w-[340px]">
           <Toolbar

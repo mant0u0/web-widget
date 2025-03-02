@@ -36,26 +36,6 @@ interface SearchResultItem {
   afterText: string;
 }
 
-// 檢查字符是否為 CJK 字符
-const isCJK = (char: string): boolean => {
-  const code = char.charCodeAt(0);
-  return (
-    (code >= 0x4e00 && code <= 0x9fff) || // CJK 統一表意文字
-    (code >= 0x3040 && code <= 0x309f) || // 平假名
-    (code >= 0x30a0 && code <= 0x30ff) || // 片假名
-    (code >= 0xac00 && code <= 0xd7af) || // 諺文音節
-    (code >= 0xf900 && code <= 0xfaff) || // CJK 兼容表意文字
-    (code >= 0xff00 && code <= 0xffef) // 全形字符
-  );
-};
-
-// 計算 Twitter 字數
-const countTwitterLength = (text: string): number => {
-  return Array.from(text).reduce((count, char) => {
-    return count + (isCJK(char) ? 2 : 1);
-  }, 0);
-};
-
 export const SearchReplace: React.FC<SearchReplaceProps> = ({
   text,
   updateText,
@@ -346,24 +326,6 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     setMatchPositions([]);
     setSearchResults([]);
   };
-  // ================================================
-
-  // 字符數計算
-  const characterCount = useMemo(() => text.length, [text]);
-
-  // 行數計算
-  const lineCount = useMemo(() => text.split("\n").length, [text]);
-
-  // 使用 useMemo 計算 Twitter 字數
-  const twitterCount = useMemo(() => {
-    const count = countTwitterLength(text);
-    const remaining = 280 - count;
-    return {
-      count,
-      remaining,
-      isOverLimit: remaining < 0,
-    };
-  }, [text]);
 
   return (
     <div className="h-full w-full overflow-hidden pt-0">
@@ -573,34 +535,6 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
             )}
           </div>
         </ScrollArea>
-        <div className="flex flex-col gap-1 p-3">
-          {/* 字數統計 */}
-          <div className="text-sm text-gray-500">
-            目前總共 {characterCount} 個字，共 {lineCount} 行。
-          </div>
-
-          {characterCount > 500 ? (
-            <div className="text-sm text-red-500">
-              Threads 文字上限 {characterCount} / 500 字，超過{" "}
-              {characterCount - 500} 字。
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500">
-              Threads 發文上限 {characterCount} / 500 字。
-            </div>
-          )}
-
-          {twitterCount.count > 280 ? (
-            <div className="text-sm text-red-500">
-              Twitter 發文上限 {twitterCount.count} / 280 字符，超過{" "}
-              {twitterCount.count - 280} 字。
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500">
-              Twitter 發文上限 {twitterCount.count} / 280 字符。
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

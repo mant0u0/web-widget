@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({
   onClear,
 }) => {
   return (
-    <div className="flex w-full justify-between border-t border-gray-200 p-3">
+    <div className="flex w-full justify-between border-gray-200 p-3 pt-0">
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
@@ -67,24 +67,28 @@ export const Footer: React.FC<FooterProps> = ({
       </AlertDialog>
 
       <div className="flex gap-2">
-        <Button
-          variant="outline"
-          onClick={onUndo}
-          disabled={currentIndex <= 0}
-          className="flex items-center"
-        >
-          <Undo className="mr-1 h-5 w-[24px]" />
-          還原
-        </Button>
-        <Button
-          variant="outline"
-          onClick={onRedo}
-          disabled={currentIndex >= historyLength - 1}
-          className="flex items-center"
-        >
-          <Redo className="mr-1 h-5 w-[24px]" />
-          取消
-        </Button>
+        <div className="flex h-[36px] overflow-hidden rounded-md border border-input shadow-sm">
+          <Button
+            variant="outline"
+            onClick={onUndo}
+            disabled={currentIndex <= 0}
+            className="flex w-[40px] items-center rounded-none border-none md:w-auto"
+            title="還原"
+          >
+            <Undo className="h-5 w-[24px]" />
+            <p className="hidden md:block">還原</p>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={onRedo}
+            disabled={currentIndex >= historyLength - 1}
+            className="flex w-[40px] items-center rounded-none border-b-0 border-r-0 border-t-0 md:w-auto"
+            title="取消還原"
+          >
+            <Redo className="h-5" />
+            <p className="hidden md:block">取消</p>
+          </Button>
+        </div>
         <Button
           onClick={onCopy}
           variant="outline"
