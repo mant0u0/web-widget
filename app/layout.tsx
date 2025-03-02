@@ -22,7 +22,7 @@ const notoSansTC = Noto_Sans_TC({
 });
 
 export const metadata: Metadata = {
-  title: "網頁小工具",
+  title: "饅頭網頁小工具",
   description: "發想一些不常用，但可能很有用的網頁小工具",
 };
 
