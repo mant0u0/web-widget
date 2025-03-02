@@ -91,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
         <Button
           onClick={onCopy}
-          variant="outline"
+          // variant="outline"
           disabled={copyStatus || !text}
         >
           {copyStatus ? (

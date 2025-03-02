@@ -218,7 +218,7 @@ export const SymbolPicker: React.FC<{
               placeholder="搜尋符號"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8"
+              className="pl-8 text-sm"
             />
           </div>
         </div>

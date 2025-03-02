@@ -342,7 +342,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           )}
 
           <p className="px-3 py-1 text-sm font-semibold">預設符號</p>
-          <div className="grid gap-2 p-3 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
             {/* 預設符號區域 */}
             {prefixSymbols.map((symbol, index) => (
               <div key={`default-${index}`} className="group relative w-full">
