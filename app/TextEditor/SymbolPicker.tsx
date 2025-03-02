@@ -38,9 +38,11 @@ const SymbolButton = ({
       {item.symbol}
     </Button>
     {/* 懸停時顯示的提示框 */}
-    <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 h-auto -translate-x-1/2 transform whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-      {item.tags[0]}
-    </div>
+    {item.tags[0] !== "" && (
+      <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 h-auto -translate-x-1/2 transform whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+        {item.tags[0]}
+      </div>
+    )}
   </div>
 );
 
