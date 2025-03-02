@@ -102,8 +102,11 @@ export const QuotationmMarks: React.FC<{
               <DialogHeader>
                 <DialogTitle>新增自訂符號</DialogTitle>
               </DialogHeader>
+              <p className="text-sm font-medium leading-6 text-gray-700">
+                選取文字可於該文字左右兩側插入引號。
+              </p>
 
-              <div className="flex gap-4 py-4">
+              <div className="flex gap-4">
                 <Input
                   value={leftSymbol}
                   onChange={(e) => setLeftSymbol(e.target.value)}
@@ -120,9 +123,11 @@ export const QuotationmMarks: React.FC<{
 
               <DialogClose asChild>
                 <Button
+                  size="lg"
                   onClick={addCustomQuote}
                   disabled={!leftSymbol && !rightSymbol}
                 >
+                  <Plus />
                   新增
                 </Button>
               </DialogClose>
@@ -171,8 +176,10 @@ export const QuotationmMarks: React.FC<{
                       <DialogHeader>
                         <DialogTitle>編輯自訂符號</DialogTitle>
                       </DialogHeader>
-
-                      <div className="flex gap-4 py-4">
+                      <p className="text-sm font-medium leading-6 text-gray-700">
+                        選取文字可於該文字左右兩側插入引號。
+                      </p>
+                      <div className="flex gap-4">
                         <Input
                           value={editingLeft}
                           onChange={(e) => setEditingLeft(e.target.value)}

@@ -94,39 +94,59 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
   const findAllMatches = (text: string, searchText: string) => {
     if (!searchText) return { positions: [], results: [] };
 
+    // 處理所有的換行符表示法
+    let actualSearchText = searchText;
+    // 檢查是否包含 \n 序列，並將所有 \n 替換為實際的換行符
+    if (searchText.includes("\\n")) {
+      actualSearchText = searchText.replace(/\\n/g, "\n");
+    }
+
     const positions: number[] = [];
     const results: SearchResultItem[] = [];
-    const regex = new RegExp(searchText, "g");
-    let match;
 
-    while ((match = regex.exec(text)) !== null) {
-      positions.push(match.index);
+    let lastIndex = 0;
+    let index = -1;
 
-      // 產生上下文（前後各15個字符）
-      const contextStart = Math.max(0, match.index - 15);
-      const contextEnd = Math.min(
-        text.length,
-        match.index + searchText.length + 15,
-      );
+    do {
+      index = text.indexOf(actualSearchText, lastIndex);
+      if (index !== -1) {
+        positions.push(index);
 
-      const beforeText = text.substring(contextStart, match.index);
-      const matchText = text.substring(
-        match.index,
-        match.index + searchText.length,
-      );
-      const afterText = text.substring(
-        match.index + searchText.length,
-        contextEnd,
-      );
+        // 產生上下文（前後各15個字符）
+        const contextStart = Math.max(0, index - 15);
+        const contextEnd = Math.min(
+          text.length,
+          index + actualSearchText.length + 15,
+        );
 
-      results.push({
-        position: match.index,
-        context: text.substring(contextStart, contextEnd),
-        beforeText,
-        matchText,
-        afterText,
-      });
-    }
+        const beforeText = text.substring(contextStart, index);
+
+        // 生成可視化的匹配文本，將換行符替換為符號
+        let visibleMatchText = "";
+        for (let i = 0; i < actualSearchText.length; i++) {
+          if (actualSearchText[i] === "\n") {
+            visibleMatchText += "⤶  "; // 用符號表示換行
+          } else {
+            visibleMatchText += actualSearchText[i];
+          }
+        }
+
+        const afterText = text.substring(
+          index + actualSearchText.length,
+          contextEnd,
+        );
+
+        results.push({
+          position: index,
+          context: text.substring(contextStart, contextEnd),
+          beforeText,
+          matchText: visibleMatchText,
+          afterText,
+        });
+
+        lastIndex = index + actualSearchText.length;
+      }
+    } while (index !== -1);
 
     return { positions, results };
   };
@@ -200,9 +220,15 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
         return;
       }
 
+      // 計算實際的搜尋文字長度（考慮換行符）
+      let actualSearchText = searchText;
+      if (searchText.includes("\\n")) {
+        actualSearchText = searchText.replace(/\\n/g, "\n");
+      }
+
       // 先 focus 並選中文字
       textArea.focus();
-      textArea.setSelectionRange(position, position + searchText.length);
+      textArea.setSelectionRange(position, position + actualSearchText.length);
 
       // 更精確的卷軸位置計算
       // 使用 scrollIntoView 確保選中的文字在可見區域
@@ -210,7 +236,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
 
       // 計算選中的開始和結束位置
       const startPosition = position;
-      const endPosition = position + searchText.length;
+      const endPosition = position + actualSearchText.length;
 
       // 使用選中區域的中間位置來確定捲動位置
       const selectionMiddle = startPosition + (endPosition - startPosition) / 2;
@@ -221,7 +247,6 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
       // 計算選中位置的行號和列號
       const lines = textBeforeSelection.split("\n");
       const lineNumber = lines.length - 1;
-      // const column = lines[lineNumber].length;
 
       // 估算每行的高度 (像素)
       const lineHeight = parseInt(getComputedStyle(textArea).lineHeight) || 20;
@@ -254,18 +279,29 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
   const replaceCurrent = () => {
     if (!searchText || matchCount === 0) return;
 
-    const textArea = document.querySelector("textarea");
-    const start = textArea?.selectionStart;
-    const end = textArea?.selectionEnd;
+    // 處理搜尋文字中的換行符
+    let actualSearchText = searchText;
+    if (searchText.includes("\\n")) {
+      actualSearchText = searchText.replace(/\\n/g, "\n");
+    }
 
-    if (start === undefined || end === undefined) return;
+    // 處理替換文字中的換行符
+    let actualReplaceText = replaceText;
+    if (replaceText.includes("\\n")) {
+      actualReplaceText = replaceText.replace(/\\n/g, "\n");
+    }
 
-    // 確保選中的文字是搜尋的文字
-    const selectedText = text.substring(start, end);
-    if (selectedText !== searchText) return;
+    // 確保有選中的位置
+    if (currentMatchIndex < 0 || currentMatchIndex >= matchPositions.length)
+      return;
+
+    const position = matchPositions[currentMatchIndex];
 
     const newText =
-      text.substring(0, start) + replaceText + text.substring(end);
+      text.substring(0, position) +
+      actualReplaceText +
+      text.substring(position + actualSearchText.length);
+
     updateText(newText);
 
     // 更新匹配位置、搜尋結果和計數
@@ -280,6 +316,9 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     } else if (currentMatchIndex >= positions.length) {
       setCurrentMatchIndex(0);
       selectMatch(positions[0]);
+    } else {
+      // 嘗試保持在當前匹配位置之後的相同索引
+      selectMatch(positions[currentMatchIndex]);
     }
   };
 
@@ -287,7 +326,20 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
   const replaceAll = () => {
     if (!searchText) return;
 
-    const newText = text.replaceAll(searchText, replaceText);
+    // 處理搜尋文字中的換行符
+    let actualSearchText = searchText;
+    if (searchText.includes("\\n")) {
+      actualSearchText = searchText.replace(/\\n/g, "\n");
+    }
+
+    // 處理替換文字中的換行符
+    let actualReplaceText = replaceText;
+    if (replaceText.includes("\\n")) {
+      actualReplaceText = replaceText.replace(/\\n/g, "\n");
+    }
+
+    // 使用 split 和 join 執行替換，避免正則表達式問題
+    const newText = text.split(actualSearchText).join(actualReplaceText);
     updateText(newText);
     setMatchCount(0);
     setCurrentMatchIndex(-1);
@@ -488,7 +540,24 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
                             {result.matchText}
                           </span>
                           <span className="ml-1 mr-1 bg-green-100 font-medium text-black">
-                            {replaceText}
+                            {replaceText.includes("\\n") ? (
+                              <span className="inline-flex items-center">
+                                {replaceText
+                                  .split("\\n")
+                                  .map((segment, i, arr) => (
+                                    <React.Fragment key={i}>
+                                      {segment}
+                                      {i < arr.length - 1 && (
+                                        <span className="text-blue-600">
+                                          ⤶{" "}
+                                        </span>
+                                      )}
+                                    </React.Fragment>
+                                  ))}
+                              </span>
+                            ) : (
+                              replaceText
+                            )}
                           </span>
                         </>
                       ) : (
