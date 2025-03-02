@@ -11,11 +11,11 @@ export default function Home() {
           發想一些不常用，但可能很有用的網頁小工具
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          <LinkItem
+          {/* <LinkItem
             text="代購價格計算器"
             info="計算代購價格，計算獲利"
             link="/Purchasing"
-          />
+          /> */}
           <LinkItem
             text="文字編輯器"
             info="整合各種小功能的純文字編輯器，提供各種符號、顏文字等。"

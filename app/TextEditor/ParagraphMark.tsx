@@ -268,7 +268,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
           {/* 自訂符號區域 */}
           {customSymbols.length !== 0 && (
-            <div className="grid grid-cols-2 gap-2 p-3">
+            <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
               {customSymbols.map((symbol, index) => (
                 <div key={`custom-${index}`} className="group relative w-full">
                   <Button
