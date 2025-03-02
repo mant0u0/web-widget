@@ -195,132 +195,141 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
   }, [text]);
 
   return (
-    <ScrollArea className="h-full w-full">
-      <div className="flex flex-col gap-2 p-4 px-2">
-        {/* 搜尋輸入框 */}
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            className="bg-white"
-            placeholder="搜尋..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            // onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <Button className="flex-1" onClick={handleSearch}>
-            搜尋
-          </Button>
-        </div>
-        <Input
-          type="text"
-          className="bg-white"
-          placeholder="取代為..."
-          value={replaceText}
-          onChange={(e) => setReplaceText(e.target.value)}
-        />
+    <div className="h-full w-full overflow-hidden pt-0">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+        {/* 搜尋欄 */}
+        <div className="border-b bg-background p-3">
+          <div className="relative">
+            {/* 搜尋輸入框 */}
+            <div className="flex gap-2">
+              <Input
+                type="text"
+                className="bg-white"
+                placeholder="搜尋..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                // onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+              <Button className="flex-1" onClick={handleSearch}>
+                搜尋
+              </Button>
+            </div>
+            <Input
+              type="text"
+              className="bg-white"
+              placeholder="取代為..."
+              value={replaceText}
+              onChange={(e) => setReplaceText(e.target.value)}
+            />
 
-        {/* 控制按鈕 */}
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={findPrevious}
-              disabled={matchCount === 0}
-            >
-              上一個
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={clearSelection}
-              disabled={matchCount === 0}
-            >
-              返回第一個
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={findNext}
-              disabled={matchCount === 0}
-            >
-              下一個
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={replaceCurrent}
-              disabled={matchCount === 0}
-            >
-              取代
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
+            {/* 控制按鈕 */}
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
                   className="flex-1"
+                  onClick={findPrevious}
                   disabled={matchCount === 0}
                 >
-                  全部取代
+                  上一個
                 </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>確定要全部取代嗎？</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    將會替換文件中所有符合的文字，此操作無法復原。
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>取消</AlertDialogCancel>
-                  <AlertDialogAction onClick={replaceAll}>
-                    確定
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={clearSelection}
+                  disabled={matchCount === 0}
+                >
+                  返回第一個
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={findNext}
+                  disabled={matchCount === 0}
+                >
+                  下一個
+                </Button>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={replaceCurrent}
+                  disabled={matchCount === 0}
+                >
+                  取代
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      disabled={matchCount === 0}
+                    >
+                      全部取代
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>確定要全部取代嗎？</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        將會替換文件中所有符合的文字，此操作無法復原。
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>取消</AlertDialogCancel>
+                      <AlertDialogAction onClick={replaceAll}>
+                        確定
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* 搜尋狀態顯示 */}
-        {matchCount > 0 && (
-          <div className="text-sm text-gray-500">
-            找到 {matchCount} 個結果 ({currentMatchIndex + 1}/{matchCount})
+        <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
+          <div className="flex flex-col gap-2 p-4 px-2">
+            {/* 搜尋狀態顯示 */}
+            {matchCount > 0 && (
+              <div className="text-sm text-gray-500">
+                找到 {matchCount} 個結果 ({currentMatchIndex + 1}/{matchCount})
+              </div>
+            )}
+
+            <div className="flex flex-col gap-1 pt-4">
+              {/* 字數統計 */}
+              <div className="text-sm text-gray-500">
+                目前總共 {characterCount} 個字，共 {lineCount} 行。
+              </div>
+
+              {characterCount > 500 ? (
+                <div className="text-sm text-red-500">
+                  Threads 文字上限 {characterCount} / 500 字，超過{" "}
+                  {characterCount - 500} 字。
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">
+                  Threads 發文上限 {characterCount} / 500 字。
+                </div>
+              )}
+
+              {twitterCount.count > 280 ? (
+                <div className="text-sm text-red-500">
+                  Twitter 發文上限 {twitterCount.count} / 280 字符，超過{" "}
+                  {twitterCount.count - 280} 字。
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">
+                  Twitter 發文上限 {twitterCount.count} / 280 字符。
+                </div>
+              )}
+            </div>
           </div>
-        )}
-
-        <div className="flex flex-col gap-1 pt-4">
-          {/* 字數統計 */}
-          <div className="text-sm text-gray-500">
-            目前總共 {characterCount} 個字，共 {lineCount} 行。
-          </div>
-
-          {characterCount > 500 ? (
-            <div className="text-sm text-red-500">
-              Threads 文字上限 {characterCount} / 500 字，超過{" "}
-              {characterCount - 500} 字。
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500">
-              Threads 發文上限 {characterCount} / 500 字。
-            </div>
-          )}
-
-          {twitterCount.count > 280 ? (
-            <div className="text-sm text-red-500">
-              Twitter 發文上限 {twitterCount.count} / 280 字符，超過{" "}
-              {twitterCount.count - 280} 字。
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500">
-              Twitter 發文上限 {twitterCount.count} / 280 字符。
-            </div>
-          )}
-        </div>
+        </ScrollArea>
       </div>
-    </ScrollArea>
+    </div>
   );
 };

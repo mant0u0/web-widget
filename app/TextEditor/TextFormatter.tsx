@@ -334,188 +334,196 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
   };
 
   return (
-    <ScrollArea className="h-full w-full">
-      <div className="flex w-full flex-col overflow-hidden rounded-md border-input bg-zinc-50 p-0 pb-20">
-        {/* 簡體轉繁體 */}
-        <FunctionButton
-          icon={
-            <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="簡體轉繁體"
-          onClick={async () => {
-            transformSelectedText(text, convertToTraditional, updateText);
-          }}
-        />
+    <div className="h-full w-full overflow-hidden pt-0">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+        <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
+          <div className="flex w-full flex-col overflow-hidden rounded-md border-input bg-zinc-50 p-0 pb-20">
+            {/* 簡體轉繁體 */}
+            <FunctionButton
+              icon={
+                <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="簡體轉繁體"
+              onClick={async () => {
+                transformSelectedText(text, convertToTraditional, updateText);
+              }}
+            />
 
-        {/* 簡體轉繁體 (台灣用語) */}
-        <FunctionButton
-          icon={
-            <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="簡體轉繁體（台灣用語）"
-          onClick={async () => {
-            transformSelectedText(text, convertToTraditionalTW, updateText);
-          }}
-        />
+            {/* 簡體轉繁體 (台灣用語) */}
+            <FunctionButton
+              icon={
+                <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="簡體轉繁體（台灣用語）"
+              onClick={async () => {
+                transformSelectedText(text, convertToTraditionalTW, updateText);
+              }}
+            />
 
-        {/* 繁體轉簡體 */}
-        <FunctionButton
-          icon={
-            <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="繁體轉簡體"
-          onClick={async () => {
-            transformSelectedText(text, convertToSimplified, updateText);
-          }}
-        />
+            {/* 繁體轉簡體 */}
+            <FunctionButton
+              icon={
+                <Languages className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="繁體轉簡體"
+              onClick={async () => {
+                transformSelectedText(text, convertToSimplified, updateText);
+              }}
+            />
 
-        {/* 中文、英文加空格 */}
-        <FunctionButton
-          icon={
-            <UnfoldHorizontal className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="中文、英文加空格"
-          onClick={() => {
-            transformSelectedText(text, panguSpacing, updateText);
-          }}
-        />
+            {/* 中文、英文加空格 */}
+            <FunctionButton
+              icon={
+                <UnfoldHorizontal className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="中文、英文加空格"
+              onClick={() => {
+                transformSelectedText(text, panguSpacing, updateText);
+              }}
+            />
 
-        {/* 英文轉大寫 */}
-        <FunctionButton
-          icon={
-            <CaseUpper className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="英文轉大寫"
-          onClick={() => {
-            transformSelectedText(text, toUpperCase, updateText);
-          }}
-        />
+            {/* 英文轉大寫 */}
+            <FunctionButton
+              icon={
+                <CaseUpper className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="英文轉大寫"
+              onClick={() => {
+                transformSelectedText(text, toUpperCase, updateText);
+              }}
+            />
 
-        {/* 英文轉小寫 */}
-        <FunctionButton
-          icon={
-            <CaseLower className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="英文轉小寫"
-          onClick={() => {
-            transformSelectedText(text, toLowerCase, updateText);
-          }}
-        />
+            {/* 英文轉小寫 */}
+            <FunctionButton
+              icon={
+                <CaseLower className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="英文轉小寫"
+              onClick={() => {
+                transformSelectedText(text, toLowerCase, updateText);
+              }}
+            />
 
-        {/* 英文句首大寫 */}
-        <FunctionButton
-          icon={
-            <CaseSensitive className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="英文句首大寫"
-          onClick={() => {
-            transformSelectedText(text, toSentenceCase, updateText);
-          }}
-        />
+            {/* 英文句首大寫 */}
+            <FunctionButton
+              icon={
+                <CaseSensitive className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="英文句首大寫"
+              onClick={() => {
+                transformSelectedText(text, toSentenceCase, updateText);
+              }}
+            />
 
-        {/* 英文單字字首大寫 */}
-        <FunctionButton
-          icon={
-            <CaseSensitive className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="英文單字字首大寫"
-          onClick={() => {
-            transformSelectedText(text, toTitleCase, updateText);
-          }}
-        />
+            {/* 英文單字字首大寫 */}
+            <FunctionButton
+              icon={
+                <CaseSensitive className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="英文單字字首大寫"
+              onClick={() => {
+                transformSelectedText(text, toTitleCase, updateText);
+              }}
+            />
 
-        {/* 數字、英文轉全形 */}
-        <FunctionButton
-          icon={
-            <ArrowBigUpDash className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="數字、英文轉全形"
-          onClick={() => {
-            transformSelectedText(text, toFullWidth, updateText);
-          }}
-        />
+            {/* 數字、英文轉全形 */}
+            <FunctionButton
+              icon={
+                <ArrowBigUpDash className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="數字、英文轉全形"
+              onClick={() => {
+                transformSelectedText(text, toFullWidth, updateText);
+              }}
+            />
 
-        {/* 數字、英文轉半形 */}
-        <FunctionButton
-          icon={
-            <ArrowBigDownDash className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="數字、英文轉半形"
-          onClick={() => {
-            transformSelectedText(text, toHalfWidth, updateText);
-          }}
-        />
+            {/* 數字、英文轉半形 */}
+            <FunctionButton
+              icon={
+                <ArrowBigDownDash className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="數字、英文轉半形"
+              onClick={() => {
+                transformSelectedText(text, toHalfWidth, updateText);
+              }}
+            />
 
-        {/* 去除連續換行 */}
-        <FunctionButton
-          icon={
-            <ChartNoAxesGantt className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="去除連續換行"
-          onClick={() => {
-            transformSelectedText(
-              text,
-              removeConsecutiveLineBreaks,
-              updateText,
-            );
-          }}
-        />
+            {/* 去除連續換行 */}
+            <FunctionButton
+              icon={
+                <ChartNoAxesGantt className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="去除連續換行"
+              onClick={() => {
+                transformSelectedText(
+                  text,
+                  removeConsecutiveLineBreaks,
+                  updateText,
+                );
+              }}
+            />
 
-        {/* 去除連續空白 */}
-        <FunctionButton
-          icon={
-            <ChartNoAxesGantt className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="去除連續空白"
-          onClick={() => {
-            transformSelectedText(text, removeConsecutiveSpaces, updateText);
-          }}
-        />
+            {/* 去除連續空白 */}
+            <FunctionButton
+              icon={
+                <ChartNoAxesGantt className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="去除連續空白"
+              onClick={() => {
+                transformSelectedText(
+                  text,
+                  removeConsecutiveSpaces,
+                  updateText,
+                );
+              }}
+            />
 
-        {/* 精簡網址連結  */}
-        <FunctionButton
-          icon={
-            <Link className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="精簡網址連結（移除追蹤碼）"
-          onClick={() => {
-            transformSelectedText(text, processUrlsInText, updateText);
-          }}
-        />
+            {/* 精簡網址連結  */}
+            <FunctionButton
+              icon={
+                <Link className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="精簡網址連結（移除追蹤碼）"
+              onClick={() => {
+                transformSelectedText(text, processUrlsInText, updateText);
+              }}
+            />
 
-        {/* 只保留網址連結  */}
-        <FunctionButton
-          icon={
-            <Link className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="僅保留網址連結"
-          onClick={() => {
-            transformSelectedText(text, extractUrlsAsString, updateText);
-          }}
-        />
+            {/* 只保留網址連結  */}
+            <FunctionButton
+              icon={
+                <Link className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="僅保留網址連結"
+              onClick={() => {
+                transformSelectedText(text, extractUrlsAsString, updateText);
+              }}
+            />
 
-        {/* 文字遮蔽  */}
-        <FunctionButton
-          icon={
-            <Asterisk className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="文字遮蔽"
-          onClick={() => {
-            transformSelectedText(text, maskText, updateText);
-          }}
-        />
+            {/* 文字遮蔽  */}
+            <FunctionButton
+              icon={
+                <Asterisk className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="文字遮蔽"
+              onClick={() => {
+                transformSelectedText(text, maskText, updateText);
+              }}
+            />
 
-        {/* 數字千分位 */}
-        <FunctionButton
-          icon={
-            <Binary className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
-          }
-          text="數字千分位"
-          onClick={() => {
-            transformSelectedText(text, numAddCommas, updateText);
-          }}
-        />
+            {/* 數字千分位 */}
+            <FunctionButton
+              icon={
+                <Binary className="mr-4 h-5 w-[24px] flex-none text-center text-sm" />
+              }
+              text="數字千分位"
+              onClick={() => {
+                transformSelectedText(text, numAddCommas, updateText);
+              }}
+            />
+          </div>
+        </ScrollArea>
       </div>
-    </ScrollArea>
+    </div>
   );
 };
