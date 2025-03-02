@@ -268,7 +268,7 @@ const TextEditor = () => {
   return (
     <div className="flex h-screen w-screen flex-col items-center overflow-hidden">
       {/* content  */}
-      <div className="flex h-full w-full flex-col gap-3 overflow-hidden p-3 md:flex-row-reverse">
+      <div className="flex h-full w-full flex-col overflow-hidden p-3 md:flex-row-reverse md:gap-3">
         <div className="h-full w-full overflow-hidden md:w-[80%]">
           <Textarea
             value={text}

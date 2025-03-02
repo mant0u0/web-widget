@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({
   onClear,
 }) => {
   return (
-    <div className="flex w-full justify-between border-t border-gray-200 p-2">
+    <div className="flex w-full justify-between border-t border-gray-200 p-3">
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button

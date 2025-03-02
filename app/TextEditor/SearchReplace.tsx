@@ -82,7 +82,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
         }
       }
     }
-  }, [text]);
+  }, [text, searchText, currentMatchIndex]);
 
   // 尋找所有匹配位置並生成帶有上下文的結果
   const findAllMatches = (text: string, searchText: string) => {
@@ -173,7 +173,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     if (searchText) {
       handleSearch();
     }
-  }, [replaceText]);
+  }, [replaceText, searchText, handleSearch]);
 
   // 點擊搜尋結果項目 - 設置索引並 focus 到 textarea
   const handleResultClick = (index: number) => {
@@ -215,7 +215,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
       // 計算選中位置的行號和列號
       const lines = textBeforeSelection.split("\n");
       const lineNumber = lines.length - 1;
-      const column = lines[lineNumber].length;
+      // const column = lines[lineNumber].length;
 
       // 估算每行的高度 (像素)
       const lineHeight = parseInt(getComputedStyle(textArea).lineHeight) || 20;
@@ -485,7 +485,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
             )}
           </div>
         </ScrollArea>
-        <div className="flex flex-col gap-1 p-3">
+        <div className="flex flex-col gap-1 border-t p-3">
           {/* 字數統計 */}
           <div className="text-sm text-gray-500">
             目前總共 {characterCount} 個字，共 {lineCount} 行。

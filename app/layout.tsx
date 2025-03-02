@@ -33,12 +33,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-TW" className={`${inter.variable} ${notoSansTC.variable}`}>
-      <head>
+      {/* <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap"
           rel="stylesheet"
         />
-      </head>
+      </head> */}
       <body>{children}</body>
     </html>
   );
