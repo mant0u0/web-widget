@@ -88,7 +88,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
         }
       }
     }
-  }, [text]);
+  }, [text, searchText, currentMatchIndex]);
 
   // 尋找所有匹配位置並生成帶有上下文的結果
   const findAllMatches = (text: string, searchText: string) => {
@@ -221,7 +221,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
       // 計算選中位置的行號和列號
       const lines = textBeforeSelection.split("\n");
       const lineNumber = lines.length - 1;
-      const column = lines[lineNumber].length;
+      // const column = lines[lineNumber].length;
 
       // 估算每行的高度 (像素)
       const lineHeight = parseInt(getComputedStyle(textArea).lineHeight) || 20;

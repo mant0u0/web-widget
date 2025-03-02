@@ -135,7 +135,7 @@ export const QuotationmMarks: React.FC<{
           <p className="px-3 py-1 pt-3 text-sm font-semibold">自訂引號</p>
 
           {customQuotes.length !== 0 && (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,max-content))] gap-2 p-3">
+            <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
               {/* 自訂引號 */}
               {customQuotes.map((quote, index) => (
                 <div key={`custom-${index}`} className="group relative w-full">
