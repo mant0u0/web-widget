@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { ChevronDown } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +15,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 // 定義 props 的介面
 interface SearchReplaceProps {
@@ -82,7 +88,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
         }
       }
     }
-  }, [text, searchText, currentMatchIndex]);
+  }, [text]);
 
   // 尋找所有匹配位置並生成帶有上下文的結果
   const findAllMatches = (text: string, searchText: string) => {
@@ -173,7 +179,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     if (searchText) {
       handleSearch();
     }
-  }, [replaceText, searchText, handleSearch]);
+  }, [replaceText]);
 
   // 點擊搜尋結果項目 - 設置索引並 focus 到 textarea
   const handleResultClick = (index: number) => {
@@ -215,7 +221,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
       // 計算選中位置的行號和列號
       const lines = textBeforeSelection.split("\n");
       const lineNumber = lines.length - 1;
-      // const column = lines[lineNumber].length;
+      const column = lines[lineNumber].length;
 
       // 估算每行的高度 (像素)
       const lineHeight = parseInt(getComputedStyle(textArea).lineHeight) || 20;
@@ -313,25 +319,57 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
         {/* 搜尋欄 */}
         <div className="border-b bg-background p-3">
           <div className="relative">
-            {/* 搜尋輸入框 */}
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                className="bg-white"
-                placeholder="搜尋..."
-                value={searchText}
-                onChange={handleSearchInputChange}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
+            <Collapsible>
+              {/* 搜尋輸入框 */}
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  className="bg-white"
+                  placeholder="搜尋..."
+                  value={searchText}
+                  onChange={handleSearchInputChange}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
 
+                      if (!searchText) return;
+
+                      // 找到所有匹配位置
+                      const { positions } = findAllMatches(text, searchText);
+
+                      if (positions.length > 0) {
+                        // 已有搜尋結果時，按 Enter 往下一個選擇 (與點擊搜尋按鈕行為一致)
+                        if (
+                          currentMatchIndex >= 0 &&
+                          currentMatchIndex < positions.length - 1
+                        ) {
+                          // 選擇下一個
+                          const nextIndex = currentMatchIndex + 1;
+                          setCurrentMatchIndex(nextIndex);
+                          selectMatch(positions[nextIndex]);
+                        } else {
+                          // 當前已是最後一個或無選擇時，回到第一個
+                          setCurrentMatchIndex(0);
+                          selectMatch(positions[0]);
+                        }
+                      } else {
+                        // 無搜尋結果時執行搜尋
+                        handleSearch();
+                      }
+                    }
+                  }}
+                />
+                <Button
+                  className="flex-1"
+                  onClick={() => {
+                    // 點擊搜尋按鈕
                     if (!searchText) return;
 
                     // 找到所有匹配位置
                     const { positions } = findAllMatches(text, searchText);
 
                     if (positions.length > 0) {
-                      // 已有搜尋結果時，按 Enter 往下一個選擇 (與點擊搜尋按鈕行為一致)
+                      // 已有搜尋結果時，點擊搜尋按鈕往下一個選擇
                       if (
                         currentMatchIndex >= 0 &&
                         currentMatchIndex < positions.length - 1
@@ -349,91 +387,72 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
                       // 無搜尋結果時執行搜尋
                       handleSearch();
                     }
-                  }
-                }}
-              />
-              <Button
-                className="flex-1"
-                onClick={() => {
-                  // 點擊搜尋按鈕
-                  if (!searchText) return;
+                  }}
+                >
+                  搜尋
+                </Button>
 
-                  // 找到所有匹配位置
-                  const { positions } = findAllMatches(text, searchText);
-
-                  if (positions.length > 0) {
-                    // 已有搜尋結果時，點擊搜尋按鈕往下一個選擇
-                    if (
-                      currentMatchIndex >= 0 &&
-                      currentMatchIndex < positions.length - 1
-                    ) {
-                      // 選擇下一個
-                      const nextIndex = currentMatchIndex + 1;
-                      setCurrentMatchIndex(nextIndex);
-                      selectMatch(positions[nextIndex]);
-                    } else {
-                      // 當前已是最後一個或無選擇時，回到第一個
-                      setCurrentMatchIndex(0);
-                      selectMatch(positions[0]);
-                    }
-                  } else {
-                    // 無搜尋結果時執行搜尋
-                    handleSearch();
-                  }
-                }}
-              >
-                搜尋
-              </Button>
-            </div>
-
-            <div className="mt-2 flex gap-2">
-              <Input
-                type="text"
-                className="bg-white"
-                placeholder="取代為..."
-                value={replaceText}
-                onChange={(e) => setReplaceText(e.target.value)}
-              />
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={replaceCurrent}
-                disabled={matchCount === 0}
-              >
-                取代
-              </Button>
-            </div>
-
-            {/* 控制按鈕 */}
-            <div className="mt-2 flex flex-col gap-2">
-              <div className="flex gap-2">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      disabled={matchCount === 0}
-                    >
-                      全部取代
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>確定要全部取代嗎？</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        將會替換文件中所有符合的文字，此操作無法復原。
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>取消</AlertDialogCancel>
-                      <AlertDialogAction onClick={replaceAll}>
-                        確定
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                <CollapsibleTrigger>
+                  <div className="inline-flex h-9 w-9 flex-1 items-center justify-center rounded-md border border-input bg-background text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                    <ChevronDown size={18} />
+                  </div>
+                </CollapsibleTrigger>
               </div>
-            </div>
+
+              <CollapsibleContent>
+                {/* 取代輸入框 */}
+                <div className="mt-2 flex gap-2">
+                  <Input
+                    type="text"
+                    className="bg-white"
+                    placeholder="取代為..."
+                    value={replaceText}
+                    onChange={(e) => setReplaceText(e.target.value)}
+                  />
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={replaceCurrent}
+                    disabled={matchCount === 0}
+                  >
+                    取代
+                  </Button>
+                </div>
+
+                {/* 全部取代按鈕 */}
+                <div className="mt-2 flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          disabled={matchCount === 0}
+                        >
+                          全部取代
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            確定要全部取代嗎？
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            將會替換文件中所有符合的文字，此操作無法復原。
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>取消</AlertDialogCancel>
+                          <AlertDialogAction onClick={replaceAll}>
+                            確定
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         </div>
 
@@ -485,7 +504,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
             )}
           </div>
         </ScrollArea>
-        <div className="flex flex-col gap-1 border-t p-3">
+        <div className="flex flex-col gap-1 p-3">
           {/* 字數統計 */}
           <div className="text-sm text-gray-500">
             目前總共 {characterCount} 個字，共 {lineCount} 行。
