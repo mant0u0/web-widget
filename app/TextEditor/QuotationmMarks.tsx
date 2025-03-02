@@ -222,7 +222,7 @@ export const QuotationmMarks: React.FC<{
           {/* ----------------------- */}
           <p className="px-3 py-1 text-sm font-semibold">預設引號</p>
           {/* 預設引號 */}
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,max-content))] gap-2 p-3">
+          <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
             {defaultQuotes.map((quote, index) => (
               <Button
                 key={`default-${index}`}

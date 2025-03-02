@@ -199,18 +199,21 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
               <DialogHeader>
                 <DialogTitle>新增自訂符號</DialogTitle>
               </DialogHeader>
-
-              <div className="grid gap-4 py-4">
-                <Input
-                  value={newSymbol}
-                  onChange={(e) => setNewSymbol(e.target.value)}
-                  placeholder="輸入自訂符號"
-                  className="w-full"
-                />
-              </div>
+              <p className="text-sm font-medium leading-6 text-gray-700">
+                可於每行的開頭新增該自訂符號；符號新增後，可於編輯區域「選取文字」新增該自訂符號。
+              </p>
+              <Input
+                value={newSymbol}
+                onChange={(e) => setNewSymbol(e.target.value)}
+                placeholder="輸入自訂符號"
+                className="w-full"
+              />
 
               <DialogClose asChild>
-                <Button onClick={addCustomSymbol}>新增</Button>
+                <Button size="lg" onClick={addCustomSymbol}>
+                  <Plus />
+                  新增
+                </Button>
               </DialogClose>
             </DialogContent>
           </Dialog>
