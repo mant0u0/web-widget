@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Quote, InsertQuoteFunction, defaultQuotes } from "./dataQuotes";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, CircleDashed } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -132,128 +132,97 @@ export const QuotationmMarks: React.FC<{
 
         {/* 引號列表 */}
         <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
-          <p className="p-3 text-sm font-semibold">自訂引號</p>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,max-content))] gap-2 p-3">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  variant="none"
-                  className="flex h-full flex-col justify-start gap-1 p-0"
-                >
-                  <div className="flex h-16 w-full items-center justify-center rounded-md border border-input bg-white text-lg">
-                    <Plus />
-                  </div>
-                  <p className="whitespace-normal text-sm">新增</p>
-                </Button>
-              </DialogTrigger>
+          <p className="px-3 py-1 pt-3 text-sm font-semibold">自訂引號</p>
 
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>新增自訂符號</DialogTitle>
-                </DialogHeader>
-
-                <div className="flex gap-4 py-4">
-                  <Input
-                    value={leftSymbol}
-                    onChange={(e) => setLeftSymbol(e.target.value)}
-                    placeholder="輸入左側符號"
-                    className="w-full"
-                  />
-                  <Input
-                    value={rightSymbol}
-                    onChange={(e) => setRightSymbol(e.target.value)}
-                    placeholder="輸入右側符號"
-                    className="w-full"
-                  />
-                </div>
-
-                <DialogClose asChild>
+          {customQuotes.length !== 0 && (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,max-content))] gap-2 p-3">
+              {/* 自訂引號 */}
+              {customQuotes.map((quote, index) => (
+                <div key={`custom-${index}`} className="group relative w-full">
                   <Button
-                    onClick={addCustomQuote}
-                    disabled={!leftSymbol && !rightSymbol}
+                    variant="none"
+                    className="flex h-full w-full flex-col justify-start gap-1 p-0"
+                    onClick={() => insertQuote(quote)}
                   >
-                    新增
-                  </Button>
-                </DialogClose>
-              </DialogContent>
-            </Dialog>
-
-            {/* 自訂引號 */}
-            {customQuotes.map((quote, index) => (
-              <div key={`custom-${index}`} className="group relative w-full">
-                <Button
-                  variant="none"
-                  className="flex h-full w-full flex-col justify-start gap-1 p-0"
-                  onClick={() => insertQuote(quote)}
-                >
-                  <div className="flex h-16 w-full items-center justify-center rounded-md border border-input bg-white text-lg">
-                    {quote.name.slice(0, quote.center)}{" "}
-                    {quote.name.slice(quote.center)}
-                  </div>
-                  <p className="whitespace-normal text-sm">
-                    {quote.name.slice(0, quote.center)}{" "}
-                    {quote.name.slice(quote.center)}
-                  </p>
-                </Button>
-                {/* 編輯項目按鈕 */}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      onClick={() => startEdit(quote, index)}
-                      variant="outline"
-                      className="pointer-events-none absolute right-[-8px] top-[-8px] flex h-8 w-8 items-center justify-center rounded-full border border-input bg-background opacity-0 shadow-none transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
-                    >
-                      <Pencil className="h-5 w-[24px] text-center" />
-                    </Button>
-                  </DialogTrigger>
-
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>編輯自訂符號</DialogTitle>
-                    </DialogHeader>
-
-                    <div className="flex gap-4 py-4">
-                      <Input
-                        value={editingLeft}
-                        onChange={(e) => setEditingLeft(e.target.value)}
-                        placeholder="輸入左側符號"
-                        className="w-full"
-                      />
-                      <Input
-                        value={editingRight}
-                        onChange={(e) => setEditingRight(e.target.value)}
-                        placeholder="輸入右側符號"
-                        className="w-full"
-                      />
+                    <div className="flex h-16 w-full items-center justify-center rounded-md border border-input bg-white text-lg">
+                      <p className="max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {quote.name.slice(0, quote.center)}{" "}
+                        {quote.name.slice(quote.center)}
+                      </p>
                     </div>
+                    <p className="line-clamp-1 max-w-[120px] whitespace-normal text-sm">
+                      {quote.name.slice(0, quote.center)}{" "}
+                      {quote.name.slice(quote.center)}
+                    </p>
+                  </Button>
+                  {/* 編輯項目按鈕 */}
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        onClick={() => startEdit(quote, index)}
+                        variant="outline"
+                        className="pointer-events-none absolute right-[-4px] top-[-4px] flex h-8 w-8 items-center justify-center rounded-full border border-input bg-background opacity-0 shadow-none transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
+                      >
+                        <Pencil className="h-5 w-[24px] text-center" />
+                      </Button>
+                    </DialogTrigger>
 
-                    <DialogClose asChild>
-                      <div className="flex w-full gap-2">
-                        <Button
-                          onClick={() => deleteCustomQuote(index)}
-                          variant="destructive"
-                          className="flex-1"
-                        >
-                          刪除
-                        </Button>
-                        <Button
-                          onClick={saveEdit}
-                          disabled={!editingLeft && !editingRight}
-                          className="flex-1"
-                        >
-                          儲存
-                        </Button>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>編輯自訂符號</DialogTitle>
+                      </DialogHeader>
+
+                      <div className="flex gap-4 py-4">
+                        <Input
+                          value={editingLeft}
+                          onChange={(e) => setEditingLeft(e.target.value)}
+                          placeholder="輸入左側符號"
+                          className="w-full"
+                        />
+                        <Input
+                          value={editingRight}
+                          onChange={(e) => setEditingRight(e.target.value)}
+                          placeholder="輸入右側符號"
+                          className="w-full"
+                        />
                       </div>
-                    </DialogClose>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            ))}
-          </div>
+
+                      <DialogClose asChild>
+                        <div className="flex w-full gap-2">
+                          <Button
+                            onClick={() => deleteCustomQuote(index)}
+                            variant="destructive"
+                            className="flex-1"
+                          >
+                            刪除
+                          </Button>
+                          <Button
+                            onClick={saveEdit}
+                            disabled={!editingLeft && !editingRight}
+                            className="flex-1"
+                          >
+                            儲存
+                          </Button>
+                        </div>
+                      </DialogClose>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {customQuotes.length === 0 && (
+            <div className="flex w-full items-center justify-center gap-2 p-6 text-sm text-zinc-400">
+              <CircleDashed className="h-5 w-4" />
+              目前沒有自訂引號
+            </div>
+          )}
+
           {/* ----------------------- */}
           <p className="px-3 py-1 text-sm font-semibold">預設引號</p>
           {/* 預設引號 */}
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,max-content))] gap-2 p-3">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,max-content))] gap-2 p-3">
             {defaultQuotes.map((quote, index) => (
               <Button
                 key={`default-${index}`}

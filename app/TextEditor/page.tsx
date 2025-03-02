@@ -268,16 +268,16 @@ const TextEditor = () => {
   return (
     <div className="flex h-screen w-screen flex-col items-center overflow-hidden">
       {/* content  */}
-      <div className="md: flex h-full w-full flex-col overflow-hidden md:flex-row-reverse">
-        <div className="h-full w-full overflow-hidden p-2 pb-0">
+      <div className="flex h-full w-full flex-col gap-3 overflow-hidden p-3 md:flex-row-reverse">
+        <div className="h-full w-full overflow-hidden md:w-[80%]">
           <Textarea
             value={text}
             onChange={handleTextChange}
             placeholder="在這裡輸入或編輯文字..."
-            className="textarea h-full w-full resize-none rounded-xl bg-white p-2 !text-lg focus-visible:ring-0"
+            className="textarea h-full w-full resize-none rounded-xl bg-white p-4 !text-lg focus-visible:ring-0"
           />
         </div>
-        <div className="h-full w-full overflow-hidden p-2 pb-0">
+        <div className="h-full w-full overflow-hidden md:w-[20%] md:min-w-[340px]">
           <Toolbar
             text={text}
             updateText={updateText}

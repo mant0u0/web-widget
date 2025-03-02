@@ -5,7 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PrefixSymbol, prefixSymbols } from "./dataPrefixSymbols";
-import { Plus, Pencil, PilcrowLeft } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  PilcrowLeft,
+  PilcrowRight,
+  CircleDashed,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -175,146 +181,196 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
   }, []);
 
   return (
-    <ScrollArea className="h-full w-full">
-      <Label className="text-md flex h-[48px] w-full cursor-pointer items-center justify-start gap-1 border-b border-input bg-background p-4 hover:bg-accent">
-        <div className="flex h-5 w-[24px] flex-none items-center justify-center">
-          <Checkbox
-            id="terms"
-            checked={includeEmptyLines}
-            onCheckedChange={(checked: boolean) =>
-              setIncludeEmptyLines(checked)
-            }
-          />
-        </div>
-        <p className="ml-1 text-sm">包含空白行</p>
-      </Label>
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <div className="flex">
-            <Button
-              variant="outline"
-              className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
-            >
-              <div className="flex h-5 w-[24px] flex-none items-center justify-center">
-                <Plus />
-              </div>
-              <p className="text-sm">自訂符號</p>
-            </Button>
-          </div>
-        </DialogTrigger>
-
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>新增自訂符號</DialogTitle>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <Input
-              value={newSymbol}
-              onChange={(e) => setNewSymbol(e.target.value)}
-              placeholder="輸入自訂符號"
-              className="w-full"
-            />
-          </div>
-
-          <DialogClose asChild>
-            <Button onClick={addCustomSymbol}>新增</Button>
-          </DialogClose>
-        </DialogContent>
-      </Dialog>
-
-      {/* 自訂符號區域 */}
-      {customSymbols.map((symbol, index) => (
-        <div key={`custom-${index}`} className="flex">
-          <Button
-            onClick={() => insertPrefix(symbol)}
-            variant="outline"
-            className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
-          >
-            <span className="h-5 w-[24px] flex-none truncate text-center">
-              {symbol.symbol}
-            </span>
-            <p className="text-sm">{symbol.name}</p>
-          </Button>
-
+    <div className="h-full w-full overflow-hidden pt-0">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+        <div className="flex items-center justify-between border-b bg-background p-3">
+          {/* 新增自訂符號 */}
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                onClick={() => startEdit(symbol, index)}
                 variant="outline"
-                className="border-l-1 text-md flex h-[48px] animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
+                className="bg-background p-3 shadow-none"
               >
-                <Pencil className="h-5 w-[24px] text-center" />
+                <Plus />
+                <p className="text-sm">自訂符號</p>
               </Button>
             </DialogTrigger>
-
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>編輯自訂符號</DialogTitle>
+                <DialogTitle>新增自訂符號</DialogTitle>
               </DialogHeader>
 
-              <div className="grid gap-2 py-4">
-                <p className="text-sm text-muted-foreground">請輸入自訂符號</p>
+              <div className="grid gap-4 py-4">
                 <Input
-                  value={editingSymbol}
-                  onChange={(e) => setEditingSymbol(e.target.value)}
+                  value={newSymbol}
+                  onChange={(e) => setNewSymbol(e.target.value)}
                   placeholder="輸入自訂符號"
                   className="w-full"
                 />
               </div>
 
               <DialogClose asChild>
-                <div className="flex w-full gap-2">
-                  <Button
-                    onClick={() => deleteCustomSymbol(index)}
-                    variant="destructive"
-                    className="flex-1"
-                  >
-                    刪除
-                  </Button>
-                  <Button onClick={saveEdit} className="flex-1">
-                    儲存
-                  </Button>
-                </div>
+                <Button onClick={addCustomSymbol}>新增</Button>
               </DialogClose>
             </DialogContent>
           </Dialog>
 
-          <Button
-            onClick={() => removePrefix(symbol)}
-            variant="outline"
-            className="border-l-1 flex h-[48px] animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
-          >
-            <PilcrowLeft className="h-5 w-[24px] text-center" />
-          </Button>
-        </div>
-      ))}
+          {/* 包含空白行 */}
+          <div className="flex h-[36px] overflow-hidden rounded-md border border-input">
+            <Label className="flex cursor-pointer items-center gap-1 px-3 py-2">
+              <Checkbox
+                id="terms"
+                checked={includeEmptyLines}
+                onCheckedChange={(checked: boolean) =>
+                  setIncludeEmptyLines(checked)
+                }
+              />
+              <p className="ml-1 text-sm">包含空行</p>
+            </Label>
 
-      {/* 預設符號區域 */}
-      {prefixSymbols.map((symbol, index) => (
-        <div key={`default-${index}`} className="flex">
-          <Button
-            onClick={() => insertPrefix(symbol)}
-            variant="outline"
-            className="text-md flex h-[48px] w-full animate-fade-in items-center justify-start rounded-none border-l-0 border-r-0 border-t-0"
-          >
-            <span className="h-5 w-[24px] flex-none text-center">
-              {symbol.symbol}
-            </span>
-            <p className="text-sm">{symbol.name}</p>
-          </Button>
-
-          <Button
-            onClick={() => removePrefix(symbol)}
-            variant="outline"
-            className="border-l-1 text-md flex h-[48px] animate-fade-in items-center justify-start rounded-none border-r-0 border-t-0"
-          >
-            <PilcrowLeft className="h-5 w-[24px] text-center" />
-          </Button>
+            {/* 空白字元縮排 */}
+            <Button
+              onClick={() =>
+                removePrefix({
+                  symbol: " ",
+                  name: "半形空格",
+                  type: "repeat",
+                  editable: false,
+                })
+              }
+              variant="outline"
+              className="rounded-none border-b-0 border-r-0 border-t-0 bg-background p-3 shadow-none"
+            >
+              <PilcrowLeft />
+            </Button>
+            <Button
+              onClick={() =>
+                insertPrefix({
+                  symbol: " ",
+                  name: "半形空格",
+                  type: "repeat",
+                  editable: false,
+                })
+              }
+              variant="outline"
+              className="rounded-none border-b-0 border-r-0 border-t-0 bg-background p-3 shadow-none"
+            >
+              <PilcrowRight />
+            </Button>
+          </div>
         </div>
-      ))}
-    </ScrollArea>
+
+        <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
+          <p className="px-3 py-1 pt-3 text-sm font-semibold">自訂符號</p>
+
+          {/* 自訂符號區域 */}
+          {customSymbols.length !== 0 && (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,max-content))] gap-2 p-3">
+              {customSymbols.map((symbol, index) => (
+                <div key={`custom-${index}`} className="group relative w-full">
+                  <Button
+                    variant="none"
+                    className="flex h-full w-full flex-col justify-start gap-1 p-0"
+                    onClick={() => insertPrefix(symbol)}
+                  >
+                    <div className="flex h-16 w-full items-center justify-center rounded-md border border-input bg-white text-lg">
+                      <p className="max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {symbol.symbol}
+                      </p>
+                    </div>
+                    <p className="line-clamp-1 max-w-[120px] whitespace-normal text-sm">
+                      {symbol.name}
+                    </p>
+                  </Button>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        onClick={() => startEdit(symbol, index)}
+                        variant="outline"
+                        className="pointer-events-none absolute right-[-4px] top-[-4px] flex h-8 w-8 items-center justify-center rounded-full border border-input bg-background opacity-0 shadow-none transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
+                      >
+                        <Pencil className="h-5 w-[24px] text-center" />
+                      </Button>
+                    </DialogTrigger>
+
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>編輯自訂符號</DialogTitle>
+                      </DialogHeader>
+
+                      <div className="grid gap-2 py-4">
+                        <p className="text-sm text-muted-foreground">
+                          請輸入自訂符號
+                        </p>
+                        <Input
+                          value={editingSymbol}
+                          onChange={(e) => setEditingSymbol(e.target.value)}
+                          placeholder="輸入自訂符號"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <DialogClose asChild>
+                        <div className="flex w-full gap-2">
+                          <Button
+                            onClick={() => deleteCustomSymbol(index)}
+                            variant="destructive"
+                            className="flex-1"
+                          >
+                            刪除
+                          </Button>
+                          <Button onClick={saveEdit} className="flex-1">
+                            儲存
+                          </Button>
+                        </div>
+                      </DialogClose>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              ))}
+            </div>
+          )}
+          {customSymbols.length === 0 && (
+            <div className="flex w-full items-center justify-center gap-2 p-6 text-sm text-zinc-400">
+              <CircleDashed className="h-5 w-4" />
+              目前沒有自訂符號
+            </div>
+          )}
+
+          <p className="px-3 py-1 text-sm font-semibold">預設符號</p>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,max-content))] gap-2 p-3">
+            {/* 預設符號區域 */}
+            {prefixSymbols.map((symbol, index) => (
+              <div key={`default-${index}`} className="group relative w-full">
+                <Button
+                  variant="none"
+                  className="flex h-full w-full flex-col justify-start gap-1 p-0"
+                  onClick={() => insertPrefix(symbol)}
+                >
+                  <div className="flex h-16 w-full items-center justify-center rounded-md border border-input bg-white text-lg">
+                    <p className="max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {symbol.symbol}
+                    </p>
+                  </div>
+                  <p className="line-clamp-1 max-w-[120px] whitespace-normal text-sm">
+                    {symbol.name}
+                  </p>
+                </Button>
+
+                <Button
+                  onClick={() => removePrefix(symbol)}
+                  variant="outline"
+                  className="pointer-events-none absolute right-[-4px] top-[-4px] flex h-8 w-8 items-center justify-center rounded-full border border-input bg-background opacity-0 shadow-none transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
+                >
+                  <PilcrowLeft className="h-5 w-[24px] text-center" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
   );
 };
 
