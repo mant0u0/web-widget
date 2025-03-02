@@ -21,6 +21,15 @@ interface SearchReplaceProps {
   updateText: (newText: string) => void;
 }
 
+// 搜尋結果項目的介面
+interface SearchResultItem {
+  position: number;
+  context: string;
+  beforeText: string;
+  matchText: string;
+  afterText: string;
+}
+
 // 檢查字符是否為 CJK 字符
 const isCJK = (char: string): boolean => {
   const code = char.charCodeAt(0);
@@ -51,27 +60,57 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
   const [matchCount, setMatchCount] = useState(0);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
   const [matchPositions, setMatchPositions] = useState<number[]>([]); // 儲存所有匹配位置
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]); // 儲存帶有上下文的搜尋結果
 
-  // 尋找所有匹配位置
+  // 尋找所有匹配位置並生成帶有上下文的結果
   const findAllMatches = (text: string, searchText: string) => {
+    if (!searchText) return { positions: [], results: [] };
+
     const positions: number[] = [];
+    const results: SearchResultItem[] = [];
     const regex = new RegExp(searchText, "g");
     let match;
 
     while ((match = regex.exec(text)) !== null) {
       positions.push(match.index);
+
+      // 產生上下文（前後各15個字符）
+      const contextStart = Math.max(0, match.index - 15);
+      const contextEnd = Math.min(
+        text.length,
+        match.index + searchText.length + 15,
+      );
+
+      const beforeText = text.substring(contextStart, match.index);
+      const matchText = text.substring(
+        match.index,
+        match.index + searchText.length,
+      );
+      const afterText = text.substring(
+        match.index + searchText.length,
+        contextEnd,
+      );
+
+      results.push({
+        position: match.index,
+        context: text.substring(contextStart, contextEnd),
+        beforeText,
+        matchText,
+        afterText,
+      });
     }
 
-    return positions;
+    return { positions, results };
   };
 
   // 搜尋功能
   const handleSearch = () => {
     if (!searchText) return;
 
-    // 找到所有匹配位置
-    const positions = findAllMatches(text, searchText);
+    // 找到所有匹配位置和上下文
+    const { positions, results } = findAllMatches(text, searchText);
     setMatchPositions(positions);
+    setSearchResults(results);
     setMatchCount(positions.length);
 
     if (positions.length > 0) {
@@ -88,6 +127,12 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     } else {
       setCurrentMatchIndex(-1);
     }
+  };
+
+  // 點擊搜尋結果項目
+  const handleResultClick = (index: number) => {
+    setCurrentMatchIndex(index);
+    selectMatch(matchPositions[index]);
   };
 
   // 選中特定位置的文字
@@ -151,17 +196,18 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
       text.substring(0, start) + replaceText + text.substring(end);
     updateText(newText);
 
-    // 更新匹配位置和計數
-    const newPositions = findAllMatches(newText, searchText);
-    setMatchPositions(newPositions);
-    setMatchCount(newPositions.length);
+    // 更新匹配位置、搜尋結果和計數
+    const { positions, results } = findAllMatches(newText, searchText);
+    setMatchPositions(positions);
+    setSearchResults(results);
+    setMatchCount(positions.length);
 
     // 更新當前索引
-    if (newPositions.length === 0) {
+    if (positions.length === 0) {
       setCurrentMatchIndex(-1);
-    } else if (currentMatchIndex >= newPositions.length) {
+    } else if (currentMatchIndex >= positions.length) {
       setCurrentMatchIndex(0);
-      selectMatch(newPositions[0]);
+      selectMatch(positions[0]);
     }
   };
 
@@ -174,6 +220,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     setMatchCount(0);
     setCurrentMatchIndex(-1);
     setMatchPositions([]);
+    setSearchResults([]);
   };
   // ================================================
 
@@ -208,58 +255,34 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
                 placeholder="搜尋..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                // onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
               <Button className="flex-1" onClick={handleSearch}>
                 搜尋
               </Button>
             </div>
-            <Input
-              type="text"
-              className="bg-white"
-              placeholder="取代為..."
-              value={replaceText}
-              onChange={(e) => setReplaceText(e.target.value)}
-            />
+
+            <div className="mt-2 flex gap-2">
+              <Input
+                type="text"
+                className="bg-white"
+                placeholder="取代為..."
+                value={replaceText}
+                onChange={(e) => setReplaceText(e.target.value)}
+              />
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={replaceCurrent}
+                disabled={matchCount === 0}
+              >
+                取代
+              </Button>
+            </div>
 
             {/* 控制按鈕 */}
-            <div className="flex flex-col gap-2">
+            <div className="mt-2 flex flex-col gap-2">
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={findPrevious}
-                  disabled={matchCount === 0}
-                >
-                  上一個
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={clearSelection}
-                  disabled={matchCount === 0}
-                >
-                  返回第一個
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={findNext}
-                  disabled={matchCount === 0}
-                >
-                  下一個
-                </Button>
-              </div>
-
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={replaceCurrent}
-                  disabled={matchCount === 0}
-                >
-                  取代
-                </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
@@ -291,44 +314,70 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
         </div>
 
         <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
-          <div className="flex flex-col gap-2 p-4 px-2">
+          <div className="flex h-full flex-col gap-2">
             {/* 搜尋狀態顯示 */}
             {matchCount > 0 && (
-              <div className="text-sm text-gray-500">
-                找到 {matchCount} 個結果 ({currentMatchIndex + 1}/{matchCount})
+              <div className="sticky top-0 flex items-center justify-between bg-zinc-50 px-3 py-3 pt-3">
+                <p className="text-sm font-semibold">搜尋結果</p>
+                <div className="text-sm text-gray-500">
+                  找到 {matchCount} 個結果 ({currentMatchIndex + 1}/{matchCount}
+                  )
+                </div>
               </div>
             )}
 
-            <div className="flex flex-col gap-1 pt-4">
-              {/* 字數統計 */}
-              <div className="text-sm text-gray-500">
-                目前總共 {characterCount} 個字，共 {lineCount} 行。
+            {/* 搜尋結果列表 */}
+            {searchResults.length > 0 && (
+              <div className="divide-y">
+                {searchResults.map((result, index) => (
+                  <div
+                    key={index}
+                    className={`cursor-pointer p-3 hover:bg-gray-100 ${
+                      index === currentMatchIndex ? "bg-blue-50" : ""
+                    }`}
+                    onClick={() => handleResultClick(index)}
+                  >
+                    <div className="text-sm">
+                      <span className="text-gray-500">{result.beforeText}</span>
+                      <span className="bg-yellow-200 font-medium text-black">
+                        {result.matchText}
+                      </span>
+                      <span className="text-gray-500">{result.afterText}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              {characterCount > 500 ? (
-                <div className="text-sm text-red-500">
-                  Threads 文字上限 {characterCount} / 500 字，超過{" "}
-                  {characterCount - 500} 字。
-                </div>
-              ) : (
-                <div className="text-sm text-gray-500">
-                  Threads 發文上限 {characterCount} / 500 字。
-                </div>
-              )}
-
-              {twitterCount.count > 280 ? (
-                <div className="text-sm text-red-500">
-                  Twitter 發文上限 {twitterCount.count} / 280 字符，超過{" "}
-                  {twitterCount.count - 280} 字。
-                </div>
-              ) : (
-                <div className="text-sm text-gray-500">
-                  Twitter 發文上限 {twitterCount.count} / 280 字符。
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </ScrollArea>
+        <div className="flex flex-col gap-1 p-3">
+          {/* 字數統計 */}
+          <div className="text-sm text-gray-500">
+            目前總共 {characterCount} 個字，共 {lineCount} 行。
+          </div>
+
+          {characterCount > 500 ? (
+            <div className="text-sm text-red-500">
+              Threads 文字上限 {characterCount} / 500 字，超過{" "}
+              {characterCount - 500} 字。
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500">
+              Threads 發文上限 {characterCount} / 500 字。
+            </div>
+          )}
+
+          {twitterCount.count > 280 ? (
+            <div className="text-sm text-red-500">
+              Twitter 發文上限 {twitterCount.count} / 280 字符，超過{" "}
+              {twitterCount.count - 280} 字。
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500">
+              Twitter 發文上限 {twitterCount.count} / 280 字符。
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
