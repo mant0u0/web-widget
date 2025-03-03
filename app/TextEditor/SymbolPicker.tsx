@@ -31,7 +31,7 @@ const SymbolButton = ({
       variant="outline"
       size="sm"
       className={
-        "text-md flex h-10 animate-fade-in items-center justify-center " +
+        "text-md flex h-10 animate-fade-in items-center justify-center" +
         btnClassName
       }
     >
@@ -60,12 +60,14 @@ const LazyLoadSection = ({
   items,
   onSelect,
   btnClassName,
+  listClassName,
   defaultExpanded = true,
 }: {
   category: string;
   items: SymbolItem[];
   onSelect: (item: SymbolItem) => void;
   btnClassName?: string;
+  listClassName?: string;
   defaultExpanded?: boolean;
 }) => {
   // 注意：將狀態初始化移動到 useEffect 中
@@ -132,7 +134,7 @@ const LazyLoadSection = ({
           isExpanded
             ? "p-2 opacity-100 md:p-3"
             : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
-        }`}
+        } ${listClassName} `}
       >
         {/* 根據可見數量顯示符號按鈕 */}
         {items.slice(0, visibleItems).map((item, index) => (
@@ -156,8 +158,15 @@ export const SymbolPicker: React.FC<{
   data: SymbolData;
   onSelect: (symbol: string) => void;
   btnClassName?: string;
+  listClassName?: string;
   pickerType?: "symbol" | "emoji" | "kaomoji";
-}> = ({ data, onSelect, btnClassName, pickerType = "symbol" }) => {
+}> = ({
+  data,
+  onSelect,
+  btnClassName,
+  listClassName,
+  pickerType = "symbol",
+}) => {
   // 搜尋關鍵字
   const [searchQuery, setSearchQuery] = useState("");
   // 最近使用的符號
@@ -341,7 +350,7 @@ export const SymbolPicker: React.FC<{
                   isExpanded
                     ? "p-2 opacity-100 md:p-3"
                     : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
-                }`}
+                } ${listClassName}`}
               >
                 {recentItems.length > 0 ? (
                   recentItems.map((item, index) => (
@@ -375,6 +384,7 @@ export const SymbolPicker: React.FC<{
               items={items}
               onSelect={handleSymbolSelect}
               btnClassName={btnClassName}
+              listClassName={listClassName}
             />
           ))}
 

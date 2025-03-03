@@ -63,6 +63,9 @@ export const dataKaomoji = {
       { symbol: "ヽ( ^ω^ ゞ )", tags: [""] },
       { symbol: "(๑ ^ ₃•๑)", tags: [""] },
       { symbol: "⁽⁽٩(๑˃̶͈̀ ᗨ ˂̶͈́)۶⁾⁾", tags: [""] },
+      { symbol: "੭ ˙ᗜ˙ )੭", tags: [""] },
+      { symbol: ">ヮ<", tags: [""] },
+      { symbol: "ᴖ ᴈ ᴖ", tags: [""] },
     ],
   },
   憤怒: {
@@ -170,6 +173,7 @@ export const dataKaomoji = {
       { symbol: "((└(:3」┌)┘))", tags: [""] },
       { symbol: "(∂ω∂)", tags: [""] },
       { symbol: "(<ゝω・)☆", tags: [""] },
+      { symbol: "( • ̀ω•́  )✧", tags: [""] },
       { symbol: "_(:3 ⌒ﾞ)_", tags: [""] },
       { symbol: "( σ՞ਊ ՞)σ", tags: [""] },
       { symbol: "ლ(́◕◞౪◟◕‵ლ)", tags: [""] },
@@ -226,7 +230,7 @@ export const dataKaomoji = {
       { symbol: "(┐「ε:)_三┌(.ω.)┐三_(:3 」∠)_", tags: [""] },
       { symbol: "ಥ_ಥ", tags: [""] },
       { symbol: "ಠ౪ಠ", tags: [""] },
-      { symbol: "ૢ(⁎❝᷀ົཽω ❝᷀ົཽ⁎)✧", tags: [""] },
+      { symbol: "✧٩(ˊωˋ*)و✧", tags: [""] },
       { symbol: "‹‹\( ˙▿˙　)/››‹‹\(　˙▿˙ )/››", tags: [""] },
       { symbol: "₍₍ ◝('ω'◝) ⁾⁾ ₍₍ (◟'ω')◟ ⁾⁾", tags: [""] },
       { symbol: "ლ（╹ε╹ლ）", tags: [""] },
@@ -397,6 +401,7 @@ export const dataKaomoji = {
       { symbol: "(●б人<●)", tags: [""] },
       { symbol: "(；´ﾟωﾟ｀人)", tags: [""] },
       { symbol: "๛ก（ーωーก）", tags: [""] },
+      { symbol: "＞ᨓ＜", tags: [""] },
     ],
   },
   喜歡: {
@@ -466,6 +471,7 @@ export const dataKaomoji = {
       { symbol: "/ᐠ .ᆺ. ᐟ\ﾉ", tags: [""] },
       { symbol: "▼・ᴥ・▼", tags: [""] },
       { symbol: "⋛⋋( ‘Θ’)⋌⋚", tags: [""] },
+      { symbol: ">ㅅ<", tags: [""] },
     ],
   },
   驚訝: {
