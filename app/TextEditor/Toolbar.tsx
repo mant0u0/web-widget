@@ -177,7 +177,8 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           <SymbolPicker
             data={dataSymbols}
             onSelect={insertSymbol}
-            btnClassName="w-[44px] h-[48px] overflow-hidden"
+            btnClassName="w-[48px] aspect-square overflow-hidden"
+            listClassName="flex flex-wrap"
             pickerType="symbol" // 符號
           />
         </TabsContent>
@@ -188,7 +189,8 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           <SymbolPicker
             data={dataEmoji}
             onSelect={insertSymbol}
-            btnClassName="w-[44px] h-[48px] text-2xl overflow-hidden"
+            btnClassName="w-[48px] aspect-square text-2xl overflow-hidden"
+            listClassName="flex flex-wrap"
             pickerType="emoji" // Emoji
           />
         </TabsContent>

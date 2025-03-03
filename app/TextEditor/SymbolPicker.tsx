@@ -60,7 +60,7 @@ const LazyLoadSection = ({
   items,
   onSelect,
   btnClassName,
-  listClassName,
+  listClassName = "",
   defaultExpanded = true,
 }: {
   category: string;
@@ -130,7 +130,7 @@ const LazyLoadSection = ({
 
       {/* 符號列表容器 */}
       <div
-        className={`flex flex-wrap gap-1 ${
+        className={`gap-1 ${
           isExpanded
             ? "p-2 opacity-100 md:p-3"
             : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
