@@ -115,7 +115,7 @@ const LazyLoadSection = ({
       {/* 分類標題和展開/收起按鈕 */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-3 py-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
+        className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-2 py-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:px-3 md:py-3"
       >
         {isExpanded ? (
           <ChevronDown className="h-4 w-4" />
@@ -131,7 +131,7 @@ const LazyLoadSection = ({
         className={`flex flex-wrap gap-1 ${
           isExpanded
             ? "p-3 opacity-100"
-            : "h-0 overflow-hidden px-3 py-0 opacity-0"
+            : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
         }`}
       >
         {/* 根據可見數量顯示符號按鈕 */}
@@ -297,7 +297,7 @@ export const SymbolPicker: React.FC<{
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
         {/* 搜尋欄 */}
-        <div className="border-b bg-background p-3">
+        <div className="border-b bg-background p-2 md:p-3">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
             <Input
@@ -317,7 +317,7 @@ export const SymbolPicker: React.FC<{
             <div className="">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-3 text-left text-sm font-semibold transition-colors hover:bg-zinc-100"
+                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:p-3"
               >
                 {isExpanded ? (
                   <ChevronDown className="h-4 w-4" />
@@ -340,7 +340,7 @@ export const SymbolPicker: React.FC<{
                 className={`flex flex-wrap gap-1 ${
                   isExpanded
                     ? "p-3 opacity-100"
-                    : "h-0 overflow-hidden px-3 py-0 opacity-0"
+                    : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
                 }`}
               >
                 {recentItems.length > 0 ? (

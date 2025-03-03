@@ -86,7 +86,7 @@ export const QuotationmMarks: React.FC<{
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
         {/* 新增自訂引號 */}
-        <div className="border-b bg-background p-3">
+        <div className="border-b bg-background p-2 md:p-3">
           <Dialog>
             <DialogTrigger asChild>
               <Button
@@ -140,7 +140,7 @@ export const QuotationmMarks: React.FC<{
           <p className="px-3 py-1 pt-3 text-sm font-semibold">自訂引號</p>
 
           {customQuotes.length !== 0 && (
-            <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
+            <div className="grid grid-cols-3 gap-2 p-2 md:p-3">
               {/* 自訂引號 */}
               {customQuotes.map((quote, index) => (
                 <div key={`custom-${index}`} className="group relative w-full">
@@ -229,7 +229,7 @@ export const QuotationmMarks: React.FC<{
           {/* ----------------------- */}
           <p className="px-3 py-1 text-sm font-semibold">預設引號</p>
           {/* 預設引號 */}
-          <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 p-2 md:p-3">
             {defaultQuotes.map((quote, index) => (
               <Button
                 key={`default-${index}`}

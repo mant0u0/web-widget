@@ -183,7 +183,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
   return (
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
-        <div className="flex items-center justify-between border-b bg-background p-3">
+        <div className="flex items-center justify-between border-b bg-background p-2 md:p-3">
           {/* 新增自訂符號 */}
           <Dialog>
             <DialogTrigger asChild>
@@ -268,7 +268,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
           {/* 自訂符號區域 */}
           {customSymbols.length !== 0 && (
-            <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
+            <div className="grid grid-cols-3 gap-2 p-2 md:p-3">
               {customSymbols.map((symbol, index) => (
                 <div key={`custom-${index}`} className="group relative w-full">
                   <Button
@@ -342,7 +342,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
           )}
 
           <p className="px-3 py-1 text-sm font-semibold">預設符號</p>
-          <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 p-2 md:p-3">
             {/* 預設符號區域 */}
             {prefixSymbols.map((symbol, index) => (
               <div key={`default-${index}`} className="group relative w-full">

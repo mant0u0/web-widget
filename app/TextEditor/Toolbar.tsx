@@ -107,7 +107,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className="relative top-0 z-0 cursor-grab select-none overflow-x-scroll py-2 [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)] md:pt-0"
+          className="relative top-0 z-0 cursor-grab select-none overflow-x-scroll py-1 [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)] md:py-2 md:pt-0"
           // [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]
           style={{
             msOverflowStyle: "none",
@@ -115,7 +115,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           }}
         >
           <div className="flex cursor-grab select-none">
-            <TabsList className="h-10 gap-2 bg-transparent p-0">
+            <TabsList className="h-10 gap-1 bg-transparent p-0">
               <TabsTrigger
                 value="插入符號"
                 className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"

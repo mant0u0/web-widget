@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, ChangeEvent, useMemo, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { Text } from "lucide-react";
+import { Text, AArrowUp, AArrowDown } from "lucide-react";
 
 // 工具列
 import { Toolbar } from "./Toolbar";
@@ -323,8 +323,8 @@ const TextEditor = () => {
   return (
     <div className="flex h-full w-full flex-col items-center overflow-hidden">
       {/* content  */}
-      <div className="flex h-full w-full flex-col overflow-hidden p-3 md:flex-row-reverse md:gap-3">
-        <div className="flex h-full w-full flex-col overflow-hidden md:w-[80%]">
+      <div className="flex h-full w-full flex-col overflow-hidden p-2 md:flex-row-reverse md:gap-3 md:p-3">
+        <div className="flex h-[40%] w-full flex-col overflow-hidden md:h-full md:w-[80%]">
           <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-input bg-white">
             <div className="relative flex-1 overflow-hidden">
               <Textarea
@@ -335,12 +335,13 @@ const TextEditor = () => {
               />
             </div>
 
-            <div className="bg-zinc-50 px-3 py-2.5">
+            <div className="flex justify-between bg-zinc-50 px-3 py-2.5">
+              {/* 文字統計 */}
               <div
-                className="flex w-fit cursor-pointer items-center gap-2 text-sm text-gray-500 hover:text-gray-600"
+                className="flex w-fit cursor-pointer items-center gap-2 text-xs text-gray-500 hover:text-gray-600 md:text-sm"
                 onClick={toggleStatDisplay}
               >
-                <Text className="h-4 w-4" />
+                <Text className="h-4 md:h-5" />
                 {statDisplayType === "general" && (
                   <div>
                     共 {characterCount} 字，共 {lineCount} 行
@@ -364,10 +365,20 @@ const TextEditor = () => {
                   </div>
                 )}
               </div>
+
+              {/* 字體大小 */}
+              {/* <div className="flex gap-2">
+                <div className="flex items-center gap-2 text-xs text-gray-500 md:text-sm">
+                  <AArrowDown className="h-5" />
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500 md:text-sm">
+                  <AArrowUp className="h-5" />
+                </div>
+              </div> */}
             </div>
           </div>
         </div>
-        <div className="h-full w-full overflow-hidden md:w-[20%] md:min-w-[340px]">
+        <div className="h-[60%] w-full overflow-hidden md:h-full md:w-[20%] md:min-w-[340px]">
           <Toolbar
             text={text}
             updateText={updateText}

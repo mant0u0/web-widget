@@ -331,7 +331,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
         {/* 搜尋欄 */}
-        <div className="border-b bg-background p-3">
+        <div className="border-b bg-background p-2 md:p-3">
           <div className="relative">
             <Collapsible>
               {/* 搜尋輸入框 */}
@@ -489,7 +489,7 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
                 {searchResults.map((result, index) => (
                   <div
                     key={index}
-                    className={`cursor-pointer p-3 hover:bg-gray-100 ${
+                    className={`cursor-pointer p-2 hover:bg-gray-100 md:p-3 ${
                       index === currentMatchIndex ? "bg-blue-50" : ""
                     }`}
                     onClick={() => handleResultClick(index)}
