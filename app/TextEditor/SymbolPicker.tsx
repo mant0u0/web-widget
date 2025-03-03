@@ -121,9 +121,9 @@ const LazyLoadSection = ({
         }`}
       >
         {/* 根據可見數量顯示符號按鈕 */}
-        {items.slice(0, visibleItems).map((item) => (
+        {items.slice(0, visibleItems).map((item, index) => (
           <SymbolButton
-            key={item.symbol}
+            key={`${item.symbol}-${index}`}
             item={item}
             onSelect={onSelect}
             btnClassName={btnClassName}
