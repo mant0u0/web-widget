@@ -52,6 +52,12 @@ const TextEditor = () => {
   );
   const [copyStatus, setCopyStatus] = React.useState(false);
 
+  // 添加字體大小狀態，預設為 18px (lg)
+  const [fontSize, setFontSize] = useLocalStorage<number>(
+    "textEditorFontSize",
+    18,
+  );
+
   // 更新文字
   const updateText = useCallback(
     (newText: string) => {
@@ -281,6 +287,16 @@ const TextEditor = () => {
     [updateText],
   );
 
+  // 字體大小增加功能
+  const increaseFontSize = useCallback(() => {
+    setFontSize((prevSize) => Math.min(prevSize + 2, 36)); // 最大值限制為 36px
+  }, [setFontSize]);
+
+  // 字體大小減少功能
+  const decreaseFontSize = useCallback(() => {
+    setFontSize((prevSize) => Math.max(prevSize - 2, 12)); // 最小值限制為 12px
+  }, [setFontSize]);
+
   // ================================================
   // 在 TextEditor 元件中添加一個狀態來追踪當前顯示的統計類型
   const [statDisplayType, setStatDisplayType] = useState<
@@ -331,7 +347,8 @@ const TextEditor = () => {
                 value={text}
                 onChange={handleTextChange}
                 placeholder="在這裡輸入或編輯文字..."
-                className="absolute inset-0 resize-none rounded-none border-l-0 border-r-0 border-t-0 bg-white p-4 !text-lg focus-visible:ring-0"
+                className="absolute inset-0 resize-none rounded-none border-l-0 border-r-0 border-t-0 bg-white p-4 focus-visible:ring-0"
+                style={{ fontSize: `${fontSize}px` }} // 動態設置字體大小
               />
             </div>
 
@@ -366,15 +383,26 @@ const TextEditor = () => {
                 )}
               </div>
 
-              {/* 字體大小 */}
-              {/* <div className="flex gap-2">
-                <div className="flex items-center gap-2 text-xs text-gray-500 md:text-sm">
+              {/* 字體大小控制 */}
+              <div className="flex gap-2">
+                <button
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 md:text-sm"
+                  onClick={decreaseFontSize}
+                  title="縮小字體"
+                >
                   <AArrowDown className="h-5" />
+                </button>
+                <div className="flex items-center text-xs text-gray-500 md:text-sm">
+                  {fontSize}px
                 </div>
-                <div className="flex items-center gap-2 text-xs text-gray-500 md:text-sm">
+                <button
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 md:text-sm"
+                  onClick={increaseFontSize}
+                  title="放大字體"
+                >
                   <AArrowUp className="h-5" />
-                </div>
-              </div> */}
+                </button>
+              </div>
             </div>
           </div>
         </div>
