@@ -68,15 +68,25 @@ const LazyLoadSection = ({
   btnClassName?: string;
   defaultExpanded?: boolean;
 }) => {
-  // 目前顯示的項目數量
-  const [visibleItems, setVisibleItems] = useState(ITEMS_PER_BATCH);
-  // 展開/收起狀態
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  // 注意：將狀態初始化移動到 useEffect 中
+  const [visibleItems, setVisibleItems] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isClientSide, setIsClientSide] = useState(false);
+
   // 用於觀察延遲載入的 ref
   const loadMoreRef = useRef(null);
 
+  // 在客戶端使用 useEffect 初始化狀態
+  useEffect(() => {
+    setVisibleItems(ITEMS_PER_BATCH);
+    setIsExpanded(defaultExpanded);
+    setIsClientSide(true);
+  }, [defaultExpanded]);
+
   // 設置 Intersection Observer 實現延遲載入
   useEffect(() => {
+    if (!isClientSide) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         // 當觀察的元素進入視圖且還有更多項目可載入時
@@ -94,7 +104,11 @@ const LazyLoadSection = ({
     }
 
     return () => observer.disconnect();
-  }, [visibleItems, items.length]);
+  }, [visibleItems, items.length, isClientSide]);
+
+  if (!isClientSide) {
+    return null; // 在伺服器端或初始渲染時不顯示任何內容
+  }
 
   return (
     <div className="">
@@ -142,13 +156,47 @@ export const SymbolPicker: React.FC<{
   data: SymbolData;
   onSelect: (symbol: string) => void;
   btnClassName?: string;
-}> = ({ data, onSelect, btnClassName }) => {
+  pickerType?: "symbol" | "emoji" | "kaomoji"; // 新增 kaomoji 類型
+}> = ({ data, onSelect, btnClassName, pickerType = "symbol" }) => {
   // 搜尋關鍵字
   const [searchQuery, setSearchQuery] = useState("");
   // 最近使用的符號
   const [recentItems, setRecentItems] = useState<SymbolItem[]>([]);
   // 最近使用區塊的展開狀態
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
+  // 客戶端渲染標記
+  const [isClientSide, setIsClientSide] = useState(false);
+
+  // 根據不同的 pickerType 獲取對應的 localStorage key
+  const getLocalStorageKey = () => {
+    switch (pickerType) {
+      case "emoji":
+        return "recentEmojis";
+      case "kaomoji":
+        return "recentEmoticons";
+      case "symbol":
+      default:
+        return "recentSymbols";
+    }
+  };
+
+  const localStorageKey = getLocalStorageKey();
+
+  // 在客戶端初始化狀態
+  useEffect(() => {
+    setIsExpanded(true);
+    setIsClientSide(true);
+
+    // 根據 pickerType 從 localStorage 讀取最近使用的項目
+    try {
+      const storedRecent = localStorage.getItem(localStorageKey);
+      if (storedRecent) {
+        setRecentItems(JSON.parse(storedRecent));
+      }
+    } catch (e) {
+      console.error(`Failed to read ${localStorageKey} from localStorage:`, e);
+    }
+  }, [localStorageKey]);
 
   /**
    * 處理符號選擇
@@ -161,7 +209,19 @@ export const SymbolPicker: React.FC<{
       // 避免重複添加相同的符號
       if (prev.some((prevItem) => prevItem.symbol === item.symbol)) return prev;
       // 添加到最近使用列表，最多保留 20 個
-      return [item, ...prev].slice(0, 20);
+      const newRecentItems = [item, ...prev].slice(0, 20);
+
+      // 儲存到 localStorage，使用對應的 key
+      try {
+        localStorage.setItem(localStorageKey, JSON.stringify(newRecentItems));
+      } catch (e) {
+        console.error(
+          `Failed to write to localStorage (${localStorageKey}):`,
+          e,
+        );
+      }
+
+      return newRecentItems;
     });
   };
 
@@ -208,6 +268,31 @@ export const SymbolPicker: React.FC<{
     return filtered;
   }, [searchQuery, data]);
 
+  // 在客戶端渲染之前，先返回空的 skeleton
+  if (!isClientSide) {
+    return (
+      <div className="h-full w-full overflow-hidden pt-0">
+        <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+          <div className="border-b bg-background p-3">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder={`搜尋${pickerType === "emoji" ? "表情符號" : pickerType === "kaomoji" ? "顏文字" : "符號"}`}
+                value=""
+                className="pl-8 text-sm"
+                disabled
+              />
+            </div>
+          </div>
+          <div className="flex h-full items-center justify-center">
+            <CircleDashed className="h-6 w-6 animate-spin text-zinc-300" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
@@ -217,7 +302,7 @@ export const SymbolPicker: React.FC<{
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
             <Input
               type="text"
-              placeholder="搜尋符號"
+              placeholder={`搜尋${pickerType === "emoji" ? "表情符號" : pickerType === "kaomoji" ? "顏文字" : "符號"}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 text-sm"
@@ -239,7 +324,14 @@ export const SymbolPicker: React.FC<{
                 ) : (
                   <ChevronRight className="h-4 w-4" />
                 )}
-                <p className="">最近使用</p>
+                <p className="">
+                  最近使用
+                  {pickerType === "emoji"
+                    ? "的表情符號"
+                    : pickerType === "kaomoji"
+                      ? "的顏文字"
+                      : "的符號"}
+                </p>
                 <span className="text-xs text-zinc-400">
                   {recentItems.length}
                 </span>
@@ -263,7 +355,12 @@ export const SymbolPicker: React.FC<{
                 ) : (
                   <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
                     <CircleDashed className="h-5 w-4" />
-                    沒有最近使用的符號
+                    沒有最近使用
+                    {pickerType === "emoji"
+                      ? "的表情符號"
+                      : pickerType === "kaomoji"
+                        ? "的顏文字"
+                        : "的符號"}
                   </div>
                 )}
               </div>
