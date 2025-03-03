@@ -321,7 +321,7 @@ const TextEditor = () => {
   }, [text]);
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center overflow-hidden">
+    <div className="flex h-full w-full flex-col items-center overflow-hidden">
       {/* content  */}
       <div className="flex h-full w-full flex-col overflow-hidden p-3 md:flex-row-reverse md:gap-3">
         <div className="flex h-full w-full flex-col overflow-hidden md:w-[80%]">

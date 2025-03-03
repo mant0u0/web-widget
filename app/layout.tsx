@@ -37,6 +37,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap"
           rel="stylesheet"
         />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        ></meta>
       </head>
       {/* 設置初始類為 font-include-emoji，將在客戶端根據需要更改 */}
       <body className="font-include-emoji">
