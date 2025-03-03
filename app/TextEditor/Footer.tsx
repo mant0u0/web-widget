@@ -67,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({
       </AlertDialog>
 
       <div className="flex gap-2">
-        <div className="flex h-[36px] overflow-hidden border border-input shadow-sm">
+        <div className="flex h-[36px] overflow-hidden rounded-md border border-input shadow-sm">
           <Button
             variant="outline"
             onClick={onUndo}
