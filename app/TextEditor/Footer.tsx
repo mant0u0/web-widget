@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({
   onClear,
 }) => {
   return (
-    <div className="flex w-full justify-between border-gray-200 p-3 pt-0">
+    <div className="flex w-full justify-between border-gray-200 p-2 pt-0 md:p-3">
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
@@ -67,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({
       </AlertDialog>
 
       <div className="flex gap-2">
-        <div className="flex h-[36px] overflow-hidden rounded-md border border-input shadow-sm">
+        <div className="flex h-[36px] overflow-hidden border border-input shadow-sm">
           <Button
             variant="outline"
             onClick={onUndo}
@@ -93,6 +93,7 @@ export const Footer: React.FC<FooterProps> = ({
           onClick={onCopy}
           // variant="outline"
           disabled={copyStatus || !text}
+          className=""
         >
           {copyStatus ? (
             <CircleCheck className="mr-1 h-5 w-[24px]" />

@@ -130,7 +130,7 @@ const LazyLoadSection = ({
       <div
         className={`flex flex-wrap gap-1 ${
           isExpanded
-            ? "p-3 opacity-100"
+            ? "p-2 opacity-100 md:p-3"
             : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
         }`}
       >
@@ -339,7 +339,7 @@ export const SymbolPicker: React.FC<{
               <div
                 className={`flex flex-wrap gap-1 ${
                   isExpanded
-                    ? "p-3 opacity-100"
+                    ? "p-2 opacity-100 md:p-3"
                     : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
                 }`}
               >
@@ -355,7 +355,7 @@ export const SymbolPicker: React.FC<{
                 ) : (
                   <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
                     <CircleDashed className="h-5 w-4" />
-                    沒有最近使用
+                    最近沒有使用
                     {pickerType === "emoji"
                       ? "的表情符號"
                       : pickerType === "kaomoji"

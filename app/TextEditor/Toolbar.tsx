@@ -118,49 +118,49 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
             <TabsList className="h-10 gap-1 bg-transparent p-0">
               <TabsTrigger
                 value="插入符號"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <Type className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入符號</p>
               </TabsTrigger>
               <TabsTrigger
                 value="插入 Emoji"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <Smile className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入 Emoji</p>
               </TabsTrigger>
               <TabsTrigger
                 value="插入顏文字"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <Smile className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入顏文字</p>
               </TabsTrigger>
               <TabsTrigger
                 value="插入引號"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <Quote className="w-4" />
                 <p className="whitespace-nowrap text-sm">插入引號</p>
               </TabsTrigger>
               <TabsTrigger
                 value="段落符號"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <ListOrdered className="w-4" />
                 <p className="whitespace-nowrap text-sm">段落符號</p>
               </TabsTrigger>
               <TabsTrigger
                 value="文字處理"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <SpellCheck2 className="w-4" />
                 <p className="whitespace-nowrap text-sm">文字處理</p>
               </TabsTrigger>
               <TabsTrigger
                 value="搜尋取代"
-                className="rounded- h-full cursor-grab gap-2 border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
               >
                 <Search className="w-4" />
                 <p className="whitespace-nowrap text-sm">搜尋取代</p>

@@ -355,10 +355,10 @@ const TextEditor = () => {
             <div className="flex justify-between bg-zinc-50 px-3 py-2.5">
               {/* 文字統計 */}
               <div
-                className="flex w-fit cursor-pointer items-center gap-2 text-xs text-gray-500 hover:text-gray-600 md:text-sm"
+                className="flex w-fit cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-600 md:gap-2 md:text-sm"
                 onClick={toggleStatDisplay}
               >
-                <Text className="h-4 md:h-5" />
+                <Text className="h-4" strokeWidth={2.5} />
                 {statDisplayType === "general" && (
                   <div>
                     共 {characterCount} 字，共 {lineCount} 行
@@ -386,13 +386,13 @@ const TextEditor = () => {
               {/* 字體大小控制 */}
               <div className="flex gap-2">
                 <button
-                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 md:text-sm"
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-600 md:text-sm"
                   onClick={decreaseFontSize}
                   title="縮小字體"
                 >
                   <AArrowDown className="h-5" />
                 </button>
-                <div className="flex items-center text-xs text-gray-500 md:text-sm">
+                <div className="flex w-8 items-center justify-center text-xs text-gray-500 md:text-sm">
                   {fontSize}px
                 </div>
                 <button
