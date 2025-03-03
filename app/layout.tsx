@@ -1,8 +1,7 @@
-// layout.tsx
-
 import type { Metadata } from "next";
-import "./globals.scss";
+import "./globals.css";
 import { Inter, Noto_Sans_TC } from "next/font/google";
+import DeviceDetector from "@/components/DeviceDetector";
 
 // 設定 Inter 字體
 const inter = Inter({
@@ -33,13 +32,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-TW" className={`${inter.variable} ${notoSansTC.variable}`}>
-      {/* <head>
+      <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap"
           rel="stylesheet"
         />
-      </head> */}
-      <body>{children}</body>
+      </head>
+      {/* 設置初始類為 font-include-emoji，將在客戶端根據需要更改 */}
+      <body className="font-include-emoji">
+        <DeviceDetector />
+        {children}
+      </body>
     </html>
   );
 }

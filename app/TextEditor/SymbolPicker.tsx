@@ -156,7 +156,7 @@ export const SymbolPicker: React.FC<{
   data: SymbolData;
   onSelect: (symbol: string) => void;
   btnClassName?: string;
-  pickerType?: "symbol" | "emoji" | "kaomoji"; // 新增 kaomoji 類型
+  pickerType?: "symbol" | "emoji" | "kaomoji";
 }> = ({ data, onSelect, btnClassName, pickerType = "symbol" }) => {
   // 搜尋關鍵字
   const [searchQuery, setSearchQuery] = useState("");
