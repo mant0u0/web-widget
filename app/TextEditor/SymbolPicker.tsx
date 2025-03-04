@@ -117,7 +117,7 @@ const LazyLoadSection = ({
       {/* 分類標題和展開/收起按鈕 */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-2 py-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:px-3 md:py-3"
+        className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 px-2 py-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:px-3 md:py-2"
       >
         {isExpanded ? (
           <ChevronDown className="h-4 w-4" />
@@ -326,7 +326,7 @@ export const SymbolPicker: React.FC<{
             <div className="">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:p-3"
+                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:px-3 md:py-2"
               >
                 {isExpanded ? (
                   <ChevronDown className="h-4 w-4" />
