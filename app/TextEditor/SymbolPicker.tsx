@@ -314,7 +314,7 @@ export const SymbolPicker: React.FC<{
               placeholder={`搜尋${pickerType === "emoji" ? "表情符號" : pickerType === "kaomoji" ? "顏文字" : "符號"}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 text-sm"
+              className="pl-8 text-base"
             />
           </div>
         </div>

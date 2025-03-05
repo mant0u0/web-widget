@@ -10,7 +10,7 @@ export default function DeviceDetector() {
       const userAgent = navigator.userAgent;
       const mobileRegex =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-      return mobileRegex.test(userAgent) || window.innerWidth < 768;
+      return mobileRegex.test(userAgent);
     };
 
     // 根據設備類型更改 body 的類名
