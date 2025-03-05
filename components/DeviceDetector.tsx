@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export default function DeviceDetector() {
   useEffect(() => {
-    // 檢測是否為移動設備
+    // 檢測是否為手機
     const isMobile = () => {
       const userAgent = navigator.userAgent;
       const mobileRegex =
