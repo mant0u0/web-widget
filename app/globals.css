@@ -11,6 +11,7 @@ body {
   box-sizing: border-box;
   overflow: hidden;
   background: #f4f4f4;
+  touch-action: manipulation !important;
 }
 
 .font-include-emoji {
