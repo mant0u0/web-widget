@@ -61,6 +61,16 @@ const shopsData: DrinkShop[] = [
     color: "#da151f",
   },
   {
+    name: "烏弄",
+    name_en: "UNOCHA",
+    image: "烏弄.jpg",
+    website: "https://unocha.com.tw/",
+    facebook: "https://www.facebook.com/UNOCHA.tw/?locale=zh_TW",
+    instagram: "https://www.instagram.com/unocha_tw",
+    color: "#115652",
+  },
+
+  {
     name: "TEA TOP 第一味",
     name_en: "TEA TOP",
     image: "TEA TOP 第一味.jpg",
