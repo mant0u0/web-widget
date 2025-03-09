@@ -443,7 +443,7 @@ const shopsData: DrinkShop[] = [
     instagram: "https://www.instagram.com/oregin.tw/",
     menu: "https://www.enseki.org/menu",
     color: "#036db7",
-  }
+  },
   {
     name: "喫茶小舖",
     name_en: "Teashop168",
