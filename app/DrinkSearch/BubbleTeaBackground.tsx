@@ -42,8 +42,8 @@ const BubbleTeaBackground: React.FC = () => {
         } = Matter;
 
         if (engine) {
-          World.clear(engine.world);
-          Engine.clear(engine);
+          World.clear(engine.world, false);
+          Engine.clear(engine, false);
         }
 
         if (render) {
@@ -309,8 +309,8 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (engine) {
-          World.clear(engine.world);
-          Engine.clear(engine);
+          World.clear(engine.world, false);
+          Engine.clear(engine, false);
         }
       };
     };
