@@ -125,17 +125,24 @@ export default function DrinkSearchPage() {
       <style dangerouslySetInnerHTML={{ __html: fadeAnimationStyles }} />
 
       {/* 頁頭 */}
-      <header className="relative overflow-hidden bg-[#ebcfb4] py-[80px] text-stone-900">
+      <header className="relative overflow-hidden bg-[#ebcfb4] py-[80px]">
         {/* 珍珠奶茶背景 */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <BubbleTeaBackground />
         </div>
 
         {/* 標題內容 - 確保在動畫上方 */}
-        <div className="container relative z-10 mx-auto px-4 text-center">
-          <h1 className="mb-2 text-3xl font-bold">飲料店搜尋器</h1>
+        <div className="container relative z-10 mx-auto px-4 text-center text-white drop-shadow-[0_0_5px_#c59f84]">
+          <h1 className="mb-2 text-4xl font-bold">飲料店搜尋器</h1>
           <p className="text-lg opacity-90">尋找喜愛的飲料店</p>
         </div>
+
+        {/* 分隔線 */}
+        <img
+          src="divider.svg"
+          alt="分隔線"
+          className="absolute bottom-[-2px] left-0 z-10 mx-auto w-[100%]"
+        />
       </header>
 
       {/* 主要內容 */}
