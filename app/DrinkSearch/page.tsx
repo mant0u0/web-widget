@@ -15,6 +15,23 @@ import {
 // Import brand icons
 import { faFacebookF, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
+// 動態導入 BubbleTeaBackground 組件以避免 SSR 錯誤
+import dynamic from "next/dynamic";
+
+const BubbleTeaBackground = dynamic(() => import("./BubbleTeaBackground"), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        position: "absolute",
+        backgroundColor: "#ebcfb4",
+      }}
+    ></div>
+  ),
+});
+
 export default function DrinkSearchPage() {
   // 狀態管理
   const [searchInput, setSearchInput] = useState("");
@@ -108,8 +125,14 @@ export default function DrinkSearchPage() {
       <style dangerouslySetInnerHTML={{ __html: fadeAnimationStyles }} />
 
       {/* 頁頭 */}
-      <header className="border-b-[6px] border-[#419551] bg-[#51ad62] bg-gradient-to-r py-8 text-white">
-        <div className="container mx-auto px-4 text-center">
+      <header className="relative overflow-hidden bg-[#ebcfb4] py-[80px] text-stone-900">
+        {/* 珍珠奶茶背景 */}
+        <div className="absolute inset-0 z-0">
+          <BubbleTeaBackground />
+        </div>
+
+        {/* 標題內容 - 確保在動畫上方 */}
+        <div className="container relative z-10 mx-auto px-4 text-center">
           <h1 className="mb-2 text-3xl font-bold">飲料店搜尋器</h1>
           <p className="text-lg opacity-90">尋找喜愛的飲料店</p>
         </div>
