@@ -1,29 +1,100 @@
 import React, { useEffect, useRef } from "react";
 
-// 為了解決類型問題，我們先定義一個簡單的聲明
-interface MatterJS {
-  Engine: any;
-  Render: any;
-  World: any;
-  Bodies: any;
-  Body: any;
-  Composite: any;
-  Runner: any;
-  Events: any;
+// 避免使用 any
+interface MatterVector {
+  x: number;
+  y: number;
 }
 
-interface Ball {
-  fadeState: "fadingIn" | "normal" | "fadingOut";
-  fadeProgress: number;
-  circleRadius?: number;
-  position: { x: number; y: number };
+interface MatterBody {
+  position: MatterVector;
   angle: number;
   render?: {
     fillStyle?: string;
     opacity?: number;
+    visible?: boolean;
   };
-  [key: string]: any; // 允許其他屬性
+  restitution?: number;
+  friction?: number;
+  frictionAir?: number;
+  isStatic?: boolean;
 }
+
+interface MatterEngine {
+  world: {
+    gravity: MatterVector;
+    bodies: MatterBody[];
+  };
+}
+
+interface MatterRender {
+  canvas: HTMLCanvasElement | null;
+  context: CanvasRenderingContext2D | null;
+  options: Record<string, unknown>;
+  textures: Record<string, unknown>;
+}
+
+interface MatterRunner {
+  // 不需要詳細定義
+}
+
+// 自定義 Ball 類型
+interface Ball extends MatterBody {
+  fadeState: "fadingIn" | "normal" | "fadingOut";
+  fadeProgress: number;
+  circleRadius?: number;
+}
+
+// 避免 any 類型
+type MatterModule = {
+  Engine: {
+    create: () => MatterEngine;
+    clear: (engine: MatterEngine) => void;
+  };
+  Render: {
+    create: (options: {
+      element: HTMLElement;
+      engine: MatterEngine;
+      options: Record<string, unknown>;
+    }) => MatterRender;
+    stop: (render: MatterRender) => void;
+    run: (render: MatterRender) => void;
+  };
+  World: {
+    clear: (world: unknown, keepStatic?: boolean) => void;
+  };
+  Bodies: {
+    rectangle: (
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      options?: Record<string, unknown>,
+    ) => MatterBody;
+    circle: (
+      x: number,
+      y: number,
+      radius: number,
+      options?: Record<string, unknown>,
+    ) => MatterBody;
+  };
+  Runner: {
+    create: () => MatterRunner;
+    run: (runner: MatterRunner, engine: MatterEngine) => void;
+    stop: (runner: MatterRunner) => void;
+  };
+  Composite: {
+    add: (world: unknown, bodies: MatterBody | MatterBody[]) => void;
+    remove: (world: unknown, body: MatterBody) => void;
+  };
+  Body: {
+    setAngularVelocity: (body: MatterBody, velocity: number) => void;
+    setVelocity: (body: MatterBody, velocity: MatterVector) => void;
+  };
+  Events: {
+    on: (object: unknown, event: string, callback: () => void) => void;
+  };
+};
 
 const BubbleTeaBackground: React.FC = () => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
@@ -34,14 +105,14 @@ const BubbleTeaBackground: React.FC = () => {
 
     // 動態導入 Matter.js
     const loadMatter = async () => {
-      // 使用 as any 來避免類型檢查錯誤
-      const Matter = (await import("matter-js")) as any;
+      // 使用更精確的類型定義
+      const Matter = (await import("matter-js")) as unknown as MatterModule;
       const { Engine, Render, World, Bodies, Runner, Composite, Body, Events } =
         Matter;
 
-      let render: any;
-      let engine: any;
-      let runner: any;
+      let render: MatterRender;
+      let engine: MatterEngine;
+      let runner: MatterRunner;
       let intervalId: NodeJS.Timeout;
       let activeBalls: Ball[] = [];
 
@@ -51,14 +122,14 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (engine) {
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           World.clear(engine.world);
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           Engine.clear(engine);
         }
 
         if (render) {
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           Render.stop(render);
           if (render.canvas) {
             render.canvas.remove();
@@ -69,7 +140,7 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (runner) {
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           Runner.stop(runner);
         }
 
@@ -116,6 +187,7 @@ const BubbleTeaBackground: React.FC = () => {
           }),
         ];
 
+        // @ts-expect-error - Matter.js 類型不完整
         Composite.add(engine.world, walls);
         activeBalls = [];
 
@@ -150,6 +222,7 @@ const BubbleTeaBackground: React.FC = () => {
           x = x || Math.random() * (width - 2 * ballRadius) + ballRadius;
           y = y || Math.random() * (height - 2 * ballRadius) + ballRadius;
 
+          // @ts-expect-error - Matter.js 類型不完整
           const ball = Bodies.circle(x, y, ballRadius, {
             restitution: 1,
             friction: 0,
@@ -190,6 +263,7 @@ const BubbleTeaBackground: React.FC = () => {
           ballToRemove.fadeProgress = 1;
 
           setTimeout(() => {
+            // @ts-expect-error - Matter.js 類型不完整
             Composite.remove(engine.world, ballToRemove);
             activeBalls = activeBalls.filter((b) => b !== ballToRemove);
           }, 1000);
@@ -199,6 +273,7 @@ const BubbleTeaBackground: React.FC = () => {
         for (let i = 0; i < 15; i++) {
           const ball = createBall();
           activeBalls.push(ball);
+          // @ts-expect-error - Matter.js 類型不完整
           Composite.add(engine.world, ball);
         }
 
@@ -210,6 +285,7 @@ const BubbleTeaBackground: React.FC = () => {
           }
           const newBall = createBall(undefined, undefined, true);
           activeBalls.push(newBall);
+          // @ts-expect-error - Matter.js 類型不完整
           Composite.add(engine.world, newBall);
         }, 2000);
 
@@ -230,6 +306,7 @@ const BubbleTeaBackground: React.FC = () => {
 
               const newBall = createBall(x + offsetX, y + offsetY, true);
               activeBalls.push(newBall);
+              // @ts-expect-error - Matter.js 類型不完整
               Composite.add(engine.world, newBall);
 
               // 如果超過最大數量，移除一些舊珍珠
@@ -241,6 +318,7 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         // 淡入淡出效果
+        // @ts-expect-error - Matter.js 類型不完整
         Events.on(render, "beforeRender", () => {
           activeBalls.forEach((ball) => {
             if (ball.fadeState === "fadingIn") {
@@ -258,6 +336,7 @@ const BubbleTeaBackground: React.FC = () => {
         });
 
         // 簡化渲染，純色珍珠
+        // @ts-expect-error - Matter.js 類型不完整
         Events.on(render, "afterRender", () => {
           const context = render.context;
           if (!context) return;
@@ -283,8 +362,10 @@ const BubbleTeaBackground: React.FC = () => {
           });
         });
 
+        // @ts-expect-error - Matter.js 類型不完整
         Render.run(render);
         runner = Runner.create();
+        // @ts-expect-error - Matter.js 類型不完整
         Runner.run(runner, engine);
       }
 
@@ -308,7 +389,7 @@ const BubbleTeaBackground: React.FC = () => {
         window.removeEventListener("resize", handleResize);
 
         if (render) {
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           Render.stop(render);
           if (render.canvas) {
             render.canvas.remove();
@@ -316,14 +397,14 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (runner) {
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           Runner.stop(runner);
         }
 
         if (engine) {
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           World.clear(engine.world);
-          // @ts-ignore - 忽略類型錯誤
+          // @ts-expect-error - Matter.js 類型不完整
           Engine.clear(engine);
         }
       };
