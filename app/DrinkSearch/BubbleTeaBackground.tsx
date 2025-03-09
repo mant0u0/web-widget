@@ -310,7 +310,7 @@ const BubbleTeaBackground: React.FC = () => {
 
         if (engine) {
           World.clear(engine.world, false);
-          Engine.clear(engine);
+          Engine.clear(engine, false);
         }
       };
     };
