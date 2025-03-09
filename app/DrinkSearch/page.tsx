@@ -100,15 +100,15 @@ export default function DrinkSearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-200">
+    <div className="min-h-screen bg-[#f5f2e9]">
       {/* 注入自定義動畫樣式 */}
       <style dangerouslySetInnerHTML={{ __html: fadeAnimationStyles }} />
 
       {/* 頁頭 */}
-      <header className="border-b border-stone-600 bg-stone-500 bg-gradient-to-r py-8 text-white">
+      <header className="border-b-[6px] border-[#419551] bg-[#51ad62] bg-gradient-to-r py-8 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-2 text-3xl font-bold">找飲料？</h1>
-          <p className="text-lg opacity-90">尋找您喜愛的飲料店</p>
+          <h1 className="mb-2 text-3xl font-bold">飲料店搜尋器</h1>
+          <p className="text-lg opacity-90">尋找喜愛的飲料店</p>
         </div>
       </header>
 
@@ -127,7 +127,7 @@ export default function DrinkSearchPage() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="輸入飲料店名稱..."
-                className="w-full rounded-xl border border-stone-400 bg-white py-3 pl-12 pr-10 focus:border-stone-500 focus:outline-none focus:ring-4 focus:ring-stone-300"
+                className="w-full rounded-xl border-[2px] border-[#33333344] bg-white py-3 pl-12 pr-10 shadow-[0_0_0_4px_#33333309] focus:border-[#33333355] focus:outline-none focus:ring-4 focus:ring-[#33333311]"
               />
               {searchInput && (
                 <button
@@ -147,24 +147,30 @@ export default function DrinkSearchPage() {
             找不到符合「{searchInput}」的飲料店，請嘗試其他關鍵字
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {filteredShops.map((shop, index) => (
               <div
                 key={index}
                 onClick={() => handleShopClick(shop.name)}
-                className="group transform cursor-pointer overflow-hidden rounded-xl border-4 border-[#ffffff] bg-white shadow-[0_0_0_1px_rgb(0,0,0,0.3)] transition-all duration-300"
+                className="group transform cursor-pointer overflow-hidden rounded-3xl border-[2px] border-[#33333333] bg-white p-2 shadow-[0_0_0_4px_#33333309] transition-all duration-300 hover:border-[#33333344] hover:shadow-[0_0_0_4px_#33333322]"
               >
-                <div className="aspect-square overflow-hidden">
+                <div className="relative aspect-square overflow-hidden rounded-b-lg rounded-t-2xl">
                   <img
                     src={"/images/" + shop.image}
                     alt={shop.name}
-                    className="pointer-events-none z-[-1] h-full w-full rounded-sm object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="pointer-events-none h-full w-full object-cover grayscale-[0] saturate-[1] duration-500 group-hover:grayscale-[0.3] group-hover:saturate-[1.6]"
                   />
+                  <div className="z-2 absolute inset-0 h-full w-full rounded-b-lg rounded-t-2xl border-[2px] border-[#33333322] transition-opacity duration-300 group-hover:opacity-80"></div>
                 </div>
-                <div className="p-4 text-center">
+                <div className="pb-2 pt-4 text-center">
                   <h3 className="text-md font-semibold text-stone-700">
                     {shop.name}
                   </h3>
+                  {shop.name_en && (
+                    <p className="mt-1 text-sm text-stone-400">
+                      {shop.name_en}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
@@ -200,7 +206,7 @@ export default function DrinkSearchPage() {
                     style={{ background: selectedShop.color }}
                   ></div>
                   {/* 絕對定位 */}
-                  <div className="absolute bottom-0 left-1/2 aspect-square w-[160px] -translate-x-1/2 overflow-hidden rounded-xl border-4 border-[#ffffff] shadow-[0_0_0_1px_rgb(0,0,0,0.3)]">
+                  <div className="absolute bottom-0 left-1/2 aspect-square w-[160px] -translate-x-1/2 overflow-hidden rounded-xl border-4 border-[#ffffff] shadow-[0_0_0_4px_#33333333]">
                     <img
                       src={"/images/" + selectedShop.image}
                       alt={selectedShop.name}
@@ -210,9 +216,17 @@ export default function DrinkSearchPage() {
                 </div>
 
                 <div className="p-4">
-                  <h2 className="mb-6 text-center text-2xl font-bold text-stone-600">
-                    {selectedShop.name}
-                  </h2>
+                  <div className="mb-4 text-center">
+                    <h2 className="text-2xl font-bold text-stone-600">
+                      {selectedShop.name}
+                    </h2>
+
+                    {selectedShop.name_en && (
+                      <p className="mt-2 text-sm text-stone-400">
+                        {selectedShop.name_en}
+                      </p>
+                    )}
+                  </div>
 
                   <div className="mb-8 flex items-center justify-center gap-1">
                     {selectedShop.website && (

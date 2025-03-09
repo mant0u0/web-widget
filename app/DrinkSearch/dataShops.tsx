@@ -2,6 +2,7 @@
 // 飲料店資料模型定義
 export interface DrinkShop {
   name: string;
+  name_en: string;
   image: string;
   facebook: string;
   instagram: string;
@@ -13,6 +14,7 @@ export interface DrinkShop {
 const shopsData: DrinkShop[] = [
   {
     name: "50嵐",
+    name_en: "50 lan",
     image: "50嵐.jpg",
     website: "http://www.50lan.com/",
     facebook: "https://www.facebook.com/20201204.50lin/?locale=zh_TW",
@@ -21,6 +23,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "茶之魔手",
+    name_en: "Tea & Magic Hand",
     image: "茶之魔手.jpg",
     website: "https://www.teamagichand.com.tw/",
     facebook: "https://www.facebook.com/Teamagichand00/?locale=zh_TW",
@@ -28,7 +31,8 @@ const shopsData: DrinkShop[] = [
     color: "#b72b50",
   },
   {
-    name: "先喝道 TAO TAO TEA",
+    name: "先喝道",
+    name_en: "TAO TAO TEA",
     image: "先喝道 TAO TAO TEA.jpg",
     website: "https://www.taotaotea.com.tw/",
     facebook:
@@ -37,7 +41,8 @@ const shopsData: DrinkShop[] = [
     color: "#cf001a",
   },
   {
-    name: "CoCo都可",
+    name: "CoCo 都可",
+    name_en: "CoCo Tea",
     image: "CoCo都可.jpg",
     website: "https://www.coco-tea.com/",
     facebook: "https://www.facebook.com/cocofreshtea.tw/?locale=zh_TW",
@@ -46,6 +51,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "日春木瓜牛奶",
+    name_en: "",
     image: "日春木瓜牛奶.jpg",
     website:
       "https://www.qsquare.com.tw/floor-detail.php?lv01_type=B3&lv02_id=A23060600012c56",
@@ -56,6 +62,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "TEA TOP 第一味",
+    name_en: "TEA TOP",
     image: "TEA TOP 第一味.jpg",
     website: "https://www.teatop.com.tw/",
     facebook: "https://www.facebook.com/tea.topTW/?locale=zh_TW",
@@ -63,7 +70,8 @@ const shopsData: DrinkShop[] = [
     color: "#e9602a",
   },
   {
-    name: "發發牧場 The Far Far Farm",
+    name: "發發牧場",
+    name_en: "The Far Far Farm",
     image: "發發牧場 The Far Far Farm.jpg",
     website: "https://www.thefarfarfarm.com/",
     facebook: "https://www.facebook.com/thefarfarfarm/?locale=zh_TW",
@@ -71,7 +79,8 @@ const shopsData: DrinkShop[] = [
     color: "#e1efd5",
   },
   {
-    name: "得正 Dejeng",
+    name: "得正",
+    name_en: "Dejeng",
     image: "得正 Dejeng.jpg",
     website: "https://dejeng.com/",
     facebook:
@@ -80,7 +89,8 @@ const shopsData: DrinkShop[] = [
     color: "#335384",
   },
   {
-    name: "有飲 Youin",
+    name: "有飲",
+    name_en: "Youin",
     image: "有飲 Youin.jpg",
     website: "https://www.youindrink.com/",
     facebook: "https://www.facebook.com/youintaiwan/",
@@ -88,7 +98,8 @@ const shopsData: DrinkShop[] = [
     color: "#a7a7a7",
   },
   {
-    name: "迷客夏 Milksha",
+    name: "迷客夏",
+    name_en: "Milksha",
     image: "迷客夏 Milksha.jpg",
     website: "https://www.milksha.com/",
     facebook: "https://www.facebook.com/Milkshatw/?locale=zh_TW",
@@ -96,7 +107,8 @@ const shopsData: DrinkShop[] = [
     color: "#62840b",
   },
   {
-    name: "可不可熟成紅茶 KEBUKE",
+    name: "可不可熟成紅茶",
+    name_en: "KEBUKE",
     image: "可不可熟成紅茶 KEBUKE.jpg",
     website: "https://www.kebuke.com/",
     facebook: "https://www.facebook.com/kebuke2008/?locale=zh_TW",
@@ -104,7 +116,8 @@ const shopsData: DrinkShop[] = [
     color: "#003c4f",
   },
   {
-    name: "茶聚 CHA'GE",
+    name: "茶聚",
+    name_en: "CHA'GE",
     image: "茶聚 CHA'GE.jpg",
     website: "https://www.chage.com.tw/",
     facebook:
@@ -114,6 +127,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "清心福全",
+    name_en: "Chingshin",
     image: "清心福全.jpg",
     website: "https://www.chingshin.tw/",
     facebook: "https://www.facebook.com/chingshin1987/?locale=zh_TW",
@@ -122,6 +136,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "八曜和茶",
+    name_en: "8YOTEA",
     image: "八曜和茶.jpg",
     website: "https://8yotea.com/",
     facebook: "https://www.facebook.com/@8yotea/?locale=zh_TW",
@@ -130,6 +145,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "一沐日",
+    name_en: "A nice holiday",
     image: "一沐日.jpg",
     website: "https://www.aniceholiday.com.tw/",
     facebook: "https://www.facebook.com/anicehoilday/?locale=zh_TW",
@@ -138,6 +154,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "再睡5分鐘 NAP TEA",
+    name_en: "NAP TEA",
     image: "再睡5分鐘 NAP TEA.jpg",
     website: "https://www.napteazzz.com/",
     facebook: "https://www.facebook.com/napteazzz/?locale=zh_TW",
@@ -145,7 +162,8 @@ const shopsData: DrinkShop[] = [
     color: "#70462d",
   },
   {
-    name: "珍煮丹 TRUEDAN",
+    name: "珍煮丹",
+    name_en: "TRUEDAN",
     image: "珍煮丹 TRUEDAN.jpg",
     website: "https://www.truedan.com.tw/",
     facebook: "https://www.facebook.com/truedantw/?locale=zh_TW",
@@ -153,16 +171,17 @@ const shopsData: DrinkShop[] = [
     color: "#043436",
   },
   {
-    name: "CITY TEA 現萃茶",
+    name: "現萃茶",
+    name_en: "CITY TEA",
     image: "CITY TEA 現萃茶.jpg",
     website: "https://www.citycafe.com.tw/event/17xiancuicha/index.html",
-    facebook:
-      "https://www.facebook.com/711open/posts/city-tea%E7%8F%BE%E8%90%83%E8%8C%B6-%E7%B5%A6%E4%BD%A0%E6%BB%BF%E6%BB%BF%E6%B4%BB%E5%8A%9B%E4%B8%80%E8%B5%B7%E9%96%8B%E5%B7%A5%E6%AF%8F%E6%9C%887%E8%99%9F-%E7%94%A8-openpoint%E8%A1%8C%E5%8B%95%E9%9A%A8%E6%99%82%E5%8F%96-%E4%B8%80%E8%B5%B7%E5%93%81%E8%8C%B6%E8%B6%A327%E5%A4%9A%E6%AC%BE%E5%84%AA%E6%83%A0%E5%95%86%E5%93%81%E6%9C%80%E9%AB%98%E7%8F%BE%E7%9C%81350%E5%85%83%E7%8F%8D%E7%8F%A0%E7%84%99%E7%81%AB%E7%83%8F%E9%BE%8D%E5%A5%B6%E8%8C%B6-%E8%B2%B72%E9%80%811-%E7%8F%BE/1062269252609842/",
-    instagram: "https://www.instagram.com/7eleventw/reel/DG4JLnZhniz/",
+    facebook: "",
+    instagram: "",
     color: "#00a881",
   },
   {
-    name: "春水堂 Chun Shui Tang",
+    name: "春水堂",
+    name_en: "Chun Shui Tang",
     image: "春水堂 Chun Shui Tang.jpg",
     website: "https://www.chunshuitang.com.tw/",
     facebook: "https://www.facebook.com/ChunShui1983/?locale=zh_TW",
@@ -170,7 +189,8 @@ const shopsData: DrinkShop[] = [
     color: "#f4bdba",
   },
   {
-    name: "麻古茶坊 MACU TEA",
+    name: "麻古茶坊",
+    name_en: "MACU TEA",
     image: "麻古茶坊 MACU TEA.jpg",
     website: "https://www.macutea.com.tw/",
     facebook: "https://www.facebook.com/macu2008.tw/?locale=zh_TW",
@@ -178,7 +198,8 @@ const shopsData: DrinkShop[] = [
     color: "#e6201f",
   },
   {
-    name: "喫茶趣ToGo",
+    name: "喫茶趣 ToGo",
+    name_en: "CHAFORTEA",
     image: "喫茶趣ToGo.jpg",
     website: "https://www.chafortea.com.tw/",
     facebook: "https://www.facebook.com/chafortea8/?locale=zh_TW",
@@ -187,6 +208,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "約翰紅茶公司",
+    name_en: "JOHN TEA COMPANY",
     image: "約翰紅茶公司.jpg",
     website: "",
     facebook: "https://www.facebook.com/johnteacompany/?locale=zh_TW",
@@ -194,7 +216,8 @@ const shopsData: DrinkShop[] = [
     color: "#183263",
   },
   {
-    name: "鶴茶樓 鶴頂紅茶商店 Hechalou Tea",
+    name: "鶴茶樓 鶴頂紅茶商店",
+    name_en: "Hechalou Tea",
     image: "鶴茶樓 鶴頂紅茶商店 Hechalou Tea.jpg",
     website: "https://hechaloutea.com.tw/",
     facebook: "https://www.facebook.com/hechaloutea/?locale=zh_TW",
@@ -203,6 +226,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "SOMA 特調飲品",
+    name_en: "SOMA",
     image: "SOMA 特調飲品.jpg",
     website: "https://soma-drinks.com/",
     facebook: "https://www.facebook.com/somadrinks/?locale=zh_TW",
@@ -210,7 +234,8 @@ const shopsData: DrinkShop[] = [
     color: "#353444",
   },
   {
-    name: "大苑子 DaYungs",
+    name: "大苑子",
+    name_en: "DaYungs",
     image: "大苑子 DaYungs.jpg",
     website: "https://www.dayungs.com/",
     facebook: "https://www.facebook.com/dayungs.tw/?locale=zh_TW",
@@ -218,7 +243,8 @@ const shopsData: DrinkShop[] = [
     color: "#185432",
   },
   {
-    name: "萬波島嶼紅茶 Wanpo Tea Shop",
+    name: "萬波島嶼紅茶",
+    name_en: "Wanpo Tea Shop",
     image: "萬波島嶼紅茶 Wanpo Tea Shop.jpg",
     website: "https://wanpotea.com/",
     facebook: "https://www.facebook.com/wanpotea.com.tw/?locale=zh_TW",
@@ -226,7 +252,8 @@ const shopsData: DrinkShop[] = [
     color: "#291f1d",
   },
   {
-    name: "五桐號 WooTEA",
+    name: "五桐號",
+    name_en: "WooTEA",
     image: "五桐號 WooTEA.jpg",
     website: "https://www.wootea.com/",
     facebook: "https://www.facebook.com/WooTeaTW/?locale=zh_TW",
@@ -234,7 +261,8 @@ const shopsData: DrinkShop[] = [
     color: "#d8d8d8",
   },
   {
-    name: "鮮茶道 Presotea",
+    name: "鮮茶道",
+    name_en: "Presotea",
     image: "鮮茶道 Presotea.jpg",
     website: "http://www.presotea.com.tw/?show_lang=tw",
     facebook: "https://www.facebook.com/presotea.tw/?locale=zh_TW",
@@ -242,7 +270,8 @@ const shopsData: DrinkShop[] = [
     color: "#231717",
   },
   {
-    name: "茶湯會 TP TEA",
+    name: "茶湯會",
+    name_en: "TP TEA",
     image: "茶湯會 TP TEA.jpg",
     website: "https://tw.tp-tea.com/",
     facebook: "https://www.facebook.com/tptea2005/?locale=zh_TW",
@@ -250,8 +279,9 @@ const shopsData: DrinkShop[] = [
     color: "#f9f3e6",
   },
   {
-    name: "大茗本味製茶堂",
-    image: "大茗本味製茶堂.jpg",
+    name: "大茗本位製茶堂",
+    name_en: "Daming Tea",
+    image: "大茗本位製茶堂.jpg",
     website: "",
     facebook:
       "https://www.facebook.com/p/%E5%A4%A7%E8%8C%97%E6%9C%AC%E4%BD%8D%E8%A3%BD%E8%8C%B6%E5%A0%82-100067777907132/?locale=zh_TW",
@@ -259,88 +289,8 @@ const shopsData: DrinkShop[] = [
     color: "#717171",
   },
   {
-    name: "喫茶趣ToGo",
-    image: "喫茶趣ToGo.jpg",
-    website: "https://www.chafortea.com.tw/",
-    facebook: "https://www.facebook.com/chafortea8/?locale=zh_TW",
-    instagram: "https://www.instagram.com/tenrentw/",
-    color: "#024c0d",
-  },
-  {
-    name: "約翰紅茶公司",
-    image: "約翰紅茶公司.jpg",
-    website: "",
-    facebook: "https://www.facebook.com/johnteacompany/?locale=zh_TW",
-    instagram: "https://www.instagram.com/johnteacompany/",
-    color: "#183263",
-  },
-  {
-    name: "鶴茶樓 鶴頂紅茶商店 Hechalou Tea",
-    image: "鶴茶樓 鶴頂紅茶商店 Hechalou Tea.jpg",
-    website: "https://hechaloutea.com.tw/",
-    facebook: "https://www.facebook.com/hechaloutea/?locale=zh_TW",
-    instagram: "https://www.instagram.com/hechaloutea/",
-    color: "#2e4c32",
-  },
-  {
-    name: "SOMA 特調飲品",
-    image: "SOMA 特調飲品.jpg",
-    website: "https://soma-drinks.com/",
-    facebook: "https://www.facebook.com/somadrinks/?locale=zh_TW",
-    instagram: "https://www.instagram.com/somadrink/",
-    color: "#353444",
-  },
-  {
-    name: "大苑子 DaYungs",
-    image: "大苑子 DaYungs.jpg",
-    website: "https://www.dayungs.com/",
-    facebook: "https://www.facebook.com/dayungs.tw/?locale=zh_TW",
-    instagram: "https://www.instagram.com/dayungs_official/",
-    color: "#185432",
-  },
-  {
-    name: "萬波島嶼紅茶 Wanpo Tea Shop",
-    image: "萬波島嶼紅茶 Wanpo Tea Shop.jpg",
-    website: "https://wanpotea.com/",
-    facebook: "https://www.facebook.com/wanpotea.com.tw/?locale=zh_TW",
-    instagram: "https://www.instagram.com/wanpotea.com.tw/",
-    color: "#291f1d",
-  },
-  {
-    name: "五桐號 WooTEA",
-    image: "五桐號 WooTEA.jpg",
-    website: "https://www.wootea.com/",
-    facebook: "https://www.facebook.com/WooTeaTW/?locale=zh_TW",
-    instagram: "https://www.instagram.com/wooteatw/",
-    color: "#d8d8d8",
-  },
-  {
-    name: "鮮茶道 Presotea",
-    image: "鮮茶道 Presotea.jpg",
-    website: "http://www.presotea.com.tw/?show_lang=tw",
-    facebook: "https://www.facebook.com/presotea.tw/?locale=zh_TW",
-    instagram: "https://www.instagram.com/presotea_global/",
-    color: "#231717",
-  },
-  {
-    name: "茶湯會 TP TEA",
-    image: "茶湯會 TP TEA.jpg",
-    website: "https://tw.tp-tea.com/",
-    facebook: "https://www.facebook.com/tptea2005/?locale=zh_TW",
-    instagram: "https://www.instagram.com/tptea.taiwan/",
-    color: "#f9f3e6",
-  },
-  {
-    name: "大茗本味製茶堂",
-    image: "大茗本味製茶堂.jpg",
-    website: "",
-    facebook:
-      "https://www.facebook.com/p/%E5%A4%A7%E8%8C%97%E6%9C%AC%E4%BD%8D%E8%A3%BD%E8%8C%B6%E5%A0%82-100067777907132/?locale=zh_TW",
-    instagram: "https://www.instagram.com/daming_tea/",
-    color: "#717171",
-  },
-  {
-    name: "龜記茗品 Guiji",
+    name: "龜記茗品",
+    name_en: "Guiji",
     image: "龜記茗品 Guiji.jpg",
     website: "https://guiji-group.com/",
     facebook: "https://www.facebook.com/greattea.asia/?locale=zh_TW",
@@ -348,7 +298,8 @@ const shopsData: DrinkShop[] = [
     color: "#b01f24",
   },
   {
-    name: "Chatime 日出茶太",
+    name: "日出茶太",
+    name_en: "Chatime",
     image: "Chatime 日出茶太.jpg",
     website: "",
     facebook: "https://www.facebook.com/chatimeglobal/?locale=zh_TW",
@@ -356,7 +307,8 @@ const shopsData: DrinkShop[] = [
     color: "#4e0878",
   },
   {
-    name: "玉津咖啡 Y.J COFFEE",
+    name: "玉津咖啡",
+    name_en: "Y.J COFFEE",
     image: "玉津咖啡 Y.J COFFEE.jpg",
     website: "",
     facebook: "https://www.facebook.com/TaiwanYuJin/?locale=zh_TW",
@@ -364,7 +316,8 @@ const shopsData: DrinkShop[] = [
     color: "#858585",
   },
   {
-    name: "抿茶 min cha",
+    name: "抿茶",
+    name_en: "Mincha",
     image: "抿茶 min cha.jpg",
     website: "https://www.mincha.com.tw/",
     facebook: "https://www.facebook.com/mincha.tw/?locale=zh_TW",
@@ -372,7 +325,8 @@ const shopsData: DrinkShop[] = [
     color: "#3a3935",
   },
   {
-    name: "麥吉 machi machi",
+    name: "麥吉",
+    name_en: "Machi Machi",
     image: "麥吉 machi machi.jpg",
     website: "https://www.machitea.com/",
     facebook:
@@ -381,7 +335,8 @@ const shopsData: DrinkShop[] = [
     color: "#fef0e6",
   },
   {
-    name: "玖仰茶食文化 Jiuyang",
+    name: "玖仰茶食文化",
+    name_en: "Jiuyang",
     image: "玖仰茶食文化 Jiuyang.jpg",
     website:
       "https://inline.app/booking/-NjAezK0PZO8Ki0TqwMu:inline-live-3/-NjAezVg61-XVXx4cxKJ?language=zh-tw",
@@ -391,7 +346,8 @@ const shopsData: DrinkShop[] = [
     color: "#1e1f23",
   },
   {
-    name: "清原芋圓 Taro Boba",
+    name: "清原芋圓",
+    name_en: "Taro Boba",
     image: "清原芋圓 Taro Boba.jpg",
     website: "https://www.taroyuan.com/",
     facebook: "https://www.facebook.com/taroyuan.official/",
@@ -399,7 +355,8 @@ const shopsData: DrinkShop[] = [
     color: "#a778a6",
   },
   {
-    name: "ITSO 一手私藏世界紅茶",
+    name: "一手私藏世界紅茶",
+    name_en: "ITSO",
     image: "ITSO 一手私藏世界紅茶.jpg",
     website: "https://www.itsotea.com/",
     facebook: "https://www.facebook.com/ITSOtea/?locale=zh_TW",
@@ -408,6 +365,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "樂法 Le Phare",
+    name_en: "Le Phare",
     image: "樂法 Le Phare.jpg",
     website: "https://page.line.me/sxj4140t",
     facebook: "https://www.facebook.com/lepharedrink/?locale=zh_TW",
@@ -415,7 +373,8 @@ const shopsData: DrinkShop[] = [
     color: "#762835",
   },
   {
-    name: "十杯 Spade Tea",
+    name: "十杯",
+    name_en: "Spade Tea",
     image: "十杯 Spade Tea.jpg",
     website: "https://order-rc.quickclick.cc/tw/food/P_JNJDAmMoW/",
     facebook: "https://www.facebook.com/spadetea/?locale=zh_TW",
@@ -425,6 +384,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "喫茶小舖",
+    name_en: "Teashop168",
     image: "喫茶小舖.jpg",
     website: "https://www.teashop168.com.tw/",
     facebook: "https://www.facebook.com/teashop168/?locale=zh_TW",
@@ -433,6 +393,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "BLIKE 奶茶專門",
+    name_en: "BLIKE",
     image: "BLIKE 奶茶專門.jpg",
     website: "https://store.blike.tw/?lang=zh-TW",
     facebook:
@@ -441,7 +402,8 @@ const shopsData: DrinkShop[] = [
     color: "#d2251f",
   },
   {
-    name: "貢茶 Gong cha",
+    name: "貢茶",
+    name_en: "Gong cha",
     image: "貢茶 Gong cha.jpg",
     website: "https://www.gong-cha.com.tw/",
     facebook: "https://www.facebook.com/GongChaTaiwan/?locale=zh_TW",
@@ -450,6 +412,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "快可立",
+    name_en: "Quickly",
     image: "快可立.jpg",
     website: "http://www.quicklygroup.com/",
     facebook: "https://www.facebook.com/JobquicklyTaiwan/?locale=zh_TW",
@@ -458,6 +421,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "三分春色",
+    name_en: "chihetea",
     image: "三分春色.jpg",
     website: "https://www.chihetea.com.tw/",
     facebook: "https://www.facebook.com/three077905557/?locale=zh_TW",
@@ -465,7 +429,8 @@ const shopsData: DrinkShop[] = [
     color: "#e49e48",
   },
   {
-    name: "七盞茶 Seventea",
+    name: "七盞茶",
+    name_en: "Seventea",
     image: "七盞茶 Seventea.jpg",
     website: "https://www.taiwan7tea.com.tw/?lang=tw",
     facebook: "https://www.facebook.com/taiwan.se7entea/?locale=zh_TW",
@@ -473,7 +438,8 @@ const shopsData: DrinkShop[] = [
     color: "#191e72",
   },
   {
-    name: "紅茶巴士 Black Tea Bus",
+    name: "紅茶巴士",
+    name_en: "Black Tea Bus",
     image: "紅茶巴士 Black Tea Bus.jpg",
     website: "https://blackteabus.com.tw/",
     facebook: "https://www.facebook.com/blackteabuscompany/?locale=zh_TW",
@@ -482,7 +448,8 @@ const shopsData: DrinkShop[] = [
     color: "#ca292f",
   },
   {
-    name: "思茶 Missing Tea",
+    name: "思茶",
+    name_en: "Missing Tea",
     image: "思茶 Missing Tea.jpg",
     website: "",
     facebook: "https://www.facebook.com/@Missingtea10803/?locale=zh_TW",
@@ -491,6 +458,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "Mr. Wish 鮮果茶玩家",
+    name_en: "Mr. Wish",
     image: "Mr. Wish 鮮果茶玩家.jpg",
     website: "https://www.mr-wish.com/",
     facebook: "https://www.facebook.com/Mr.WishTaiwan/?locale=zh_TW",
@@ -498,7 +466,8 @@ const shopsData: DrinkShop[] = [
     color: "#5d8435",
   },
   {
-    name: "吃茶三千 CHICHA San Chen",
+    name: "吃茶三千",
+    name_en: "CHICHA San Chen",
     image: "吃茶三千 CHICHA San Chen.jpg",
     website: "",
     facebook: "https://www.facebook.com/chichasanchen.TW/",
@@ -506,7 +475,8 @@ const shopsData: DrinkShop[] = [
     color: "#9dc08a",
   },
   {
-    name: "手作功夫茶 Kung Fu Tea",
+    name: "手作功夫茶",
+    name_en: "Kung Fu Tea",
     image: "手作功夫茶 Kung Fu Tea.jpg",
     website: "https://www.kungfutea.com.tw/",
     facebook: "https://www.facebook.com/Kungfutea/?locale=zh_TW",
@@ -515,6 +485,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "Mateas 鮮奶．茶沙龍",
+    name_en: "Mateas",
     image: "Mateas 鮮奶．茶沙龍.jpg",
     website: "https://www.mateas.com.tw/",
     facebook: "https://www.facebook.com/mateas.tw/?locale=zh_TW",
@@ -523,6 +494,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "樺達奶茶",
+    name_en: "HWADA Milk Tea",
     image: "樺達奶茶.jpg",
     website: "https://www.att4fun.com.tw/cuisine-in/46BzT5aUqemXFWs7",
     facebook: "https://www.facebook.com/HWADAmilktea/?locale=zh_TW",
@@ -531,6 +503,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "上宇林連鎖茶飲",
+    name_en: "Shang Yu Lin",
     image: "上宇林連鎖茶飲.jpg",
     website: "https://www.shangyulin.com.tw/",
     facebook: "https://www.facebook.com/syltea/?locale=zh_TW",
@@ -538,7 +511,8 @@ const shopsData: DrinkShop[] = [
     color: "#ae7c4b",
   },
   {
-    name: "丘森茶室 Chosen Tea",
+    name: "丘森茶室",
+    name_en: "Chosen Tea",
     image: "丘森茶室 Chosen Tea.jpg",
     website: "https://chosen-tea.com/",
     facebook: "https://www.facebook.com/chosentea.official/?locale=zh_TW",
@@ -547,6 +521,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "紅太陽國際茶飲",
+    name_en: "Red Sun International Tea",
     image: "紅太陽國際茶飲.jpg",
     website: "http://www.redsuntea.com/",
     facebook: "https://www.facebook.com/redsuntea/?locale=zh_TW",
@@ -554,15 +529,8 @@ const shopsData: DrinkShop[] = [
     color: "#c40000",
   },
   {
-    name: "偷喝奶茶Little Drink",
-    image: "偷喝奶茶Little Drink.jpg",
-    website: "",
-    facebook: "https://www.facebook.com/drinkmilktea/?locale=zh_TW",
-    instagram: "https://www.instagram.com/littledrink520/",
-    color: "#262425",
-  },
-  {
     name: "阿娘喂！廖老大茶坊連鎖",
+    name_en: "",
     image: "阿娘喂！廖老大茶坊連鎖.jpg",
     website: "https://www.xn--10rp0i5t9d.com/",
     facebook:
@@ -572,6 +540,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "無飲",
+    name_en: "Wu Win",
     image: "無飲.jpg",
     website: "https://www.wu-win.com/h/Index?key=716207668656",
     facebook: "https://www.facebook.com/wuwintw/?locale=zh_TW",
@@ -579,7 +548,8 @@ const shopsData: DrinkShop[] = [
     color: "#b91d28",
   },
   {
-    name: "茶海 CHA Hi",
+    name: "茶海",
+    name_en: "CHA Hi",
     image: "茶海 CHA Hi.jpg",
     website: "https://huablog.tw/chahi/",
     facebook: "https://www.facebook.com/CHAHi.tw/?locale=zh_TW",
@@ -587,7 +557,8 @@ const shopsData: DrinkShop[] = [
     color: "#cbcbc7",
   },
   {
-    name: "御私藏 Cozy Tea Loft",
+    name: "御私藏",
+    name_en: "Cozy Tea Loft",
     image: "御私藏 Cozy Tea Loft.jpg",
     website: "https://www.possession-tea.com/",
     facebook: "https://www.facebook.com/ZCozyTeaLoft/?locale=zh_TW",
@@ -595,7 +566,8 @@ const shopsData: DrinkShop[] = [
     color: "#be9051",
   },
   {
-    name: "馬祖奶茶 MATSU MILK TEA",
+    name: "馬祖奶茶",
+    name_en: "MATSU MILK TEA",
     image: "馬祖奶茶 MATSU MILK TEA.jpg",
     website: "https://www.matsumilktea.com/",
     facebook:
@@ -604,7 +576,8 @@ const shopsData: DrinkShop[] = [
     color: "#efe5db",
   },
   {
-    name: "一芳水果茶 Yifangtea",
+    name: "一芳水果茶",
+    name_en: "Yifangtea",
     image: "一芳水果茶 Yifangtea.jpg",
     website: "https://www.yifangtea.com/chinese/home",
     facebook: "https://www.facebook.com/yifangtea/?locale=zh_TW",
@@ -613,6 +586,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "北回木瓜牛奶",
+    name_en: "Papaya Milk",
     image: "北回木瓜牛奶.jpg",
     website: "https://www.papayamilk.com.tw/",
     facebook: "https://www.facebook.com/@bei.huei1994/?locale=zh_TW",
@@ -621,7 +595,8 @@ const shopsData: DrinkShop[] = [
     color: "#ef791f",
   },
   {
-    name: "拾汣茶屋 19TeaHouse",
+    name: "拾汣茶屋",
+    name_en: "19TeaHouse",
     image: "拾汣茶屋 19TeaHouse.jpg",
     website: "https://www.19teahouse.com/",
     facebook: "https://www.facebook.com/19teahouse/?locale=zh_TW",
@@ -630,6 +605,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "花好月圓茶飲專賣",
+    name_en: "Perfect Life Tea Shop",
     image: "花好月圓茶飲專賣.jpg",
     website: "",
     facebook: "https://www.facebook.com/perfectlife.teashop/?locale=zh_TW",
@@ -637,7 +613,8 @@ const shopsData: DrinkShop[] = [
     color: "#935b28",
   },
   {
-    name: "Tea Melody 十二韻",
+    name: "十二韻",
+    name_en: "Tea Melody",
     image: "Tea Melody 十二韻.jpg",
     website: "https://www.tea-melody.com.tw/index.php",
     facebook: "https://www.facebook.com/12TeaMelody/?locale=zh_TW",
@@ -646,6 +623,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "鮮自然",
+    name_en: "",
     image: "鮮自然.jpg",
     website: "https://page.line.me/ycf9608q",
     facebook: "https://www.facebook.com/naturalfirst2005/?locale=zh_TW",
@@ -654,6 +632,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "炎術",
+    name_en: "",
     image: "炎術.jpg",
     website: "https://0422354445.tw66.com.tw/",
     facebook: "https://www.facebook.com/yanshudrink267/?locale=zh_TW",
@@ -663,6 +642,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "馬祖新村",
+    name_en: "Mazuvillage",
     image: "馬祖新村.jpg",
     website: "https://www.mazuvillage.com/",
     facebook: "https://www.facebook.com/ArtMatsuVillage/?locale=zh_TW",
@@ -671,7 +651,8 @@ const shopsData: DrinkShop[] = [
     color: "#01135f",
   },
   {
-    name: "自在軒 ZI ZAI XUAN",
+    name: "自在軒",
+    name_en: "ZI ZAI XUAN",
     image: "自在軒 ZI ZAI XUAN.jpg",
     website: "",
     facebook: "https://www.facebook.com/easehome168/?locale=zh_TW",
@@ -680,6 +661,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "壽奶茶專賣",
+    name_en: "",
     image: "壽奶茶專賣.jpg",
     website: "https://sosweet1978.weebly.com/",
     facebook: "https://www.facebook.com/sosweet1978/?locale=zh_TW",
@@ -688,6 +670,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "老賴茶棧",
+    name_en: "Like Tea Shop",
     image: "老賴茶棧.jpg",
     website: "https://www.liketeashop.com/",
     facebook: "https://www.facebook.com/LikeTea.JuiceStation/?locale=zh_TW",
@@ -695,16 +678,8 @@ const shopsData: DrinkShop[] = [
     color: "#d4bfbc",
   },
   {
-    name: "ㄚ美姨的古早古味",
-    image: "ㄚ美姨的古早古味.jpg",
-    website: "",
-    facebook:
-      "https://www.facebook.com/p/%E3%84%9A%E7%BE%8E%E5%A7%A8%E7%9A%84%E5%8F%A4%E6%97%A9%E5%8F%A4%E5%91%B3-%E9%A6%99%E5%B1%B1%E5%BA%97-100066295463428/?locale=zh_TW",
-    instagram: "https://www.instagram.com/explore/locations/506955212987299/",
-    color: "#dbba6b",
-  },
-  {
-    name: "李記紅茶冰 Li-Ji Tea Shop",
+    name: "李記紅茶冰",
+    name_en: "Li-Ji Tea Shop",
     image: "李記紅茶冰 Li-Ji Tea Shop.jpg",
     website: "https://www.leejitea.com/",
     facebook: "https://www.facebook.com/leeji.2008/?locale=zh_TW",
@@ -713,17 +688,8 @@ const shopsData: DrinkShop[] = [
     color: "#8e1b20",
   },
   {
-    name: "源興御香屋",
-    image: "源興御香屋.jpg",
-    website: "",
-    facebook:
-      "https://www.facebook.com/p/%E6%BA%90%E8%88%88%E5%BE%A1%E9%A6%99%E5%B1%8B-100069467183468/",
-    instagram:
-      "https://www.instagram.com/explore/locations/734313710/yuan-xing-yu-xiang-wu/",
-    color: "#472a02",
-  },
-  {
-    name: "幸福堂 Xing Fu Tang",
+    name: "幸福堂",
+    name_en: "Xing Fu Tang",
     image: "幸福堂 Xing Fu Tang.jpg",
     website: "https://www.xingfutang.com.tw/index.php?lang=tw",
     facebook: "https://www.facebook.com/xingfutang.tw/?locale=zh_TW",
@@ -731,7 +697,8 @@ const shopsData: DrinkShop[] = [
     color: "#ecdd9a",
   },
   {
-    name: "紅茶媽媽 MA MA TEA",
+    name: "紅茶媽媽",
+    name_en: "MA MA TEA",
     image: "紅茶媽媽 MA MA TEA.jpg",
     website: "https://www.mamatea.com.tw/",
     facebook: "https://m.facebook.com/people/Mommom-Tea/61564586285476/",
@@ -740,17 +707,17 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "波哥",
+    name_en: "",
     image: "波哥.jpg",
-    website:
-      "https://www.taisugar.com.tw/Monthly/CPN.aspx?ms=1371&p=13384375&s=13384383",
-    facebook:
-      "https://www.facebook.com/pages/%E6%B3%A2%E5%93%A5%E8%8C%B6%E9%A3%B2%E5%8F%B0%E5%8D%97%E5%8B%9D%E5%88%A9%E5%BA%97/184448644925666",
+    website: "",
+    facebook: "",
     instagram:
-      "https://www.instagram.com/explore/locations/720658948390833/?utm_source=ig_embed&ig_rid=093ee0c8-8548-4086-a71a-f826cbdafa4f",
+      "https://www.instagram.com/explore/locations/2413704/?locale=es_US&hl=am-et",
     color: "#323232",
   },
   {
     name: "TrueWin 初韻",
+    name_en: "TrueWin",
     image: "TrueWin 初韻.jpg",
     website: "https://truewin2018.com.tw/",
     facebook: "https://www.facebook.com/TrueWinLucteaDay/?locale=zh_TW",
@@ -758,7 +725,8 @@ const shopsData: DrinkShop[] = [
     color: "#303030",
   },
   {
-    name: "瓦克茶飲 Walker Tea Shop",
+    name: "瓦克茶飲",
+    name_en: "Walker Tea Shop",
     image: "瓦克茶飲 Walker Tea Shop.jpg",
     website: "",
     facebook: "https://www.facebook.com/walker.teashop/?locale=zh_TW",
@@ -766,7 +734,8 @@ const shopsData: DrinkShop[] = [
     color: "#10375e",
   },
   {
-    name: "鬍子茶 Who's Tea",
+    name: "鬍子茶",
+    name_en: "Who's Tea",
     image: "鬍子茶 Who's Tea.jpg",
     website: "https://www.whosteatw.com/",
     facebook: "https://www.facebook.com/WhosTea/?locale=zh_TW",
@@ -775,6 +744,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "春芳號",
+    name_en: "Chun Fun How",
     image: "春芳號.jpg",
     website: "https://www.chunfunhow.com/",
     facebook: "https://www.facebook.com/chunfunhow8/?locale=zh_TW",
@@ -783,6 +753,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "UG 樂己",
+    name_en: "UG",
     image: "UG 樂己.jpg",
     website: "https://page.line.me/370ivune",
     facebook: "https://www.facebook.com/uniquegreentea/?locale=zh_TW",
@@ -790,7 +761,8 @@ const shopsData: DrinkShop[] = [
     color: "#028002",
   },
   {
-    name: "寶島紅茶冰 Formosa & Tea",
+    name: "寶島紅茶冰",
+    name_en: "Formosa & Tea",
     image: "寶島紅茶冰 Formosa & Tea.jpg",
     website:
       "https://www.tahaohao.com/categories/formosablacktea?srsltid=AfmBOoocLUCB5h1s5r42fCe6ab_mmi7zlLeHC3bMK8wUZUQ9idk8dNgk",
@@ -801,6 +773,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "布萊恩紅茶",
+    name_en: "Brian Black Tea",
     image: "布萊恩紅茶.jpg",
     website: "https://www.brianblacktea.com.tw/",
     facebook: "https://www.facebook.com/MrBU2005/?locale=zh_TW",
@@ -809,6 +782,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "T4清茶達人",
+    name_en: "T4",
     image: "T4清茶達人.jpg",
     website: "https://www.t4.com.tw/",
     facebook: "https://www.facebook.com/T4taiwanHeadquarter/?locale=zh_TW",
@@ -816,7 +790,8 @@ const shopsData: DrinkShop[] = [
     color: "#1db5a8",
   },
   {
-    name: "DrinkStore 水雲朵",
+    name: "水雲朵",
+    name_en: "DrinkStore",
     image: "DrinkStore 水雲朵.jpg",
     website: "https://www.drinkstore.com.tw/",
     facebook: "https://www.facebook.com/drinkcloudstore/?locale=zh_TW",
@@ -824,7 +799,8 @@ const shopsData: DrinkShop[] = [
     color: "#05824a",
   },
   {
-    name: "甲文青茶飲 JIA WEN CING",
+    name: "甲文青茶飲",
+    name_en: "JIA WEN CING",
     image: "甲文青茶飲 JIA WEN CING.jpg",
     website: "https://www.jwc-tea.com.tw/",
     facebook: "https://www.facebook.com/jiawencing.headquarters/",
@@ -832,7 +808,8 @@ const shopsData: DrinkShop[] = [
     color: "#f1c74f",
   },
   {
-    name: "双十八木 Double 18 Tea",
+    name: "双十八木",
+    name_en: "Double 18 Tea",
     image: "双十八木 Double 18 Tea.jpg",
     website: "https://www.double18tea.tw/",
     facebook: "https://www.facebook.com/DoubleShibatea/?locale=zh_TW",
@@ -840,7 +817,8 @@ const shopsData: DrinkShop[] = [
     color: "#6b6b6b",
   },
   {
-    name: "白巷子 WHITE ALLEY",
+    name: "白巷子",
+    name_en: "WHITE ALLEY",
     image: "白巷子 WHITE ALLEY.jpg",
     website: "http://www.whitealley.com.tw/",
     facebook: "https://www.facebook.com/whitealley/?locale=zh_TW",
@@ -850,6 +828,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "叮哥茶飲",
+    name_en: "DING GO TEA",
     image: "叮哥茶飲.jpg",
     website: "https://www.dinggotea.com/",
     facebook: "https://www.facebook.com/dinggo.tea168/?locale=zh_TW",
@@ -857,7 +836,8 @@ const shopsData: DrinkShop[] = [
     color: "#e8365a",
   },
   {
-    name: "泰讚了 thai like tea",
+    name: "泰讚了",
+    name_en: "thai like tea",
     image: "泰讚了 thai like tea.jpg",
     website: "",
     facebook: "https://www.facebook.com/thailiketea01/?locale=zh_TW",
@@ -865,7 +845,8 @@ const shopsData: DrinkShop[] = [
     color: "#201e1f",
   },
   {
-    name: "微堂 WELL DONE",
+    name: "微堂",
+    name_en: "WELL DONE",
     image: "微堂 WELL DONE.jpg",
     website: "https://welldone0805.com/",
     facebook: "https://www.facebook.com/@Welldone888/",
@@ -874,6 +855,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "甘蔗の媽媽",
+    name_en: "Sugarcane mamama",
     image: "甘蔗の媽媽.jpg",
     website: "",
     facebook: "https://www.facebook.com/Sugarcane.mamama/?locale=zh_TW",
@@ -882,6 +864,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "特．好喝 TOP TIER TEA",
+    name_en: "TOP TIER TEA",
     image: "特．好喝 TOP TIER TEA.jpg",
     website: "https://toptiertea.com.tw/",
     facebook:
@@ -891,15 +874,16 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "彤露おかわり",
+    name_en: "TUNG LU OKAWARI",
     image: "彤露おかわり.jpg",
-    website:
-      "https://footinder.com.tw/%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80/110349/",
+    website: "",
     facebook: "https://www.facebook.com/tungluokawari/?locale=ja_JP",
     instagram: "https://www.instagram.com/tunglu_okawari/",
     color: "#cac9cf",
   },
   {
     name: "沐荼寺",
+    name_en: "MUTUCHA",
     image: "沐荼寺.jpg",
     website: "https://www.mutucha.com/",
     facebook: "https://www.facebook.com/Mutucha/?locale=zh_TW",
@@ -908,6 +892,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "小佐お茶作",
+    name_en: "ZUO TEA",
     image: "小佐お茶作.jpg",
     website: "https://www.zuotea.com.tw/",
     facebook: "https://www.facebook.com/zuotea99/?locale=ja_JP",
@@ -915,7 +900,8 @@ const shopsData: DrinkShop[] = [
     color: "#063a6a",
   },
   {
-    name: "黛黛茶 DailyDae",
+    name: "黛黛茶",
+    name_en: "DailyDae",
     image: "黛黛茶 DailyDae.jpg",
     website: "https://www.dailydae.com.tw/",
     facebook: "https://www.facebook.com/dailydae.tea/?locale=zh_TW",
@@ -924,6 +910,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "沐白小農",
+    name_en: "i-milky",
     image: "沐白小農.jpg",
     website: "https://i-milky.weebly.com/",
     facebook: "https://www.facebook.com/imilky.tw/",
@@ -931,7 +918,8 @@ const shopsData: DrinkShop[] = [
     color: "#83abcb",
   },
   {
-    name: "醋頭家 True Boss",
+    name: "醋頭家",
+    name_en: "True Boss",
     image: "醋頭家 True Boss.jpg",
     website: "http://www.trueboss.com.tw/",
     facebook: "https://www.facebook.com/trueboss.tw/?locale=zh_TW",
@@ -941,6 +929,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "紅茶老爹",
+    name_en: "",
     image: "紅茶老爹.jpg",
     website: "https://yesally.com.tw/list_in.php?ID=1783",
     facebook: "https://www.facebook.com/profile.php?id=100089573525723",
@@ -949,14 +938,16 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "清玉",
+    name_en: "",
     image: "清玉.jpg",
-    website: "https://033509488.tw66.com.tw/web/Comp?command=Intro",
-    facebook: "https://www.facebook.com/kingtea888/?locale=zh_TW",
-    instagram: "https://www.instagram.com/ktoao_rtb/?hl=zh-tw",
+    website: "",
+    facebook: "",
+    instagram: "",
     color: "#92c221",
   },
   {
-    name: "CHILL DAY 鶖茶",
+    name: "鶖茶",
+    name_en: "CHILL DAY",
     image: "CHILL DAY 鶖茶.jpg",
     website: "https://shop.ichefpos.com/store/uBx4hazz/ordering",
     facebook: "https://www.facebook.com/CHILLDAY.2021/",
@@ -964,7 +955,8 @@ const shopsData: DrinkShop[] = [
     color: "#152429",
   },
   {
-    name: "水巷茶弄 CHA NUNG",
+    name: "水巷茶弄",
+    name_en: "CHA NUNG",
     image: "水巷茶弄 CHA NUNG.jpg",
     website: "https://www.chanung.com.tw/",
     facebook: "https://www.facebook.com/chanungtw/?locale=zh_TW",
@@ -972,7 +964,8 @@ const shopsData: DrinkShop[] = [
     color: "#cbcbcb",
   },
   {
-    name: "1955阿義",
+    name: "1955 阿義",
+    name_en: "",
     image: "1955阿義.jpg",
     website: "",
     facebook: "https://www.facebook.com/1995AYI/?locale=zh_TW",
@@ -981,6 +974,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "茶朵木teas",
+    name_en: "",
     image: "茶朵木teas.jpg",
     website:
       "https://www.ubereats.com/tw/store/%E8%8C%B6%E6%9C%B5%E6%9C%A8teas-%E6%96%B0%E8%8E%8A%E7%A6%8F%E5%A3%BD%E5%BA%97/wUWlM_AGQDyr-WkAiBSvhA?srsltid=AfmBOoqSKFqmAWFQkLtig3e4Wj_W7ifHrk5MrmSun6MhlQ524B43xk6R",
@@ -992,6 +986,7 @@ const shopsData: DrinkShop[] = [
   },
   {
     name: "日出客棧",
+    name_en: "",
     image: "日出客棧.jpg",
     website: "https://sunriseinn-official.com/",
     facebook: "https://www.facebook.com/Official.InnSunrise/?locale=zh_TW",
@@ -999,7 +994,8 @@ const shopsData: DrinkShop[] = [
     color: "#b82f44",
   },
   {
-    name: "進發家 Jin Fa Jia",
+    name: "進發家",
+    name_en: "Jin Fa Jia",
     image: "進發家 Jin Fa Jia.jpg",
     website: "https://www.8teahouse.com/?lang=tw",
     facebook: "https://www.facebook.com/JinFaJiaTaiwaneseTea/",
@@ -1007,7 +1003,8 @@ const shopsData: DrinkShop[] = [
     color: "#221713",
   },
   {
-    name: "小貴冰 GUEI BING",
+    name: "小貴冰",
+    name_en: "GUEI BING",
     image: "小貴冰 GUEI BING.jpg",
     website: "",
     facebook:

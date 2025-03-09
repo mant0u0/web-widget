@@ -17,6 +17,11 @@ export default function Home() {
             link="/Purchasing"
           /> */}
           <LinkItem
+            text="飲料店搜尋器"
+            info="搜尋台灣各家連鎖飲料店的網址與社群。"
+            link="/DrinkSearch"
+          />
+          <LinkItem
             text="文字編輯器"
             info="整合各種小功能的純文字編輯器，提供各種符號、顏文字等。"
             link="/TextEditor"
