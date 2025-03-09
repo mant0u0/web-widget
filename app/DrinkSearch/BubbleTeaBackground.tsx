@@ -34,9 +34,8 @@ interface MatterRender {
   textures: Record<string, unknown>;
 }
 
-interface MatterRunner {
-  // 不需要詳細定義
-}
+// 修復空介面錯誤 - 使用 Record 替代空介面
+type MatterRunner = Record<string, unknown>;
 
 // 自定義 Ball 類型
 interface Ball extends MatterBody {
