@@ -5,6 +5,7 @@ type MatterType = typeof import("matter-js");
 interface Ball extends Matter.Body {
   fadeState: "fadingIn" | "normal" | "fadingOut";
   fadeProgress: number;
+  circleRadius?: number; // 添加這個屬性以避免使用 any
 }
 
 const BubbleTeaBackground: React.FC = () => {
@@ -50,8 +51,9 @@ const BubbleTeaBackground: React.FC = () => {
           if (render.canvas) {
             render.canvas.remove();
           }
-          render.canvas = null as any;
-          render.context = null as any;
+          // 修改這裡使用更具體的類型
+          render.canvas = null as unknown as HTMLCanvasElement;
+          render.context = null as unknown as CanvasRenderingContext2D;
           render.textures = {};
         }
 
@@ -150,6 +152,8 @@ const BubbleTeaBackground: React.FC = () => {
           ball.angle = Math.random() * Math.PI * 2;
           ball.fadeState = fadeIn ? "fadingIn" : "normal";
           ball.fadeProgress = fadeIn ? 0 : 1;
+          // 保存圓的半徑，避免後續需要使用 any 類型轉換
+          ball.circleRadius = ballRadius;
 
           // 根據球的大小調整角速度（較大的球轉得慢一點）
           const angularVelocity =
@@ -249,7 +253,8 @@ const BubbleTeaBackground: React.FC = () => {
 
           activeBalls.forEach((ball) => {
             const pos = ball.position;
-            const radius = (ball as any).circleRadius;
+            // 使用我們添加到 Ball 介面的 circleRadius 屬性
+            const radius = ball.circleRadius || 0;
             const opacity = ball.fadeProgress;
 
             context.save();
