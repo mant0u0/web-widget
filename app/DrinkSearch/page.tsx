@@ -105,12 +105,12 @@ export default function DrinkSearchPage() {
       <style dangerouslySetInnerHTML={{ __html: fadeAnimationStyles }} />
 
       {/* 頁頭 */}
-      {/* <header className="border-b border-stone-600 bg-stone-500 bg-gradient-to-r py-8 text-white">
+      <header className="border-b border-stone-600 bg-stone-500 bg-gradient-to-r py-8 text-white">
         <div className="container mx-auto px-4 text-center">
           <h1 className="mb-2 text-3xl font-bold">找飲料？</h1>
           <p className="text-lg opacity-90">尋找您喜愛的飲料店</p>
         </div>
-      </header> */}
+      </header>
 
       {/* 主要內容 */}
       <main className="container mx-auto px-4 py-8">
@@ -184,6 +184,16 @@ export default function DrinkSearchPage() {
           >
             {selectedShop && (
               <>
+                <button
+                  onClick={closeModal}
+                  className="absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-xl bg-[#00000022] hover:bg-[#00000033]"
+                >
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="h-6 w-6 text-white"
+                  />
+                </button>
+
                 <div className="relative h-[240px]">
                   <div
                     className="h-[80%] w-full"
@@ -257,15 +267,6 @@ export default function DrinkSearchPage() {
                         className="text-2xl"
                       />
                     </a>
-                  </div>
-
-                  <div className="text-center">
-                    <button
-                      onClick={closeModal}
-                      className="rounded-lg bg-gray-200 px-6 py-3 font-medium text-gray-800 transition-colors hover:bg-gray-300"
-                    >
-                      關閉
-                    </button>
                   </div>
                 </div>
               </>
