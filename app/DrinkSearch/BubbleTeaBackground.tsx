@@ -121,14 +121,11 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (engine) {
-          // @ts-expect-error - Matter.js 類型不完整
           World.clear(engine.world);
-          // @ts-expect-error - Matter.js 類型不完整
           Engine.clear(engine);
         }
 
         if (render) {
-          // @ts-expect-error - Matter.js 類型不完整
           Render.stop(render);
           if (render.canvas) {
             render.canvas.remove();
@@ -139,7 +136,6 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (runner) {
-          // @ts-expect-error - Matter.js 類型不完整
           Runner.stop(runner);
         }
 
@@ -186,7 +182,6 @@ const BubbleTeaBackground: React.FC = () => {
           }),
         ];
 
-        // @ts-expect-error - Matter.js 類型不完整
         Composite.add(engine.world, walls);
         activeBalls = [];
 
@@ -221,7 +216,6 @@ const BubbleTeaBackground: React.FC = () => {
           x = x || Math.random() * (width - 2 * ballRadius) + ballRadius;
           y = y || Math.random() * (height - 2 * ballRadius) + ballRadius;
 
-          // @ts-expect-error - Matter.js 類型不完整
           const ball = Bodies.circle(x, y, ballRadius, {
             restitution: 1,
             friction: 0,
@@ -262,7 +256,6 @@ const BubbleTeaBackground: React.FC = () => {
           ballToRemove.fadeProgress = 1;
 
           setTimeout(() => {
-            // @ts-expect-error - Matter.js 類型不完整
             Composite.remove(engine.world, ballToRemove);
             activeBalls = activeBalls.filter((b) => b !== ballToRemove);
           }, 1000);
@@ -272,7 +265,6 @@ const BubbleTeaBackground: React.FC = () => {
         for (let i = 0; i < 15; i++) {
           const ball = createBall();
           activeBalls.push(ball);
-          // @ts-expect-error - Matter.js 類型不完整
           Composite.add(engine.world, ball);
         }
 
@@ -284,7 +276,6 @@ const BubbleTeaBackground: React.FC = () => {
           }
           const newBall = createBall(undefined, undefined, true);
           activeBalls.push(newBall);
-          // @ts-expect-error - Matter.js 類型不完整
           Composite.add(engine.world, newBall);
         }, 2000);
 
@@ -305,7 +296,6 @@ const BubbleTeaBackground: React.FC = () => {
 
               const newBall = createBall(x + offsetX, y + offsetY, true);
               activeBalls.push(newBall);
-              // @ts-expect-error - Matter.js 類型不完整
               Composite.add(engine.world, newBall);
 
               // 如果超過最大數量，移除一些舊珍珠
@@ -317,7 +307,6 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         // 淡入淡出效果
-        // @ts-expect-error - Matter.js 類型不完整
         Events.on(render, "beforeRender", () => {
           activeBalls.forEach((ball) => {
             if (ball.fadeState === "fadingIn") {
@@ -335,7 +324,6 @@ const BubbleTeaBackground: React.FC = () => {
         });
 
         // 簡化渲染，純色珍珠
-        // @ts-expect-error - Matter.js 類型不完整
         Events.on(render, "afterRender", () => {
           const context = render.context;
           if (!context) return;
@@ -361,10 +349,8 @@ const BubbleTeaBackground: React.FC = () => {
           });
         });
 
-        // @ts-expect-error - Matter.js 類型不完整
         Render.run(render);
         runner = Runner.create();
-        // @ts-expect-error - Matter.js 類型不完整
         Runner.run(runner, engine);
       }
 
@@ -388,7 +374,6 @@ const BubbleTeaBackground: React.FC = () => {
         window.removeEventListener("resize", handleResize);
 
         if (render) {
-          // @ts-expect-error - Matter.js 類型不完整
           Render.stop(render);
           if (render.canvas) {
             render.canvas.remove();
@@ -396,14 +381,11 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         if (runner) {
-          // @ts-expect-error - Matter.js 類型不完整
           Runner.stop(runner);
         }
 
         if (engine) {
-          // @ts-expect-error - Matter.js 類型不完整
           World.clear(engine.world);
-          // @ts-expect-error - Matter.js 類型不完整
           Engine.clear(engine);
         }
       };
