@@ -69,8 +69,11 @@ export default function DrinkSearchPage() {
     if (!searchInput.trim()) {
       setFilteredShops(shopsData);
     } else {
-      const filtered = shopsData.filter((shop) =>
-        shop.name.toLowerCase().includes(searchInput.toLowerCase()),
+      const filtered = shopsData.filter(
+        (shop) =>
+          shop.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+          (shop.name_en &&
+            shop.name_en.toLowerCase().includes(searchInput.toLowerCase())),
       );
       setFilteredShops(filtered);
     }
@@ -228,7 +231,7 @@ export default function DrinkSearchPage() {
                     )}
                   </div>
 
-                  <div className="mb-8 flex items-center justify-center gap-1">
+                  <div className="mb-6 flex items-center justify-center gap-1">
                     {selectedShop.website && (
                       <a
                         className="flex h-[48px] w-[48px] items-center justify-center rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-700"
@@ -282,6 +285,19 @@ export default function DrinkSearchPage() {
                       />
                     </a>
                   </div>
+
+                  {selectedShop.menu && (
+                    <div className="-mt-1 flex flex-col gap-3">
+                      <a
+                        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-stone-100 p-4 hover:bg-stone-200"
+                        href={selectedShop.menu}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <p className="text-stone-700">查看價目表</p>
+                      </a>
+                    </div>
+                  )}
                 </div>
               </>
             )}

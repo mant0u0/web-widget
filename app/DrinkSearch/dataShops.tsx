@@ -4,9 +4,10 @@ export interface DrinkShop {
   name: string;
   name_en: string;
   image: string;
+  website: string;
   facebook: string;
   instagram: string;
-  website: string;
+  menu: string;
   color: string;
 }
 
@@ -19,6 +20,7 @@ const shopsData: DrinkShop[] = [
     website: "http://www.50lan.com/",
     facebook: "https://www.facebook.com/20201204.50lin/?locale=zh_TW",
     instagram: "https://www.instagram.com/50lan_central/",
+    menu: "http://50lan.com/web/products.asp",
     color: "#ffff00",
   },
   {
@@ -28,6 +30,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.teamagichand.com.tw/",
     facebook: "https://www.facebook.com/Teamagichand00/?locale=zh_TW",
     instagram: "https://www.instagram.com/teamagichand00/",
+    menu: "https://www.teamagichand.com.tw/price/",
     color: "#b72b50",
   },
   {
@@ -38,6 +41,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/TAO-TAO-TEA-%E5%85%88%E5%96%9D%E9%81%93-100087595682143/",
     instagram: "https://www.instagram.com/tao.tao.tea/",
+    menu: "https://www.taotaotea.com.tw/pages/menu",
     color: "#cf001a",
   },
   {
@@ -47,7 +51,8 @@ const shopsData: DrinkShop[] = [
     website: "https://www.coco-tea.com/",
     facebook: "https://www.facebook.com/cocofreshtea.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/cocotea.tw/",
-    color: "#73787c",
+    menu: "",
+    color: "#f99b38",
   },
   {
     name: "日春木瓜牛奶",
@@ -58,6 +63,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E6%97%A5%E6%98%A5%E6%9C%A8%E7%93%9C%E7%89%9B%E5%A5%B6-%E5%8F%B0%E7%81%A3%E7%B8%BD%E9%83%A8-100064112016234/?locale=zh_TW",
     instagram: "https://www.instagram.com/taoyuan_international_airport/",
+    menu: "",
     color: "#da151f",
   },
   {
@@ -67,6 +73,7 @@ const shopsData: DrinkShop[] = [
     website: "https://unocha.com.tw/",
     facebook: "https://www.facebook.com/UNOCHA.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/unocha_tw",
+    menu: "https://unocha.com.tw/drinks.php",
     color: "#115652",
   },
 
@@ -77,6 +84,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.teatop.com.tw/",
     facebook: "https://www.facebook.com/tea.topTW/?locale=zh_TW",
     instagram: "https://www.instagram.com/teatop_tw/",
+    menu: "https://www.teatop.com.tw/menu/north-menu/",
     color: "#e9602a",
   },
   {
@@ -86,6 +94,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.thefarfarfarm.com/",
     facebook: "https://www.facebook.com/thefarfarfarm/?locale=zh_TW",
     instagram: "https://www.instagram.com/thefarfarfarm/",
+    menu: "",
     color: "#e1efd5",
   },
   {
@@ -96,6 +105,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E5%BE%97%E6%AD%A3-OOLONG-TEA-PROJECT-100064036692208/?locale=zh_TW",
     instagram: "https://www.instagram.com/dejengoolongtea/",
+    menu: "https://dejeng.com/drinks/",
     color: "#335384",
   },
   {
@@ -105,6 +115,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.youindrink.com/",
     facebook: "https://www.facebook.com/youintaiwan/",
     instagram: "https://www.instagram.com/youintw2021/",
+    menu: "",
     color: "#a7a7a7",
   },
   {
@@ -114,6 +125,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.milksha.com/",
     facebook: "https://www.facebook.com/Milkshatw/?locale=zh_TW",
     instagram: "https://www.instagram.com/milksha_tw/",
+    menu: "https://www.milksha.com/products.php",
     color: "#62840b",
   },
   {
@@ -123,6 +135,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.kebuke.com/",
     facebook: "https://www.facebook.com/kebuke2008/?locale=zh_TW",
     instagram: "https://www.instagram.com/kebukeofficial/",
+    menu: "https://kebuke.com/menu/",
     color: "#003c4f",
   },
   {
@@ -133,6 +146,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://m.facebook.com/hashtag/%E8%8C%B6%E8%81%9Achage?__eep__=6",
     instagram: "https://www.instagram.com/chage.tea/",
+    menu: "https://www.chage.com.tw/edcontent.php?lang=tw&tb=2",
     color: "#e3e3e3",
   },
   {
@@ -142,6 +156,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.chingshin.tw/",
     facebook: "https://www.facebook.com/chingshin1987/?locale=zh_TW",
     instagram: "https://www.instagram.com/chingshin1987/",
+    menu: "https://www.chingshin.tw/product.php",
     color: "#005744",
   },
   {
@@ -151,6 +166,7 @@ const shopsData: DrinkShop[] = [
     website: "https://8yotea.com/",
     facebook: "https://www.facebook.com/@8yotea/?locale=zh_TW",
     instagram: "https://www.instagram.com/8yotea/",
+    menu: "",
     color: "#f7c059",
   },
   {
@@ -160,15 +176,17 @@ const shopsData: DrinkShop[] = [
     website: "https://www.aniceholiday.com.tw/",
     facebook: "https://www.facebook.com/anicehoilday/?locale=zh_TW",
     instagram: "https://www.instagram.com/aniceholiday_tea/",
+    menu: "https://www.aniceholiday.com.tw/beverages-menu",
     color: "#5f6738",
   },
   {
-    name: "再睡5分鐘 NAP TEA",
+    name: "再睡5分鐘",
     name_en: "NAP TEA",
     image: "再睡5分鐘 NAP TEA.jpg",
     website: "https://www.napteazzz.com/",
     facebook: "https://www.facebook.com/napteazzz/?locale=zh_TW",
     instagram: "https://www.instagram.com/napteazzz/",
+    menu: "https://www.napteazzz.com/%E8%8F%9C%E5%96%AEmenu",
     color: "#70462d",
   },
   {
@@ -178,6 +196,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.truedan.com.tw/",
     facebook: "https://www.facebook.com/truedantw/?locale=zh_TW",
     instagram: "https://www.instagram.com/truedantw/",
+    menu: "https://www.truedan.com.tw/product.php",
     color: "#043436",
   },
   {
@@ -187,6 +206,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.citycafe.com.tw/event/17xiancuicha/index.html",
     facebook: "",
     instagram: "",
+    menu: "",
     color: "#00a881",
   },
   {
@@ -196,6 +216,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.chunshuitang.com.tw/",
     facebook: "https://www.facebook.com/ChunShui1983/?locale=zh_TW",
     instagram: "https://www.instagram.com/chunshuitang/",
+    menu: "https://www.chunshuitang.com.tw/menu/",
     color: "#f4bdba",
   },
   {
@@ -205,6 +226,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.macutea.com.tw/",
     facebook: "https://www.facebook.com/macu2008.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/macu2008tw/",
+    menu: "https://www.macutea.com.tw/drink.php",
     color: "#e6201f",
   },
   {
@@ -214,6 +236,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.chafortea.com.tw/",
     facebook: "https://www.facebook.com/chafortea8/?locale=zh_TW",
     instagram: "https://www.instagram.com/tenrentw/",
+    menu: "",
     color: "#024c0d",
   },
   {
@@ -223,6 +246,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/johnteacompany/?locale=zh_TW",
     instagram: "https://www.instagram.com/johnteacompany/",
+    menu: "",
     color: "#183263",
   },
   {
@@ -232,6 +256,7 @@ const shopsData: DrinkShop[] = [
     website: "https://hechaloutea.com.tw/",
     facebook: "https://www.facebook.com/hechaloutea/?locale=zh_TW",
     instagram: "https://www.instagram.com/hechaloutea/",
+    menu: "https://hechaloutea.com.tw/drinks/",
     color: "#2e4c32",
   },
   {
@@ -241,6 +266,7 @@ const shopsData: DrinkShop[] = [
     website: "https://soma-drinks.com/",
     facebook: "https://www.facebook.com/somadrinks/?locale=zh_TW",
     instagram: "https://www.instagram.com/somadrink/",
+    menu: "",
     color: "#353444",
   },
   {
@@ -250,6 +276,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.dayungs.com/",
     facebook: "https://www.facebook.com/dayungs.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/dayungs_official/",
+    menu: "https://www.dayungs.com/home/product/seasonal/",
     color: "#185432",
   },
   {
@@ -259,6 +286,7 @@ const shopsData: DrinkShop[] = [
     website: "https://wanpotea.com/",
     facebook: "https://www.facebook.com/wanpotea.com.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/wanpotea.com.tw/",
+    menu: "https://wanpotea.com/drink.php",
     color: "#291f1d",
   },
   {
@@ -268,6 +296,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.wootea.com/",
     facebook: "https://www.facebook.com/WooTeaTW/?locale=zh_TW",
     instagram: "https://www.instagram.com/wooteatw/",
+    menu: "https://www.wootea.com/menu/",
     color: "#d8d8d8",
   },
   {
@@ -277,6 +306,7 @@ const shopsData: DrinkShop[] = [
     website: "http://www.presotea.com.tw/?show_lang=tw",
     facebook: "https://www.facebook.com/presotea.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/presotea_global/",
+    menu: "http://www.presotea.com.tw/menu.php",
     color: "#231717",
   },
   {
@@ -286,6 +316,7 @@ const shopsData: DrinkShop[] = [
     website: "https://tw.tp-tea.com/",
     facebook: "https://www.facebook.com/tptea2005/?locale=zh_TW",
     instagram: "https://www.instagram.com/tptea.taiwan/",
+    menu: "https://tw.tp-tea.com/menu/",
     color: "#f9f3e6",
   },
   {
@@ -296,6 +327,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E5%A4%A7%E8%8C%97%E6%9C%AC%E4%BD%8D%E8%A3%BD%E8%8C%B6%E5%A0%82-100067777907132/?locale=zh_TW",
     instagram: "https://www.instagram.com/daming_tea/",
+    menu: "",
     color: "#717171",
   },
   {
@@ -305,6 +337,7 @@ const shopsData: DrinkShop[] = [
     website: "https://guiji-group.com/",
     facebook: "https://www.facebook.com/greattea.asia/?locale=zh_TW",
     instagram: "https://www.instagram.com/guiji_official/",
+    menu: "https://guiji-group.com/%e4%b8%ad%e5%8d%80%e9%a3%b2%e5%93%81%e8%8f%9c%e5%96%ae/%e9%a3%b2%e5%93%81%e8%8f%9c%e5%96%ae/",
     color: "#b01f24",
   },
   {
@@ -314,6 +347,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/chatimeglobal/?locale=zh_TW",
     instagram: "https://www.instagram.com/chatime.tw_official/",
+    menu: "",
     color: "#4e0878",
   },
   {
@@ -323,6 +357,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/TaiwanYuJin/?locale=zh_TW",
     instagram: "https://www.instagram.com/y.j_coffee/",
+    menu: "",
     color: "#858585",
   },
   {
@@ -332,6 +367,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.mincha.com.tw/",
     facebook: "https://www.facebook.com/mincha.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/mincha_official/",
+    menu: "",
     color: "#3a3935",
   },
   {
@@ -342,6 +378,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/profile.php?id=100064009001259&locale=sr_RS",
     instagram: "https://www.instagram.com/machimachi__official/",
+    menu: "",
     color: "#fef0e6",
   },
   {
@@ -353,6 +390,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E7%8E%96%E4%BB%B0%E8%8C%B6%E9%A3%9F%E6%96%87%E5%8C%96-100063858673694/",
     instagram: "https://www.instagram.com/jiuyangtea/",
+    menu: "",
     color: "#1e1f23",
   },
   {
@@ -362,6 +400,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.taroyuan.com/",
     facebook: "https://www.facebook.com/taroyuan.official/",
     instagram: "https://www.instagram.com/taro_yuan.official/",
+    menu: "",
     color: "#a778a6",
   },
   {
@@ -371,6 +410,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.itsotea.com/",
     facebook: "https://www.facebook.com/ITSOtea/?locale=zh_TW",
     instagram: "https://www.instagram.com/itso_tw/",
+    menu: "",
     color: "#988e7d",
   },
   {
@@ -380,6 +420,7 @@ const shopsData: DrinkShop[] = [
     website: "https://page.line.me/sxj4140t",
     facebook: "https://www.facebook.com/lepharedrink/?locale=zh_TW",
     instagram: "https://www.instagram.com/lepharelife/",
+    menu: "",
     color: "#762835",
   },
   {
@@ -390,8 +431,19 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/spadetea/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/301959048/shi-bei-spade-tea/",
+    menu: "",
     color: "#e67c7c",
   },
+  {
+    name: "圓石禪飲",
+    name_en: "oregin",
+    image: "",
+    website: "https://www.enseki.org",
+    facebook: "https://www.facebook.com/OREGIN.TW",
+    instagram: "https://www.instagram.com/oregin.tw/",
+    menu: "https://www.enseki.org/menu",
+    color: "#036db7",
+  }
   {
     name: "喫茶小舖",
     name_en: "Teashop168",
@@ -399,6 +451,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.teashop168.com.tw/",
     facebook: "https://www.facebook.com/teashop168/?locale=zh_TW",
     instagram: "https://www.instagram.com/ni_hao1998/",
+    menu: "",
     color: "#373634",
   },
   {
@@ -409,6 +462,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/BLIKE-%E5%A5%B6%E8%8C%B6%E5%B0%88%E9%96%80-61553640478011/?locale=zh_TW",
     instagram: "https://www.instagram.com/blike.tw/",
+    menu: "",
     color: "#d2251f",
   },
   {
@@ -418,6 +472,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.gong-cha.com.tw/",
     facebook: "https://www.facebook.com/GongChaTaiwan/?locale=zh_TW",
     instagram: "https://www.instagram.com/gongcha_taiwan/",
+    menu: "",
     color: "#c30e2f",
   },
   {
@@ -427,6 +482,7 @@ const shopsData: DrinkShop[] = [
     website: "http://www.quicklygroup.com/",
     facebook: "https://www.facebook.com/JobquicklyTaiwan/?locale=zh_TW",
     instagram: "https://www.instagram.com/explore/locations/3600456/quickly/",
+    menu: "",
     color: "#f16c2a",
   },
   {
@@ -436,6 +492,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.chihetea.com.tw/",
     facebook: "https://www.facebook.com/three077905557/?locale=zh_TW",
     instagram: "https://www.instagram.com/thre_spring/",
+    menu: "",
     color: "#e49e48",
   },
   {
@@ -445,6 +502,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.taiwan7tea.com.tw/?lang=tw",
     facebook: "https://www.facebook.com/taiwan.se7entea/?locale=zh_TW",
     instagram: "https://www.instagram.com/tw_seventea/",
+    menu: "",
     color: "#191e72",
   },
   {
@@ -455,6 +513,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/blackteabuscompany/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/107983472142184/black-tea-bus-/",
+    menu: "",
     color: "#ca292f",
   },
   {
@@ -464,6 +523,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/@Missingtea10803/?locale=zh_TW",
     instagram: "https://www.instagram.com/missingtea_2015/",
+    menu: "",
     color: "#3e5581",
   },
   {
@@ -473,6 +533,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.mr-wish.com/",
     facebook: "https://www.facebook.com/Mr.WishTaiwan/?locale=zh_TW",
     instagram: "https://www.instagram.com/mr.wish_tw/",
+    menu: "",
     color: "#5d8435",
   },
   {
@@ -482,6 +543,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/chichasanchen.TW/",
     instagram: "https://www.instagram.com/chichasanchen.tw/",
+    menu: "",
     color: "#9dc08a",
   },
   {
@@ -491,6 +553,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.kungfutea.com.tw/",
     facebook: "https://www.facebook.com/Kungfutea/?locale=zh_TW",
     instagram: "https://www.instagram.com/kungfutea_tw/",
+    menu: "",
     color: "#1f1f1f",
   },
   {
@@ -500,6 +563,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.mateas.com.tw/",
     facebook: "https://www.facebook.com/mateas.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/mateas.tw/",
+    menu: "",
     color: "#dfe0e4",
   },
   {
@@ -509,6 +573,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.att4fun.com.tw/cuisine-in/46BzT5aUqemXFWs7",
     facebook: "https://www.facebook.com/HWADAmilktea/?locale=zh_TW",
     instagram: "https://www.instagram.com/hwadamilktea/",
+    menu: "",
     color: "#d6d6d6",
   },
   {
@@ -518,6 +583,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.shangyulin.com.tw/",
     facebook: "https://www.facebook.com/syltea/?locale=zh_TW",
     instagram: "https://www.instagram.com/shang_yulin/",
+    menu: "",
     color: "#ae7c4b",
   },
   {
@@ -527,6 +593,7 @@ const shopsData: DrinkShop[] = [
     website: "https://chosen-tea.com/",
     facebook: "https://www.facebook.com/chosentea.official/?locale=zh_TW",
     instagram: "https://www.instagram.com/chosen.tea/",
+    menu: "",
     color: "#063c22",
   },
   {
@@ -536,6 +603,7 @@ const shopsData: DrinkShop[] = [
     website: "http://www.redsuntea.com/",
     facebook: "https://www.facebook.com/redsuntea/?locale=zh_TW",
     instagram: "https://www.instagram.com/redsuntea/",
+    menu: "",
     color: "#c40000",
   },
   {
@@ -546,6 +614,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E9%98%BF%E5%A8%98%E5%96%82%E5%BB%96%E8%80%81%E5%A4%A7%E9%80%A3%E9%8E%96%E8%8C%B6%E5%9D%8A%E5%A4%A7%E6%BA%AA%E4%B8%AD%E6%AD%A3%E5%BA%97-100084282547621/",
     instagram: "https://www.instagram.com/liaoboss_tea/",
+    menu: "",
     color: "#fedb1f",
   },
   {
@@ -555,6 +624,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.wu-win.com/h/Index?key=716207668656",
     facebook: "https://www.facebook.com/wuwintw/?locale=zh_TW",
     instagram: "https://www.instagram.com/wuwin_tw/",
+    menu: "",
     color: "#b91d28",
   },
   {
@@ -564,6 +634,7 @@ const shopsData: DrinkShop[] = [
     website: "https://huablog.tw/chahi/",
     facebook: "https://www.facebook.com/CHAHi.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/chahi_tw/",
+    menu: "",
     color: "#cbcbc7",
   },
   {
@@ -573,6 +644,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.possession-tea.com/",
     facebook: "https://www.facebook.com/ZCozyTeaLoft/?locale=zh_TW",
     instagram: "https://www.instagram.com/cozy_tea_loft/",
+    menu: "",
     color: "#be9051",
   },
   {
@@ -583,6 +655,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/Milk-Tea-Matsu-100087760390803/?locale=zh_TW",
     instagram: "https://www.instagram.com/matsuhun2232/",
+    menu: "",
     color: "#efe5db",
   },
   {
@@ -592,6 +665,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.yifangtea.com/chinese/home",
     facebook: "https://www.facebook.com/yifangtea/?locale=zh_TW",
     instagram: "https://www.instagram.com/yifangtea.official/",
+    menu: "",
     color: "#e2e2e2",
   },
   {
@@ -602,6 +676,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/@bei.huei1994/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/252089986/bei-hui-mu-gua-niu-nai/",
+    menu: "",
     color: "#ef791f",
   },
   {
@@ -611,6 +686,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.19teahouse.com/",
     facebook: "https://www.facebook.com/19teahouse/?locale=zh_TW",
     instagram: "https://www.instagram.com/19teahouse/",
+    menu: "",
     color: "#789a79",
   },
   {
@@ -620,6 +696,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/perfectlife.teashop/?locale=zh_TW",
     instagram: "https://www.instagram.com/perfectlife.teashop/",
+    menu: "",
     color: "#935b28",
   },
   {
@@ -629,6 +706,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.tea-melody.com.tw/index.php",
     facebook: "https://www.facebook.com/12TeaMelody/?locale=zh_TW",
     instagram: "https://www.instagram.com/tea.melody/",
+    menu: "",
     color: "#373634",
   },
   {
@@ -638,6 +716,7 @@ const shopsData: DrinkShop[] = [
     website: "https://page.line.me/ycf9608q",
     facebook: "https://www.facebook.com/naturalfirst2005/?locale=zh_TW",
     instagram: "https://www.instagram.com/sianzihran/",
+    menu: "",
     color: "#92c221",
   },
   {
@@ -648,6 +727,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/yanshudrink267/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/268761155/yan-shu-chuang-shi-dian/",
+    menu: "",
     color: "#506a3a",
   },
   {
@@ -658,6 +738,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/ArtMatsuVillage/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/215678608/ma-zu-xin-cun-juan-cun-wen-chuang-yuan-qu/",
+    menu: "",
     color: "#01135f",
   },
   {
@@ -667,6 +748,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/easehome168/?locale=zh_TW",
     instagram: "https://www.instagram.com/zizaixuan_1986/",
+    menu: "",
     color: "#1f372a",
   },
   {
@@ -676,6 +758,7 @@ const shopsData: DrinkShop[] = [
     website: "https://sosweet1978.weebly.com/",
     facebook: "https://www.facebook.com/sosweet1978/?locale=zh_TW",
     instagram: "https://www.instagram.com/somilk1978/",
+    menu: "",
     color: "#c40c24",
   },
   {
@@ -685,6 +768,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.liketeashop.com/",
     facebook: "https://www.facebook.com/LikeTea.JuiceStation/?locale=zh_TW",
     instagram: "https://www.instagram.com/liketeashop/",
+    menu: "",
     color: "#d4bfbc",
   },
   {
@@ -695,6 +779,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/leeji.2008/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/1032807931/li-ji-gu-wei-hong-cha-bing--da-du-wen-chang-dian/",
+    menu: "",
     color: "#8e1b20",
   },
   {
@@ -704,6 +789,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.xingfutang.com.tw/index.php?lang=tw",
     facebook: "https://www.facebook.com/xingfutang.tw/?locale=zh_TW",
     instagram: "https://www.instagram.com/xingfutang.tw/",
+    menu: "",
     color: "#ecdd9a",
   },
   {
@@ -713,6 +799,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.mamatea.com.tw/",
     facebook: "https://m.facebook.com/people/Mommom-Tea/61564586285476/",
     instagram: "https://www.instagram.com/mamatea_1211/",
+    menu: "",
     color: "#231918",
   },
   {
@@ -723,6 +810,7 @@ const shopsData: DrinkShop[] = [
     facebook: "",
     instagram:
       "https://www.instagram.com/explore/locations/2413704/?locale=es_US&hl=am-et",
+    menu: "",
     color: "#323232",
   },
   {
@@ -732,6 +820,7 @@ const shopsData: DrinkShop[] = [
     website: "https://truewin2018.com.tw/",
     facebook: "https://www.facebook.com/TrueWinLucteaDay/?locale=zh_TW",
     instagram: "https://www.instagram.com/truewin_lucteaday/",
+    menu: "",
     color: "#303030",
   },
   {
@@ -741,6 +830,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/walker.teashop/?locale=zh_TW",
     instagram: "https://www.instagram.com/walker.teashop/",
+    menu: "",
     color: "#10375e",
   },
   {
@@ -750,6 +840,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.whosteatw.com/",
     facebook: "https://www.facebook.com/WhosTea/?locale=zh_TW",
     instagram: "https://www.instagram.com/whostea_tw/",
+    menu: "",
     color: "#21364b",
   },
   {
@@ -759,6 +850,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.chunfunhow.com/",
     facebook: "https://www.facebook.com/chunfunhow8/?locale=zh_TW",
     instagram: "https://www.instagram.com/chunfunhow/",
+    menu: "",
     color: "#396e5e",
   },
   {
@@ -768,6 +860,7 @@ const shopsData: DrinkShop[] = [
     website: "https://page.line.me/370ivune",
     facebook: "https://www.facebook.com/uniquegreentea/?locale=zh_TW",
     instagram: "https://www.instagram.com/ugtea_official/",
+    menu: "",
     color: "#028002",
   },
   {
@@ -779,6 +872,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E5%AF%B6%E5%B3%B6%E7%B4%85%E8%8C%B6%E5%86%B0-%E9%A0%AD%E4%BB%BD%E5%BA%97-100057561424983/",
     instagram: "https://www.instagram.com/formosatea.ty/",
+    menu: "",
     color: "#939498",
   },
   {
@@ -788,6 +882,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.brianblacktea.com.tw/",
     facebook: "https://www.facebook.com/MrBU2005/?locale=zh_TW",
     instagram: "https://www.instagram.com/mrbu2020/",
+    menu: "",
     color: "#747474",
   },
   {
@@ -797,6 +892,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.t4.com.tw/",
     facebook: "https://www.facebook.com/T4taiwanHeadquarter/?locale=zh_TW",
     instagram: "https://www.instagram.com/t4taiwan/",
+    menu: "",
     color: "#1db5a8",
   },
   {
@@ -806,6 +902,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.drinkstore.com.tw/",
     facebook: "https://www.facebook.com/drinkcloudstore/?locale=zh_TW",
     instagram: "https://www.instagram.com/twdrinkstore/",
+    menu: "",
     color: "#05824a",
   },
   {
@@ -815,6 +912,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.jwc-tea.com.tw/",
     facebook: "https://www.facebook.com/jiawencing.headquarters/",
     instagram: "https://www.instagram.com/jiawencing/",
+    menu: "",
     color: "#f1c74f",
   },
   {
@@ -824,6 +922,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.double18tea.tw/",
     facebook: "https://www.facebook.com/DoubleShibatea/?locale=zh_TW",
     instagram: "https://www.instagram.com/double18tea_tw/",
+    menu: "",
     color: "#6b6b6b",
   },
   {
@@ -834,6 +933,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/whitealley/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/108854893950509/white-alley/?locale=zh_tw&hl=ar",
+    menu: "",
     color: "#737373",
   },
   {
@@ -843,6 +943,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.dinggotea.com/",
     facebook: "https://www.facebook.com/dinggo.tea168/?locale=zh_TW",
     instagram: "https://www.instagram.com/dinggo_2002/",
+    menu: "",
     color: "#e8365a",
   },
   {
@@ -852,6 +953,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/thailiketea01/?locale=zh_TW",
     instagram: "https://www.instagram.com/thailiketea/",
+    menu: "",
     color: "#201e1f",
   },
   {
@@ -861,6 +963,7 @@ const shopsData: DrinkShop[] = [
     website: "https://welldone0805.com/",
     facebook: "https://www.facebook.com/@Welldone888/",
     instagram: "https://www.instagram.com/welldone2557/",
+    menu: "",
     color: "#a2d6c9",
   },
   {
@@ -870,6 +973,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/Sugarcane.mamama/?locale=zh_TW",
     instagram: "https://www.instagram.com/explore/locations/139441186715012/-/",
+    menu: "",
     color: "#a4b3ae",
   },
   {
@@ -880,6 +984,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E7%89%B9-%E5%A5%BD%E5%96%9D-toptiertea-61561864010963/?locale=zh_TW",
     instagram: "https://www.instagram.com/toptiertea.tw/",
+    menu: "",
     color: "#231717",
   },
   {
@@ -889,6 +994,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/tungluokawari/?locale=ja_JP",
     instagram: "https://www.instagram.com/tunglu_okawari/",
+    menu: "",
     color: "#cac9cf",
   },
   {
@@ -898,6 +1004,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.mutucha.com/",
     facebook: "https://www.facebook.com/Mutucha/?locale=zh_TW",
     instagram: "https://www.instagram.com/mutucha__taiwan/",
+    menu: "",
     color: "#561626",
   },
   {
@@ -907,6 +1014,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.zuotea.com.tw/",
     facebook: "https://www.facebook.com/zuotea99/?locale=ja_JP",
     instagram: "https://www.instagram.com/zuotea99/",
+    menu: "",
     color: "#063a6a",
   },
   {
@@ -916,6 +1024,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.dailydae.com.tw/",
     facebook: "https://www.facebook.com/dailydae.tea/?locale=zh_TW",
     instagram: "https://www.instagram.com/dailydae.tea/",
+    menu: "",
     color: "#dbdbdb",
   },
   {
@@ -925,6 +1034,7 @@ const shopsData: DrinkShop[] = [
     website: "https://i-milky.weebly.com/",
     facebook: "https://www.facebook.com/imilky.tw/",
     instagram: "https://www.instagram.com/imilky.tw/",
+    menu: "",
     color: "#83abcb",
   },
   {
@@ -935,6 +1045,7 @@ const shopsData: DrinkShop[] = [
     facebook: "https://www.facebook.com/trueboss.tw/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/101006592259971/true-boss/",
+    menu: "",
     color: "#0f367b",
   },
   {
@@ -944,6 +1055,7 @@ const shopsData: DrinkShop[] = [
     website: "https://yesally.com.tw/list_in.php?ID=1783",
     facebook: "https://www.facebook.com/profile.php?id=100089573525723",
     instagram: "https://www.instagram.com/mr.blacktea/",
+    menu: "",
     color: "#185641",
   },
   {
@@ -953,6 +1065,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "",
     instagram: "",
+    menu: "",
     color: "#92c221",
   },
   {
@@ -962,6 +1075,7 @@ const shopsData: DrinkShop[] = [
     website: "https://shop.ichefpos.com/store/uBx4hazz/ordering",
     facebook: "https://www.facebook.com/CHILLDAY.2021/",
     instagram: "https://www.instagram.com/chillday_2021/",
+    menu: "",
     color: "#152429",
   },
   {
@@ -971,6 +1085,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.chanung.com.tw/",
     facebook: "https://www.facebook.com/chanungtw/?locale=zh_TW",
     instagram: "https://www.instagram.com/chanungtw/",
+    menu: "",
     color: "#cbcbcb",
   },
   {
@@ -980,6 +1095,7 @@ const shopsData: DrinkShop[] = [
     website: "",
     facebook: "https://www.facebook.com/1995AYI/?locale=zh_TW",
     instagram: "https://www.instagram.com/southayi1955/",
+    menu: "",
     color: "#cccbc6",
   },
   {
@@ -992,6 +1108,7 @@ const shopsData: DrinkShop[] = [
       "https://www.facebook.com/p/%E8%8C%B6%E6%9C%B5%E6%9C%A8teas%E9%A3%B2%E6%96%99-%E8%8A%B1%E8%93%AE%E6%B0%91%E5%9C%8B%E5%BA%97-100064500168016/?locale=zh_TW",
     instagram:
       "https://www.instagram.com/explore/locations/601665021/cha-duo-mu-teas/",
+    menu: "",
     color: "#73c6ca",
   },
   {
@@ -1001,6 +1118,7 @@ const shopsData: DrinkShop[] = [
     website: "https://sunriseinn-official.com/",
     facebook: "https://www.facebook.com/Official.InnSunrise/?locale=zh_TW",
     instagram: "https://www.instagram.com/sunrise_inpeh/",
+    menu: "",
     color: "#b82f44",
   },
   {
@@ -1010,6 +1128,7 @@ const shopsData: DrinkShop[] = [
     website: "https://www.8teahouse.com/?lang=tw",
     facebook: "https://www.facebook.com/JinFaJiaTaiwaneseTea/",
     instagram: "https://www.instagram.com/explore/locations/2120912708198035/",
+    menu: "",
     color: "#221713",
   },
   {
@@ -1020,6 +1139,7 @@ const shopsData: DrinkShop[] = [
     facebook:
       "https://www.facebook.com/p/%E5%B0%8F%E8%B2%B4%E5%86%B0GueiBing-100092540901046/",
     instagram: "https://www.instagram.com/guei_bing/",
+    menu: "",
     color: "#c47d49",
   },
 ];
