@@ -437,7 +437,7 @@ const shopsData: DrinkShop[] = [
   {
     name: "圓石禪飲",
     name_en: "oregin",
-    image: "",
+    image: "圓石.jpg",
     website: "https://www.enseki.org",
     facebook: "https://www.facebook.com/OREGIN.TW",
     instagram: "https://www.instagram.com/oregin.tw/",
