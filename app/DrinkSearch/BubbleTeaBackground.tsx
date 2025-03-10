@@ -200,17 +200,12 @@ const BubbleTeaBackground: React.FC = () => {
             "#e7c4a4",
             "#c59f84",
             "#bd8761",
-            "#e5bd99",
-            "#e7c4a4",
-            "#c59f84",
-            "#bd8761",
-            "#926341",
             "#926341",
             "#FFFFFF22",
           ];
 
           // 隨機生成大小
-          const ballRadius = Math.random() * 50 + 10;
+          const ballRadius = Math.random() * 30 + 10;
 
           // 如果沒有提供座標，則隨機生成
           x = x || Math.random() * (width - 2 * ballRadius) + ballRadius;
@@ -262,7 +257,7 @@ const BubbleTeaBackground: React.FC = () => {
         }
 
         // 初始生成珍珠
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 25; i++) {
           const ball = createBall();
           activeBalls.push(ball);
           Composite.add(engine.world, ball);
