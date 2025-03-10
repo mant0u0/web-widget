@@ -13,7 +13,11 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 // Import brand icons
-import { faFacebookF, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebookF,
+  faInstagram,
+  faLine,
+} from "@fortawesome/free-brands-svg-icons";
 
 // 動態導入 BubbleTeaBackground 組件以避免 SSR 錯誤
 import dynamic from "next/dynamic";
@@ -298,6 +302,17 @@ export default function DrinkSearchPage() {
                           icon={faInstagram}
                           className="text-2xl"
                         />
+                      </a>
+                    )}
+
+                    {selectedShop.line && (
+                      <a
+                        className="flex h-[48px] w-[48px] items-center justify-center rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-700"
+                        href={selectedShop.line}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon icon={faLine} className="text-2xl" />
                       </a>
                     )}
 

@@ -272,7 +272,7 @@ const BubbleTeaBackground: React.FC = () => {
           const newBall = createBall(undefined, undefined, true);
           activeBalls.push(newBall);
           Composite.add(engine.world, newBall);
-        }, 2000);
+        }, 1500);
 
         // 點擊時添加新珍珠
         if (render.canvas) {
