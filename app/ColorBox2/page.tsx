@@ -273,7 +273,7 @@ const ColorShadeGenerator: React.FC = () => {
   };
 
   // 十六進制轉 OKLCH
-  const hexToOKLCH = (hex: string): OKLCH | null => {
+  const _hexToOKLCH = (hex: string): OKLCH | null => {
     const rgb = hexToRgb(hex);
     if (!rgb) return null;
     return rgbToOKLCH(rgb.r, rgb.g, rgb.b);
@@ -481,7 +481,7 @@ const ColorShadeGenerator: React.FC = () => {
   };
 
   // 計算特定層級的顏色
-  const calculateColorForLevel = (
+  const _calculateColorForLevel = (
     level: number,
     baseHsl: HSL,
     baseLevel: number,
@@ -886,7 +886,7 @@ const ColorShadeGenerator: React.FC = () => {
       generateShades(); // 直接重新生成色階
     } else {
       // 切換到 OKLCH，明確地觸發色階重新生成
-      const oklch = rgbToOKLCH(rgb.r, rgb.g, rgb.b);
+      const _oklch = rgbToOKLCH(rgb.r, rgb.g, rgb.b);
       generateOKLCHShades(rgb); // 直接調用 OKLCH 處理函數
     }
   };
@@ -1681,7 +1681,7 @@ const ColorShadeGenerator: React.FC = () => {
         </div>
         {/* 色調預覽區域 */}
         <div className="h-full w-full">
-          <div className="h-full w-full rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <div className="h-full w-full overflow-hidden rounded-lg border border-gray-200 bg-gray-50 p-4">
             <div className="mb-4 flex flex-col items-start justify-between md:flex-row md:items-center">
               <div className="mb-2 md:mb-0">
                 <h2 className="text-lg font-medium">顏色變體 (0-1000)</h2>
@@ -1736,6 +1736,29 @@ const ColorShadeGenerator: React.FC = () => {
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="mt-3 flex h-[700px] flex-1 flex-col overflow-hidden rounded-lg border border-input shadow-sm">
+              {Object.entries(shades).map(([level, hex]) => (
+                <div
+                  key={level}
+                  className="mr-1 h-full w-full cursor-pointer overflow-hidden"
+                  onClick={() => copyToClipboard(hex, level)}
+                >
+                  <div
+                    className="flex h-full items-center justify-center"
+                    style={{ backgroundColor: hex, color: getTextColor(hex) }}
+                  >
+                    {copied && copiedIndex === level ? (
+                      <span className="text-[12px] font-bold">已複製!</span>
+                    ) : (
+                      <span className="font-mono text-[12px]">
+                        {hex} {level}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
