@@ -30,7 +30,7 @@ const BubbleTeaBackground = dynamic(() => import("./BubbleTeaBackground"), {
         height: "100%",
         width: "100%",
         position: "absolute",
-        backgroundColor: "#ebcfb4",
+        backgroundColor: "#f1d1b4",
       }}
     ></div>
   ),
@@ -74,15 +74,6 @@ export default function DrinkSearchPage() {
     .modal-overlay.closing {
       animation: overlayFadeOut 0.2s ease-in forwards;
     }
-    
-    /* 修復卷軸問題 */
-    html, body {
-      height: 100%;
-      overflow: auto;
-    }
-    #root {
-      min-height: 100%;
-    }
   `;
 
   // 即時搜尋：當搜尋輸入變化時，自動過濾結果
@@ -124,29 +115,34 @@ export default function DrinkSearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f2e9]">
+    <div className="h-full min-h-screen overflow-auto bg-[#f5f2e9]">
       {/* 注入自定義動畫樣式 */}
       <style dangerouslySetInnerHTML={{ __html: fadeAnimationStyles }} />
 
       {/* 頁頭 */}
-      <header className="relative overflow-hidden bg-[#ebcfb4] py-[80px]">
+      <header className="relative overflow-hidden bg-[#f1d1b4] py-[80px]">
         {/* 珍珠奶茶背景 */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <BubbleTeaBackground />
         </div>
 
         {/* 標題內容 - 確保在動畫上方 */}
-        <div className="container relative z-10 mx-auto px-4 text-center text-white drop-shadow-[0_0_5px_#c59f84]">
+        <div className="container relative z-10 mx-auto px-4 text-center text-[#3C1711] drop-shadow-[0_0_5px_#f1d1b4]">
           <h1 className="mb-2 text-4xl font-bold">飲料店搜尋器</h1>
           <p className="text-lg opacity-90">尋找喜愛的飲料店</p>
         </div>
 
         {/* 分隔線 */}
-        <img
-          src="divider.svg"
-          alt="分隔線"
-          className="absolute bottom-[-2px] left-0 z-10 mx-auto w-[100%]"
-        />
+        <div className="absolute bottom-[-2px] left-0 z-10 w-full overflow-hidden">
+          <div className="flex">
+            <img src="divider.svg" alt="分隔線" className="w-full" />
+            {/* <img
+              src="divider.svg"
+              alt="分隔線"
+              className="absolute left-full w-full"
+            /> */}
+          </div>
+        </div>
       </header>
 
       {/* 主要內容 */}

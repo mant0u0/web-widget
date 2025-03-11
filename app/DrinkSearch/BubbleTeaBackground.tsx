@@ -154,7 +154,7 @@ const BubbleTeaBackground: React.FC = () => {
             width: width,
             height: height,
             wireframes: false,
-            background: "#ebcfb4", // 與header背景色相同
+            background: "#f1d1b4", // 與header背景色相同
             pixelRatio: window.devicePixelRatio,
           },
         });
@@ -192,16 +192,19 @@ const BubbleTeaBackground: React.FC = () => {
         ): Ball {
           // 珍珠顏色變化
           const pearlColors = [
-            "#e5bd99",
-            "#e7c4a4",
-            "#c59f84",
-            "#bd8761",
-            "#e5bd99",
-            "#e7c4a4",
-            "#c59f84",
-            "#bd8761",
-            "#926341",
-            "#FFFFFF22",
+            "#943f33",
+            "#943f33",
+            "#b56941",
+            "#b56941",
+            "#d28b61",
+            "#d28b61",
+            "#d28b61",
+            "#edbf99",
+            "#edbf99",
+            "#edbf99",
+            "#f4dbc4",
+            "#f4dbc4",
+            "#f4dbc4",
           ];
 
           // 隨機生成大小
@@ -318,7 +321,7 @@ const BubbleTeaBackground: React.FC = () => {
           });
         });
 
-        // 簡化渲染，純色珍珠
+        // 純色珍珠
         Events.on(render, "afterRender", () => {
           const context = render.context;
           if (!context) return;
@@ -339,6 +342,11 @@ const BubbleTeaBackground: React.FC = () => {
               ? (ball.render.fillStyle as string)
               : "#271511";
             context.fill();
+
+            // 添加邊框
+            context.strokeStyle = "#f1d1b4"; // 深褐色邊框
+            context.lineWidth = 8; // 邊框寬度
+            context.stroke();
 
             context.restore();
           });
