@@ -56,8 +56,8 @@ const ColorShadeGenerator: React.FC = () => {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     let h = 0,
-      s = 0,
-      l = (max + min) / 2;
+      s = 0;
+    const l = (max + min) / 2;
 
     if (max !== min) {
       const d = max - min;
@@ -113,7 +113,7 @@ const ColorShadeGenerator: React.FC = () => {
       return levels.length > 0
         ? levels
         : [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
-    } catch (error) {
+    } catch (_error) {
       // 出錯時使用默認層級
       return [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
     }
@@ -125,7 +125,8 @@ const ColorShadeGenerator: React.FC = () => {
     if (!rgb) return;
 
     // 獲取基本顏色的HSL值
-    let hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    // let hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
     // 應用整體色相偏移
     hsl.h = (hsl.h + hueShift) % 360;
@@ -398,10 +399,10 @@ const ColorShadeGenerator: React.FC = () => {
           </div>
         </div>
 
-        {/* 層級設置 */}
+        {/* 層級設定 */}
         <div className="mb-6">
           <div className="mb-2 flex items-center justify-between">
-            <label className="font-medium">顏色層級設置</label>
+            <label className="font-medium">顏色層級設定</label>
             <button
               className="text-sm text-blue-500 hover:text-blue-600"
               onClick={() => setShowLevelSettings(!showLevelSettings)}
@@ -507,12 +508,6 @@ const ColorShadeGenerator: React.FC = () => {
               {gradientHueShift}°
             </div>
           </div>
-
-          <p className="mt-2 text-sm text-gray-600">
-            淺色調 ← <span className="font-medium">{-gradientHueShift}°</span> |
-            基準色 | <span className="font-medium">{gradientHueShift}°</span> →
-            深色調
-          </p>
         </div>
 
         {/* 色調預覽 */}
@@ -582,7 +577,7 @@ const ColorShadeGenerator: React.FC = () => {
             <li>系統會自動判斷您選擇的顏色應該對應哪個層級（基於顏色亮度）</li>
             <li>即使選擇純白或純黑，系統也會生成有明顯差異的顏色變體</li>
             <li>點擊任意顏色方塊可複製對應的色碼</li>
-            <li>可複製為 CSS 變數或 Tailwind 配置格式</li>
+            <li>可複製為 CSS 變數或 Tailwind 格式</li>
             <li>使用整體色相偏移來整體調整所有顏色變體的色相</li>
             <li>
               漸層色相偏移以基準色為中心點，淺色調和深色調分別向相反方向偏移
