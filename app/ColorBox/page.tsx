@@ -113,7 +113,7 @@ const ColorShadeGenerator: React.FC = () => {
       return levels.length > 0
         ? levels
         : [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
-    } catch (_error) {
+    } catch {
       // 出錯時使用默認層級
       return [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
     }
