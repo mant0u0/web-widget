@@ -190,13 +190,6 @@ const ColorShadeGenerator: React.FC = () => {
       }
 
       if (!validLevels.includes(level)) {
-        // 處理非常規層級
-        const idealLevel = 50 + (900 - 50) * (level / 1000);
-        const closestValidLevel = validLevels.reduce((prev, curr) =>
-          Math.abs(curr - idealLevel) < Math.abs(prev - idealLevel)
-            ? curr
-            : prev,
-        );
         newShades[level] = calculateColorForLevel(
           level,
           baseHsl,
@@ -229,7 +222,7 @@ const ColorShadeGenerator: React.FC = () => {
     let levelHueShift = 0;
 
     // 找出最小和最大的有效層級（用於計算漸變）
-    const minLevel = Math.min(...validLevels);
+    // const minLevel = Math.min(...validLevels);
     const maxLevel = Math.max(...validLevels);
 
     const isNearWhite = baseHsl.l > 95;
