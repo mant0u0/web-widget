@@ -602,6 +602,7 @@ const ColorShadeGenerator: React.FC = () => {
         return 500; // 預設值
       }
 
+      // 檢查極端情況
       if (isNearWhite) {
         return Math.min(...validLevels); // 接近白色時，使用最小層級
       }
@@ -610,37 +611,62 @@ const ColorShadeGenerator: React.FC = () => {
         return Math.max(...validLevels); // 接近黑色時，使用最大層級
       }
 
-      // 計算感知亮度和調整
-      const perceivedLightness = adjustedBaseOklch.l;
-      const chromaFactor = Math.min(1, adjustedBaseOklch.c * 2.5); // 增強彩度影響
-      const adjustedLightness = perceivedLightness * (1 + chromaFactor * 0.15);
-
-      // 改進的層級映射邏輯
+      // 改進的層級映射邏輯，更好地處理高彩度顏色
       const idealLevel = (() => {
-        // 高彩度顏色層級分配調整
+        // OKLCH 亮度 (L) 和彩度 (C) 都會影響感知亮度
+        // 高彩度顏色通常會被感知為比實際亮度更亮
+
+        // 基於亮度的基本映射 (0->1000, 1->0)
+        let levelBasedOnLightness = Math.round(
+          1000 - adjustedBaseOklch.l * 1000,
+        );
+
+        // 對高彩度顏色進行調整
+        // 大多數彩度高的亮色（如青色 #00ffff）應該映射到中等層級而非淺色
         if (adjustedBaseOklch.c > 0.1) {
-          // 青色等高彩度亮色應對應到更合理的層級 (200-400)
-          if (adjustedLightness > 0.6) {
-            return 300 + (1 - adjustedLightness) * 300; // 亮且高彩度約 300-400
+          // 高彩度顏色的調整因子
+          const chromaFactor = Math.min(1, adjustedBaseOklch.c * 2.5);
+
+          // 對於亮色系的高彩度顏色 (L > 0.5)，將其映射到更深的層級 (往500靠近)
+          if (adjustedBaseOklch.l > 0.5) {
+            // 調整公式：越亮的顏色+越高的彩度=更大的調整
+            const adjustment = (adjustedBaseOklch.l - 0.5) * 400 * chromaFactor;
+            levelBasedOnLightness = Math.min(
+              900,
+              levelBasedOnLightness + adjustment,
+            );
           }
 
-          // 中等亮度高彩度顏色
-          if (adjustedLightness > 0.3) {
-            return 500 + (0.6 - adjustedLightness) * 300; // 約 500-600
+          // 對於暗色系的高彩度顏色 (L < 0.5)，適度映射到更淺的層級
+          else if (adjustedBaseOklch.l < 0.4) {
+            // 調整幅度較小，避免過度壓縮到淺色區域
+            const adjustment = (0.4 - adjustedBaseOklch.l) * 200 * chromaFactor;
+            levelBasedOnLightness = Math.max(
+              100,
+              levelBasedOnLightness - adjustment,
+            );
           }
         }
 
-        // 一般映射邏輯 (低彩度或其他顏色)
-        if (adjustedLightness > 0.8) {
-          return 100; // 非常亮
+        // 進一步調整：確保特定色彩有合理的層級
+
+        // 特殊處理：青色、黃色等高彩度顏色
+        if (adjustedBaseOklch.c > 0.15 && adjustedBaseOklch.l > 0.7) {
+          // 即使是非常亮的高彩度顏色，也應至少映射到400以上
+          return Math.max(levelBasedOnLightness, 400);
         }
 
-        if (adjustedLightness < 0.2) {
-          return 800; // 非常暗
+        // 特殊處理：中等亮度但高彩度的顏色
+        if (
+          adjustedBaseOklch.c > 0.2 &&
+          adjustedBaseOklch.l > 0.5 &&
+          adjustedBaseOklch.l < 0.7
+        ) {
+          // 這類顏色通常應映射到500左右
+          return Math.max(levelBasedOnLightness, 500);
         }
 
-        // 中間範圍 (0.2-0.8) 映射到 (800-100)
-        return Math.round(800 - (adjustedLightness - 0.2) * (700 / 0.6));
+        return levelBasedOnLightness;
       })();
 
       // 找出自定義層級中最接近的值
@@ -695,62 +721,147 @@ const ColorShadeGenerator: React.FC = () => {
     const minLevel = Math.min(...validLevels);
     const maxLevel = Math.max(...validLevels);
 
-    // 計算層級的相對位置 (0-1)
-    const relativePosition = (level - minLevel) / (maxLevel - minLevel);
-
     if (level === baseLevel) {
-      // 基準色，直接使用原始值
+      // 基準層級，直接使用原始值
       lightness = baseOklch.l;
-      chroma = baseOklch.c;
-      hue = baseOklch.h;
     } else if (level < baseLevel) {
       // 淺色方向 (比基準色更淺)
-      const factor = (baseLevel - level) / (baseLevel - minLevel);
 
-      // 亮度從基準色向白色過渡 (最高亮度0.98)
-      lightness = baseOklch.l + (0.98 - baseOklch.l) * factor;
+      // 超低層級（0-50）的特殊處理
+      if (level <= 50) {
+        // 將0-50的範圍映射到一個更精細的漸變空間
+        const microLevel = level / 50; // 0-1的範圍
 
-      // 較淺色彩的彩度適度降低
-      chroma = Math.max(
-        0,
-        baseOklch.c * (1 - factor * 0.3) + oklchGradientCShift * factor,
-      );
+        // 使用二次函數處理極低層級
+        lightness = 1.0 - microLevel * microLevel * 0.05;
 
-      // 色相偏移 (越淺色向負方向偏移)
+        // 極低層級的彩度應該非常低，但隨級別增加而增加
+        // 修改彩度計算，確保即使在極低層級也能感知到oklchGradientCShift的影響
+        const baseChroma = baseOklch.c * microLevel * 0.3;
+
+        // 應用彩度偏移，根據oklchGradientCShift調整
+        if (oklchGradientCShift !== 0) {
+          // 縮放調整量，確保微小變化也有效果
+          const adjustmentScale =
+            Math.min(0.3, Math.abs(oklchGradientCShift)) / 0.3;
+          const adjustment =
+            oklchGradientCShift * microLevel * adjustmentScale * 0.05;
+          chroma = Math.max(0, baseChroma + adjustment);
+        } else {
+          chroma = baseChroma;
+        }
+      } else {
+        // 一般淺色處理
+        const baseFactor = (baseLevel - level) / (baseLevel - minLevel);
+        const enhancedFactor = Math.pow(baseFactor, 0.85);
+
+        // 亮度線性插值
+        lightness = baseOklch.l + (0.95 - baseOklch.l) * enhancedFactor;
+
+        // 修改彩度計算邏輯，使 oklchGradientCShift 調整更直觀
+        // 基礎彩度計算
+        let baseChroma = baseOklch.c * (1 - enhancedFactor * 0.6);
+
+        // 應用彩度偏移，確保偏移效果在不同層級都能明顯感知
+        if (oklchGradientCShift !== 0) {
+          // 使用線性映射，確保彩度偏移在各層級都有適當影響
+          const adjustmentScale =
+            Math.min(0.3, Math.abs(oklchGradientCShift)) / 0.3;
+          const adjustment =
+            oklchGradientCShift * enhancedFactor * adjustmentScale;
+
+          // 正值增加彩度，負值減少彩度
+          baseChroma = Math.max(0, baseChroma + adjustment);
+        }
+
+        chroma = Math.max(baseOklch.c * 0.1, baseChroma);
+      }
+
+      // 色相偏移
       if (gradientHueShift !== 0) {
+        const factor = (baseLevel - level) / baseLevel;
         hue = (baseOklch.h - gradientHueShift * factor) % 360;
         if (hue < 0) hue += 360;
       }
     } else {
       // 深色方向 (比基準色更深)
-      const factor = (level - baseLevel) / (maxLevel - baseLevel);
 
-      // 亮度從基準色向黑色過渡 (最低亮度0.05)
-      lightness = baseOklch.l - baseOklch.l * factor * 0.95;
+      // 超高層級（950-999）的特殊處理
+      if (level >= 950) {
+        // 將950-1000的範圍映射到精細漸變空間
+        const microLevel = (level - 950) / 50; // 0-1的範圍
 
-      // 深色彩度變化
-      // 對於深色，彩度先增加再降低，形成更豐富的過渡
-      if (factor < 0.5) {
-        // 前半段，彩度稍微增加
-        chroma =
-          baseOklch.c * (1 + factor * 0.2) - oklchGradientCShift * factor;
+        // 從深色基準點到黑色的精細漸變
+        lightness = Math.max(0.05, baseOklch.l * 0.15 * (1 - microLevel));
+
+        // 超深層級的彩度漸變
+        const baseChroma = baseOklch.c * 0.3 * (1 - microLevel);
+
+        // 應用彩度偏移，超深層級的特殊處理
+        if (oklchGradientCShift !== 0) {
+          const adjustmentScale =
+            Math.min(0.3, Math.abs(oklchGradientCShift)) / 0.3;
+          // 在接近黑色的區域，反向應用偏移以保持一致性
+          const adjustment =
+            -oklchGradientCShift * microLevel * adjustmentScale * 0.05;
+          chroma = Math.max(0, baseChroma + adjustment);
+        } else {
+          chroma = baseChroma;
+        }
       } else {
-        // 後半段，彩度逐漸降低到接近零
-        const deepFactor = (factor - 0.5) * 2;
-        chroma =
-          baseOklch.c * (1.1 - deepFactor * 0.9) - oklchGradientCShift * factor;
+        // 一般深色處理
+        const baseFactor = (level - baseLevel) / (maxLevel - baseLevel);
+
+        // 亮度漸變
+        lightness = baseOklch.l * (1 - baseFactor * 0.85);
+
+        // 修改深色部分的彩度計算方式
+        // 深色彩度變化基礎模式：先略微增加，然後逐漸降低
+        let baseChroma;
+        if (baseFactor < 0.4) {
+          // 前40%的深色區域，彩度略微增加
+          baseChroma = baseOklch.c * (1 + baseFactor * 0.1);
+        } else {
+          // 後60%的深色區域，彩度逐漸降低
+          const deepFactor = (baseFactor - 0.4) / 0.6;
+          baseChroma = baseOklch.c * (1.04 - deepFactor);
+        }
+
+        // 應用彩度偏移，深色區域的調整方向與淺色區域相反
+        if (oklchGradientCShift !== 0) {
+          // 使用線性映射，但方向與淺色區域相反
+          const adjustmentScale =
+            Math.min(0.3, Math.abs(oklchGradientCShift)) / 0.3;
+          const adjustment =
+            -oklchGradientCShift * baseFactor * adjustmentScale;
+
+          // 在深色區域，正值減少彩度，負值增加彩度 (與淺色區域相反)
+          baseChroma = Math.max(0, baseChroma + adjustment);
+        }
+
+        chroma = baseChroma;
       }
 
-      // 色相偏移 (越深色向正方向偏移)
+      // 色相偏移
       if (gradientHueShift !== 0) {
+        const factor = (level - baseLevel) / (1000 - baseLevel);
         hue = (baseOklch.h + gradientHueShift * factor) % 360;
       }
     }
 
-    // 限制值範圍
-    lightness = Math.max(0.05, Math.min(0.98, lightness));
+    // 精度處理
+    if (lightness > 0.95) {
+      // 接近白色，保留更多小數位
+      lightness = Math.round(lightness * 10000) / 10000;
+    } else if (lightness < 0.15) {
+      // 接近黑色，保留更多小數位
+      lightness = Math.round(lightness * 10000) / 10000;
+    } else {
+      lightness = Math.max(0.05, Math.min(0.98, lightness));
+    }
+
     chroma = Math.max(0, Math.min(0.4, chroma));
-    hue = (hue + 360) % 360;
+    hue = ((hue % 360) + 360) % 360;
 
     // 生成十六進制色碼
     return oklchToHex(lightness, chroma, hue);
@@ -1460,7 +1571,7 @@ const ColorShadeGenerator: React.FC = () => {
               </div>
 
               {/* OKLCH特有控制項，只在 OKLCH 模式下顯示 */}
-              {colorSpace === "oklch" && (
+              {false && colorSpace === "oklch" && (
                 <div>
                   <div className="mb-2">
                     <div className="mb-2 flex items-center justify-between">
