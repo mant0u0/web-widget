@@ -56,8 +56,8 @@ const ColorShadeGenerator: React.FC = () => {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     let h = 0,
-      s = 0;
-    const l = (max + min) / 2;
+      s = 0,
+      l = (max + min) / 2;
 
     if (max !== min) {
       const d = max - min;
@@ -113,8 +113,8 @@ const ColorShadeGenerator: React.FC = () => {
       return levels.length > 0
         ? levels
         : [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
-    } catch (_error) {
-      // 出錯時使用默認層級，變數前加下劃線避免未使用警告
+    } catch (error) {
+      // 出錯時使用默認層級
       return [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
     }
   };
@@ -125,7 +125,7 @@ const ColorShadeGenerator: React.FC = () => {
     if (!rgb) return;
 
     // 獲取基本顏色的HSL值
-    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    let hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
     // 應用整體色相偏移
     hsl.h = (hsl.h + hueShift) % 360;
@@ -150,9 +150,7 @@ const ColorShadeGenerator: React.FC = () => {
     const displayLevels = getLevels();
 
     // 有效層級 (不包括 0 和 1000)
-    const validLevels = displayLevels.filter(
-      (level) => level > 0 && level < 1000,
-    );
+    const validLevels = displayLevels.filter((l) => l > 0 && l < 1000);
 
     // 確定基準顏色應該對應的層級
     let baseLevel: number;
@@ -193,7 +191,12 @@ const ColorShadeGenerator: React.FC = () => {
 
       if (!validLevels.includes(level)) {
         // 處理非常規層級
-        // 移除未使用的變數定義
+        const idealLevel = 50 + (900 - 50) * (level / 1000);
+        const closestValidLevel = validLevels.reduce((prev, curr) =>
+          Math.abs(curr - idealLevel) < Math.abs(prev - idealLevel)
+            ? curr
+            : prev,
+        );
         newShades[level] = calculateColorForLevel(
           level,
           baseHsl,
@@ -225,8 +228,8 @@ const ColorShadeGenerator: React.FC = () => {
     let lightness: number;
     let levelHueShift = 0;
 
-    // 找出最大的有效層級（用於計算漸變）
-    // 移除未使用的 minLevel 變數
+    // 找出最小和最大的有效層級（用於計算漸變）
+    const minLevel = Math.min(...validLevels);
     const maxLevel = Math.max(...validLevels);
 
     const isNearWhite = baseHsl.l > 95;
@@ -302,7 +305,7 @@ const ColorShadeGenerator: React.FC = () => {
   // 顏色改變時重新生成色調
   useEffect(() => {
     generateShades();
-  }, [baseColor, hueShift, gradientHueShift, customLevels, generateShades]);
+  }, [baseColor, hueShift, gradientHueShift, customLevels]);
 
   // 複製色碼到剪貼板
   const copyToClipboard = (text: string, index: string | number): void => {
@@ -433,7 +436,7 @@ const ColorShadeGenerator: React.FC = () => {
                   }
                   className="rounded bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
                 >
-                  Tailwind CSS
+                  Tailwind 預設
                 </button>
                 <button
                   onClick={() =>
