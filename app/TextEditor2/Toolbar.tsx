@@ -1,5 +1,5 @@
 // Toolbar.tsx
-import React, { useRef, useState, MouseEvent, WheelEvent } from "react";
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Type,
