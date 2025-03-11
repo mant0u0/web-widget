@@ -273,11 +273,11 @@ const ColorShadeGenerator: React.FC = () => {
   };
 
   // 十六進制轉 OKLCH
-  const _hexToOKLCH = (hex: string): OKLCH | null => {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return null;
-    return rgbToOKLCH(rgb.r, rgb.g, rgb.b);
-  };
+  // const _hexToOKLCH = (hex: string): OKLCH | null => {
+  //   const rgb = hexToRgb(hex);
+  //   if (!rgb) return null;
+  //   return rgbToOKLCH(rgb.r, rgb.g, rgb.b);
+  // };
 
   // OKLCH 轉十六進制
   const oklchToHex = (l: number, c: number, h: number): string => {
@@ -481,88 +481,88 @@ const ColorShadeGenerator: React.FC = () => {
   };
 
   // 計算特定層級的顏色
-  const _calculateColorForLevel = (
-    level: number,
-    baseHsl: HSL,
-    baseLevel: number,
-    validLevels: number[],
-  ): string => {
-    let lightness: number;
-    let levelHueShift = 0;
+  // const _calculateColorForLevel = (
+  //   level: number,
+  //   baseHsl: HSL,
+  //   baseLevel: number,
+  //   validLevels: number[],
+  // ): string => {
+  //   let lightness: number;
+  //   let levelHueShift = 0;
 
-    // 找出最小和最大的有效層級（用於計算漸變）
-    // const minLevel = Math.min(...validLevels);
-    const maxLevel = Math.max(...validLevels);
+  //   // 找出最小和最大的有效層級（用於計算漸變）
+  //   // const minLevel = Math.min(...validLevels);
+  //   const maxLevel = Math.max(...validLevels);
 
-    const isNearWhite = baseHsl.l > 95;
-    const isNearBlack = baseHsl.l < 5;
+  //   const isNearWhite = baseHsl.l > 95;
+  //   const isNearBlack = baseHsl.l < 5;
 
-    if (isNearWhite) {
-      // 對於近乎白色的基本顏色，在有效層級內使用線性分佈
-      const percentage = level / maxLevel;
-      // 從非常接近白色(但不是純白)到較深的顏色
-      lightness = 98 - percentage * (98 - 30);
-    } else if (isNearBlack) {
-      // 對於近乎黑色的基本顏色，在有效層級內使用線性分佈
-      const percentage = level / maxLevel;
-      // 從較淺的顏色到非常接近黑色(但不是純黑)
-      lightness = 70 - percentage * (70 - 2);
-    } else if (level === baseLevel) {
-      // 基準色使用原始亮度
-      lightness = baseHsl.l;
-    } else {
-      // 查找層級在有效層級中的位置
-      const levelIndex = validLevels.indexOf(level);
-      const baseIndex = validLevels.indexOf(baseLevel);
+  //   if (isNearWhite) {
+  //     // 對於近乎白色的基本顏色，在有效層級內使用線性分佈
+  //     const percentage = level / maxLevel;
+  //     // 從非常接近白色(但不是純白)到較深的顏色
+  //     lightness = 98 - percentage * (98 - 30);
+  //   } else if (isNearBlack) {
+  //     // 對於近乎黑色的基本顏色，在有效層級內使用線性分佈
+  //     const percentage = level / maxLevel;
+  //     // 從較淺的顏色到非常接近黑色(但不是純黑)
+  //     lightness = 70 - percentage * (70 - 2);
+  //   } else if (level === baseLevel) {
+  //     // 基準色使用原始亮度
+  //     lightness = baseHsl.l;
+  //   } else {
+  //     // 查找層級在有效層級中的位置
+  //     const levelIndex = validLevels.indexOf(level);
+  //     const baseIndex = validLevels.indexOf(baseLevel);
 
-      // 層級在基準色之前（淺色方向）
-      if (levelIndex < baseIndex) {
-        const totalLevels = baseIndex;
-        if (totalLevels === 0) return hslToHex(baseHsl.h, baseHsl.s, baseHsl.l);
+  //     // 層級在基準色之前（淺色方向）
+  //     if (levelIndex < baseIndex) {
+  //       const totalLevels = baseIndex;
+  //       if (totalLevels === 0) return hslToHex(baseHsl.h, baseHsl.s, baseHsl.l);
 
-        const levelPosition = totalLevels - levelIndex;
+  //       const levelPosition = totalLevels - levelIndex;
 
-        // 漸變係數
-        const percentage = levelPosition / totalLevels;
-        const maxLightness = 93; // 最淺級別最大亮度
+  //       // 漸變係數
+  //       const percentage = levelPosition / totalLevels;
+  //       const maxLightness = 93; // 最淺級別最大亮度
 
-        lightness = baseHsl.l + (maxLightness - baseHsl.l) * percentage;
+  //       lightness = baseHsl.l + (maxLightness - baseHsl.l) * percentage;
 
-        // 計算淺色方向的色相偏移
-        if (gradientHueShift !== 0) {
-          levelHueShift = -gradientHueShift * percentage;
-        }
-      }
-      // 層級在基準色之後（深色方向）
-      else if (levelIndex > baseIndex) {
-        const totalLevels = validLevels.length - 1 - baseIndex;
-        if (totalLevels === 0) return hslToHex(baseHsl.h, baseHsl.s, baseHsl.l);
+  //       // 計算淺色方向的色相偏移
+  //       if (gradientHueShift !== 0) {
+  //         levelHueShift = -gradientHueShift * percentage;
+  //       }
+  //     }
+  //     // 層級在基準色之後（深色方向）
+  //     else if (levelIndex > baseIndex) {
+  //       const totalLevels = validLevels.length - 1 - baseIndex;
+  //       if (totalLevels === 0) return hslToHex(baseHsl.h, baseHsl.s, baseHsl.l);
 
-        const levelPosition = levelIndex - baseIndex;
+  //       const levelPosition = levelIndex - baseIndex;
 
-        // 漸變係數
-        const percentage = levelPosition / totalLevels;
-        const minLightness = 7; // 最深級別最小亮度
+  //       // 漸變係數
+  //       const percentage = levelPosition / totalLevels;
+  //       const minLightness = 7; // 最深級別最小亮度
 
-        lightness = baseHsl.l - (baseHsl.l - minLightness) * percentage;
+  //       lightness = baseHsl.l - (baseHsl.l - minLightness) * percentage;
 
-        // 計算深色方向的色相偏移
-        if (gradientHueShift !== 0) {
-          levelHueShift = gradientHueShift * percentage;
-        }
-      } else {
-        // 相等的情況，直接使用基準色亮度
-        lightness = baseHsl.l;
-      }
-    }
+  //       // 計算深色方向的色相偏移
+  //       if (gradientHueShift !== 0) {
+  //         levelHueShift = gradientHueShift * percentage;
+  //       }
+  //     } else {
+  //       // 相等的情況，直接使用基準色亮度
+  //       lightness = baseHsl.l;
+  //     }
+  //   }
 
-    // 應用色相偏移
-    const finalHue = (baseHsl.h + levelHueShift) % 360;
-    const finalHue360 = finalHue < 0 ? finalHue + 360 : finalHue;
+  //   // 應用色相偏移
+  //   const finalHue = (baseHsl.h + levelHueShift) % 360;
+  //   const finalHue360 = finalHue < 0 ? finalHue + 360 : finalHue;
 
-    // 生成十六進制色碼
-    return hslToHex(finalHue360, baseHsl.s, lightness);
-  };
+  //   // 生成十六進制色碼
+  //   return hslToHex(finalHue360, baseHsl.s, lightness);
+  // };
 
   // 新增 OKLCH 色彩生成函數
   const generateOKLCHShades = (rgb: RGB): void => {
@@ -886,7 +886,7 @@ const ColorShadeGenerator: React.FC = () => {
       generateShades(); // 直接重新生成色階
     } else {
       // 切換到 OKLCH，明確地觸發色階重新生成
-      const _oklch = rgbToOKLCH(rgb.r, rgb.g, rgb.b);
+      // const _oklch = rgbToOKLCH(rgb.r, rgb.g, rgb.b);
       generateOKLCHShades(rgb); // 直接調用 OKLCH 處理函數
     }
   };
@@ -1684,7 +1684,7 @@ const ColorShadeGenerator: React.FC = () => {
           <div className="h-full w-full overflow-hidden rounded-lg border border-gray-200 bg-gray-50 p-4">
             <div className="mb-4 flex flex-col items-start justify-between md:flex-row md:items-center">
               <div className="mb-2 md:mb-0">
-                <h2 className="text-lg font-medium">顏色變體 (0-1000)</h2>
+                <h2 className="text-lg font-medium">漸層預覽</h2>
                 <p className="text-sm text-gray-600">
                   原始顏色對應層級：{" "}
                   <span className="font-medium">{baseColorLevel}</span>
@@ -1711,11 +1711,11 @@ const ColorShadeGenerator: React.FC = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <div className="flex min-w-max">
+              <div className="flex min-w-max gap-2">
                 {Object.entries(shades).map(([level, hex]) => (
                   <div
                     key={level}
-                    className="mr-1 w-full cursor-pointer overflow-hidden rounded-lg border border-input shadow-sm transition-shadow hover:shadow-md"
+                    className="w-full cursor-pointer overflow-hidden rounded-lg border border-input shadow-sm transition-shadow hover:shadow-md"
                     onClick={() => copyToClipboard(hex, level)}
                   >
                     <div
