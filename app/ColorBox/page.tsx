@@ -25,7 +25,7 @@ const ColorShadeGenerator: React.FC = () => {
   const [copied, setCopied] = useState<boolean>(false);
   const [copiedIndex, setCopiedIndex] = useState<string | number | null>(null);
   const [baseColorLevel, setBaseColorLevel] = useState<number>(500); // 預設層級
-  const [hueShift, setHueShift] = useState<number>(0); // 全局色相偏移值
+  const [hueShift, setHueShift] = useState<number>(0); // 整體色相偏移值
   const [gradientHueShift, setGradientHueShift] = useState<number>(0); // 漸層色相偏移值
   const [customLevels, setCustomLevels] = useState<string>(
     "50,100,200,300,400,500,600,700,800,900,950",
@@ -56,8 +56,8 @@ const ColorShadeGenerator: React.FC = () => {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     let h = 0,
-      s = 0,
-      l = (max + min) / 2;
+      s = 0;
+    const l = (max + min) / 2;
 
     if (max !== min) {
       const d = max - min;
@@ -113,8 +113,8 @@ const ColorShadeGenerator: React.FC = () => {
       return levels.length > 0
         ? levels
         : [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
-    } catch (error) {
-      // 出錯時使用默認層級
+    } catch (_error) {
+      // 出錯時使用默認層級，變數前加下劃線避免未使用警告
       return [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000];
     }
   };
@@ -125,9 +125,9 @@ const ColorShadeGenerator: React.FC = () => {
     if (!rgb) return;
 
     // 獲取基本顏色的HSL值
-    let hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
-    // 應用全局色相偏移
+    // 應用整體色相偏移
     hsl.h = (hsl.h + hueShift) % 360;
     if (hsl.h < 0) hsl.h += 360; // 處理負數的情況
 
@@ -150,7 +150,9 @@ const ColorShadeGenerator: React.FC = () => {
     const displayLevels = getLevels();
 
     // 有效層級 (不包括 0 和 1000)
-    const validLevels = displayLevels.filter((l) => l > 0 && l < 1000);
+    const validLevels = displayLevels.filter(
+      (level) => level > 0 && level < 1000,
+    );
 
     // 確定基準顏色應該對應的層級
     let baseLevel: number;
@@ -191,12 +193,7 @@ const ColorShadeGenerator: React.FC = () => {
 
       if (!validLevels.includes(level)) {
         // 處理非常規層級
-        const idealLevel = 50 + (900 - 50) * (level / 1000);
-        const closestValidLevel = validLevels.reduce((prev, curr) =>
-          Math.abs(curr - idealLevel) < Math.abs(prev - idealLevel)
-            ? curr
-            : prev,
-        );
+        // 移除未使用的變數定義
         newShades[level] = calculateColorForLevel(
           level,
           baseHsl,
@@ -228,8 +225,8 @@ const ColorShadeGenerator: React.FC = () => {
     let lightness: number;
     let levelHueShift = 0;
 
-    // 找出最小和最大的有效層級（用於計算漸變）
-    const minLevel = Math.min(...validLevels);
+    // 找出最大的有效層級（用於計算漸變）
+    // 移除未使用的 minLevel 變數
     const maxLevel = Math.max(...validLevels);
 
     const isNearWhite = baseHsl.l > 95;
@@ -305,7 +302,7 @@ const ColorShadeGenerator: React.FC = () => {
   // 顏色改變時重新生成色調
   useEffect(() => {
     generateShades();
-  }, [baseColor, hueShift, gradientHueShift, customLevels]);
+  }, [baseColor, hueShift, gradientHueShift, customLevels, generateShades]);
 
   // 複製色碼到剪貼板
   const copyToClipboard = (text: string, index: string | number): void => {
@@ -436,11 +433,11 @@ const ColorShadeGenerator: React.FC = () => {
                   }
                   className="rounded bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
                 >
-                  Tailwind 預設
+                  Tailwind CSS
                 </button>
                 <button
                   onClick={() =>
-                    setCustomLevels("50,100,200,300,400,500,600,700,800,900")
+                    setCustomLevels("100,200,300,400,500,600,700,800,900")
                   }
                   className="rounded bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
                 >
@@ -466,7 +463,7 @@ const ColorShadeGenerator: React.FC = () => {
 
         {/* 色相偏移控制 */}
         <div className="mb-6">
-          <label className="mb-2 block font-medium">全局色相偏移</label>
+          <label className="mb-2 block font-medium">整體色相偏移</label>
           <div className="flex">
             <div className="flex-1">
               <input
@@ -590,7 +587,7 @@ const ColorShadeGenerator: React.FC = () => {
             <li>即使選擇純白或純黑，系統也會生成有明顯差異的顏色變體</li>
             <li>點擊任意顏色方塊可複製對應的色碼</li>
             <li>可複製為 CSS 變數或 Tailwind 配置格式</li>
-            <li>使用全局色相偏移來整體調整所有顏色變體的色相</li>
+            <li>使用整體色相偏移來整體調整所有顏色變體的色相</li>
             <li>
               漸層色相偏移以基準色為中心點，淺色調和深色調分別向相反方向偏移
             </li>
