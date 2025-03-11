@@ -23,7 +23,13 @@ body {
     var(--font-inter), var(--font-noto-sans-tc), Arial, Helvetica, 'MS PGothic', 'Yu Gothic', 'Meiryo', 'Hiragino Kaku Gothic Pro', monospace, sans-serif;
 }
 
-
+.no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 
 @layer base {
   :root {
