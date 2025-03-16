@@ -12,17 +12,11 @@ import useLocalStorage from "../hooks/useLocalStorage";
 // 設定每次載入的符號數量，用於實現延遲載入功能
 const ITEMS_PER_BATCH = 20;
 
-/**
- * 單個符號按鈕組件
- * 顯示符號並在懸停時顯示提示文字
- * @param item - 符號項目資料
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- */
+// 單個符號按鈕組件，顯示符號並在懸停時顯示提示文字
 const SymbolButton = ({
-  item,
-  onSelect,
-  btnClassName,
+  item, //符號項目資料
+  onSelect, //選擇符號時的回調函數
+  btnClassName, //自定義按鈕樣式
 }: {
   item: SymbolItem;
   onSelect: (item: SymbolItem) => void;
@@ -50,22 +44,14 @@ const SymbolButton = ({
   </div>
 );
 
-/**
- * 可折疊的分類區塊組件
- * 實現延遲載入和展開/收起功能
- * @param category - 分類名稱
- * @param items - 該分類下的符號項目
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- * @param defaultExpanded - 預設是否展開
- */
+// 可折疊的分類區塊組件，實現延遲載入和展開/收起功能
 const LazyLoadSection = ({
-  category,
-  items,
-  onSelect,
-  btnClassName,
+  category, //分類名稱
+  items, //該分類下的符號項目
+  onSelect, //選擇符號時的回調函數
+  btnClassName, //自定義按鈕樣式
   listClassName = "",
-  defaultExpanded = true,
+  defaultExpanded = true, //預設是否展開
 }: {
   category: string;
   items: SymbolItem[];
@@ -205,11 +191,7 @@ export const SymbolPicker: React.FC<{
     // 不需要再手動讀取 localStorage，useLocalStorage hook 會自動處理
   }, []);
 
-  /**
-   * 處理符號選擇
-   * 1. 觸發選擇回調
-   * 2. 更新最近使用列表
-   */
+  // 處理符號選擇（  1. 觸發選擇回調 2. 更新最近使用列表）
   const handleSymbolSelect = (item: SymbolItem) => {
     onSelect(item.symbol);
     setRecentItems((prev) => {
@@ -221,10 +203,7 @@ export const SymbolPicker: React.FC<{
     });
   };
 
-  /**
-   * 根據搜尋關鍵字過濾符號
-   * 使用 useMemo 優化效能，只在 searchQuery 或 data 變更時重新計算
-   */
+  // 根據搜尋關鍵字過濾符號，使用 useMemo 優化效能，只在 searchQuery 或 data 變更時重新計算
   const filteredItems = useMemo(() => {
     if (!searchQuery) return data;
 
