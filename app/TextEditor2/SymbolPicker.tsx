@@ -293,7 +293,7 @@ export const SymbolPicker: React.FC<{
     <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
       {/* 搜尋欄 */}
       <div className="border-b bg-background p-2 md:p-3">
-        <p className="mb-1 text-sm text-zinc-700">
+        <p className="mb-2 text-sm text-zinc-600">
           ⠿ 插入
           {pickerType === "emoji"
             ? " Emoji"

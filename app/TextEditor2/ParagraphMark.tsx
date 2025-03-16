@@ -184,7 +184,7 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
         <div className="border-b bg-background p-2 md:p-3">
-          <p className="mb-1 text-sm text-zinc-700">⠿ 段落符號</p>
+          <p className="mb-2 text-sm text-zinc-600">⠿ 段落符號</p>
           <div className="flex items-center justify-between">
             {/* 新增自訂符號 */}
             <Dialog>

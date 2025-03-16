@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Quote, InsertQuoteFunction, defaultQuotes } from "./dataQuotes";
@@ -13,16 +13,23 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import useLocalStorage from "../hooks/useLocalStorage"; // 引入 useLocalStorage hook
 
 export const QuotationmMarks: React.FC<{
   insertQuote: InsertQuoteFunction;
 }> = ({ insertQuote }) => {
-  const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);
-  const [leftSymbol, setLeftSymbol] = useState("");
-  const [rightSymbol, setRightSymbol] = useState("");
-  const [editingIndex, setEditingIndex] = useState<number>(-1);
-  const [editingLeft, setEditingLeft] = useState("");
-  const [editingRight, setEditingRight] = useState("");
+  // 使用 useLocalStorage 替代 useState 來儲存自定義引號
+  const [customQuotes, setCustomQuotes] = useLocalStorage<Quote[]>(
+    "customQuotes",
+    [],
+  );
+
+  // 以下狀態不需要持久化，所以保持使用 useState
+  const [leftSymbol, setLeftSymbol] = React.useState("");
+  const [rightSymbol, setRightSymbol] = React.useState("");
+  const [editingIndex, setEditingIndex] = React.useState<number>(-1);
+  const [editingLeft, setEditingLeft] = React.useState("");
+  const [editingRight, setEditingRight] = React.useState("");
 
   // 新增自訂引號
   const addCustomQuote = useCallback(() => {
@@ -40,13 +47,16 @@ export const QuotationmMarks: React.FC<{
     setCustomQuotes((prev) => [...prev, newQuote]);
     setLeftSymbol("");
     setRightSymbol("");
-  }, [leftSymbol, rightSymbol]);
+  }, [leftSymbol, rightSymbol, setCustomQuotes]);
 
   // 刪除自訂引號
-  const deleteCustomQuote = useCallback((index: number) => {
-    setCustomQuotes((prev) => prev.filter((_, i) => i !== index));
-    setEditingIndex(-1);
-  }, []);
+  const deleteCustomQuote = useCallback(
+    (index: number) => {
+      setCustomQuotes((prev) => prev.filter((_, i) => i !== index));
+      setEditingIndex(-1);
+    },
+    [setCustomQuotes],
+  );
 
   // 編輯自訂引號
   const startEdit = useCallback((quote: Quote, index: number) => {
@@ -80,14 +90,14 @@ export const QuotationmMarks: React.FC<{
     setEditingIndex(-1);
     setEditingLeft("");
     setEditingRight("");
-  }, [editingLeft, editingRight, editingIndex]);
+  }, [editingLeft, editingRight, editingIndex, setCustomQuotes]);
 
   return (
     <div className="h-full w-full overflow-hidden pt-0">
       <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
         {/* 新增自訂引號 */}
         <div className="border-b bg-background p-2 md:p-3">
-          <p className="mb-1 text-sm text-zinc-700">⠿ 插入引號</p>
+          <p className="mb-2 text-sm text-zinc-600">⠿ 插入引號</p>
           <Dialog>
             <DialogTrigger asChild>
               <Button
