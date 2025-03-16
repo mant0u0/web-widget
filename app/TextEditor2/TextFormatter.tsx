@@ -335,7 +335,7 @@ export const TextFormatter: React.FC<TextFormatterProps> = ({
 
   return (
     <div className="h-full w-full overflow-hidden pt-0">
-      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
         <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
           <div className="flex w-full flex-col overflow-hidden rounded-md border-input bg-zinc-50 p-0 pb-20">
             {/* 簡體轉繁體 */}

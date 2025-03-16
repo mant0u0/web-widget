@@ -84,9 +84,10 @@ export const QuotationmMarks: React.FC<{
 
   return (
     <div className="h-full w-full overflow-hidden pt-0">
-      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
         {/* 新增自訂引號 */}
         <div className="border-b bg-background p-2 md:p-3">
+          <p className="mb-1 text-sm text-zinc-700">⠿ 插入引號</p>
           <Dialog>
             <DialogTrigger asChild>
               <Button

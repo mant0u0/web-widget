@@ -57,12 +57,12 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
     return (
       <Tabs
         defaultValue="插入符號"
-        className="flex h-full w-full gap-2 overflow-hidden md:gap-3"
+        className="flex h-full w-full overflow-hidden"
       >
-        <TabsList className="no-scrollbar h-full flex-col items-start justify-start gap-1 overflow-y-auto overflow-x-hidden bg-transparent p-0">
+        <TabsList className="no-scrollbar h-full flex-col items-start justify-start overflow-y-auto overflow-x-hidden rounded-none border-r border-input bg-transparent p-0">
           <TabsTrigger
             value="插入符號"
-            className="h-[48px] w-[48px] flex-none gap-2 rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t-0 border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 插入符號 */}
             <Type className="w-6" />
@@ -70,7 +70,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
           <TabsTrigger
             value="插入 Emoji"
-            className="h-[48px] w-[48px] flex-none gap-2 rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 插入 Emoji */}
             <Smile className="w-6" />
@@ -78,7 +78,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
           <TabsTrigger
             value="插入顏文字"
-            className="flex-nonegap-2 h-[48px] w-[48px] flex-none rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 插入顏文字 */}
             <Smile className="w-6" />
@@ -86,7 +86,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
           <TabsTrigger
             value="插入引號"
-            className="flex-nonegap-2 h-[48px] w-[48px] flex-none rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 插入引號 */}
             <Quote className="w-6" />
@@ -94,7 +94,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
           <TabsTrigger
             value="段落符號"
-            className="flex-nonegap-2 h-[48px] w-[48px] flex-none rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 段落符號 */}
             <ListOrdered className="w-6" />
@@ -102,7 +102,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
           <TabsTrigger
             value="文字處理"
-            className="flex-nonegap-2 h-[48px] w-[48px] flex-none rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 文字處理 */}
             <SpellCheck2 className="w-6" />
@@ -110,7 +110,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
           <TabsTrigger
             value="搜尋取代"
-            className="flex-nonegap-2 h-[48px] w-[48px] flex-none rounded-xl border border-transparent data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
           >
             {/* 搜尋取代 */}
             <Search className="w-6" />
@@ -121,13 +121,15 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
           value="插入符號"
           className="mt-0 h-full w-full flex-1 overflow-y-auto"
         >
-          <SymbolPicker
-            data={dataSymbols}
-            onSelect={insertSymbol}
-            btnClassName="w-[48px] aspect-square overflow-hidden"
-            listClassName="flex flex-wrap"
-            pickerType="symbol" // 符號
-          />
+          <div className="flex h-full w-full flex-col overflow-hidden pt-0">
+            <SymbolPicker
+              data={dataSymbols}
+              onSelect={insertSymbol}
+              btnClassName="w-[48px] aspect-square overflow-hidden"
+              listClassName="flex flex-wrap"
+              pickerType="symbol" // 符號
+            />
+          </div>
         </TabsContent>
         <TabsContent
           value="插入 Emoji"
