@@ -9,6 +9,7 @@ import {
   Trash2,
   Plus,
   // Info,
+  CircleHelp,
   FileText,
   GitBranch,
   Copy,
@@ -16,6 +17,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -34,6 +42,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 // Script 元件用於加載外部腳本
 const Script = ({ src, onLoad }: { src: string; onLoad?: () => void }) => {
@@ -90,7 +99,10 @@ const NestedItemManager = () => {
   ];
 
   // 狀態管理
-  const [items, setItems] = useState<ItemState>(initialItems);
+  const [items, setItems] = useLocalStorage<ItemState>(
+    "nested-items-data",
+    initialItems,
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
@@ -786,269 +798,285 @@ const NestedItemManager = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
-      {/* <h1 className="mb-6 text-2xl font-bold">巢狀式項目管理器</h1> */}
-
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <Button
-          onClick={() => openAddItemDialog()}
-          className="flex items-center"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          新增項目
-        </Button>
-
-        <div className="flex items-center justify-between gap-2">
+    <div className="h-full w-full overflow-auto">
+      <div className="mx-auto max-w-4xl p-6">
+        <div className="mb-4 flex items-center justify-between gap-2">
           <Button
-            onClick={() => setClearAllDialogOpen(true)}
-            variant="outline"
-            className="flex items-center border-red-300 text-red-500 hover:bg-red-50 hover:text-red-600"
-          >
-            <Trash2 className="h-4 w-4" />
-            清除全部
-          </Button>
-
-          <Button
-            onClick={toggleExpandAll}
-            variant="outline"
+            onClick={() => openAddItemDialog()}
             className="flex items-center"
           >
-            {isAllExpanded ? (
-              <>
-                <ListCollapse className="mr-2 h-4 w-4" />
-                全部折疊
-              </>
-            ) : (
-              <>
-                <ListCollapse className="mr-2 h-4 w-4" />
-                全部展開
-              </>
-            )}
+            <Plus className="mr-2 h-4 w-4" />
+            新增項目
           </Button>
 
-          <Button
-            onClick={generateTextFormat}
-            variant="outline"
-            className="flex items-center"
-          >
-            <FileText className="h-4 w-4" />
-            輸出文字
-          </Button>
-
-          <Button
-            onClick={generateMermaidDiagram}
-            variant="outline"
-            className="flex items-center"
-          >
-            <GitBranch className="h-4 w-4" />
-            架構圖
-          </Button>
-        </div>
-      </div>
-
-      <div className="">{renderItems(items)}</div>
-
-      {/* 項目表單對話框 (用於新增/編輯) */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
-              {itemFormData.isEdit
-                ? "編輯項目"
-                : itemFormData.parentId
-                  ? "新增子項目"
-                  : "新增項目"}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label htmlFor="itemName" className="text-sm font-medium">
-                標題
-              </label>
-              <Input
-                id="itemName"
-                value={itemFormData.text}
-                onChange={(e) =>
-                  setItemFormData({ ...itemFormData, text: e.target.value })
-                }
-                placeholder="輸入標題"
-                className="w-full"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && itemFormData.text.trim()) {
-                    e.stopPropagation(); // 停止事件冒泡
-                    handleItemFormSubmit();
-                  }
-                }}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <label htmlFor="itemType" className="text-sm font-medium">
-                類型
-              </label>
-              <select
-                id="itemType"
-                value={itemFormData.itemType}
-                onChange={(e) =>
-                  setItemFormData({ ...itemFormData, itemType: e.target.value })
-                }
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
-              >
-                {itemTypeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid gap-2">
-              <label htmlFor="notes" className="text-sm font-medium">
-                備註
-              </label>
-              <textarea
-                id="notes"
-                value={itemFormData.notes}
-                onChange={(e) =>
-                  setItemFormData({ ...itemFormData, notes: e.target.value })
-                }
-                placeholder="輸入備註..."
-                className="min-h-[100px] w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">取消</Button>
-            </DialogClose>
+          <div className="flex items-center justify-between gap-2">
             <Button
-              onClick={handleItemFormSubmit}
-              type="submit"
-              disabled={itemFormData.text.trim() === ""}
-            >
-              {itemFormData.isEdit ? "儲存" : "新增"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* 刪除確認對話框 */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>確認刪除</AlertDialogTitle>
-            <AlertDialogDescription>
-              您確定要刪除此項目嗎？若項目包含子項目，所有子項目也將被刪除。此操作無法撤銷。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>
-              確認刪除
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* 清除全部項目確認對話框 */}
-      <AlertDialog
-        open={clearAllDialogOpen}
-        onOpenChange={setClearAllDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>確認清除全部項目</AlertDialogTitle>
-            <AlertDialogDescription>
-              您確定要清除所有項目嗎？此操作將刪除所有項目及其子項目，且無法撤銷。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmClearAll}
-              className="bg-red-500 hover:bg-red-600"
-            >
-              確認清除全部
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* 文字格式對話框 */}
-      <Dialog
-        open={textFormatDialogOpen}
-        onOpenChange={setTextFormatDialogOpen}
-      >
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>輸出文字</DialogTitle>
-          </DialogHeader>
-          <div className="relative">
-            <pre className="max-h-96 min-h-[200px] overflow-auto rounded-md border border-input bg-gray-100 p-4 text-sm">
-              {formattedText}
-            </pre>
-          </div>
-
-          <DialogFooter>
-            <Button
+              onClick={() => setClearAllDialogOpen(true)}
               variant="outline"
-              onClick={() => {
-                navigator.clipboard.writeText(formattedText);
-              }}
+              className="flex items-center border-red-300 text-red-500 hover:bg-red-50 hover:text-red-600"
             >
-              複製
+              <Trash2 className="h-4 w-4" />
+              清除全部
             </Button>
 
-            <DialogClose asChild>
-              <Button>關閉</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <Button
+              onClick={toggleExpandAll}
+              variant="outline"
+              className="flex items-center"
+            >
+              {isAllExpanded ? (
+                <>
+                  <ListCollapse className="h-4 w-4" />
+                  全部折疊
+                </>
+              ) : (
+                <>
+                  <ListCollapse className="h-4 w-4" />
+                  全部展開
+                </>
+              )}
+            </Button>
 
-      {/* 架構圖對話框 */}
-      {structureDialogOpen && (
-        <Script
-          src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
-          onLoad={() => {
-            // 腳本加載後初始化 Mermaid
-            try {
-              // @ts-expect-error - 類型定義不完整，需要忽略類型檢查
-              if (window.mermaid) {
-                // @ts-expect-error - 第三方庫類型衝突
-                window.mermaid.initialize({
-                  startOnLoad: true,
-                  theme: "default",
-                  flowchart: {
-                    useMaxWidth: true,
-                    htmlLabels: true,
-                    curve: "linear", // 改為 linear 或移除這行以使用直線
-                  },
-                });
+            <Button
+              onClick={generateTextFormat}
+              variant="outline"
+              className="flex items-center"
+            >
+              <FileText className="h-4 w-4" />
+              輸出文字
+            </Button>
+
+            <Button
+              onClick={generateMermaidDiagram}
+              variant="outline"
+              className="flex items-center"
+            >
+              <GitBranch className="h-4 w-4" />
+              架構圖
+            </Button>
+          </div>
+        </div>
+
+        <div className="">{renderItems(items)}</div>
+
+        {items.length === 0 && (
+          <div className="flex h-full flex-col items-center justify-center gap-4 px-8 py-[120px] text-gray-800 opacity-45">
+            <CircleHelp className="h-[60px] w-[60px]" strokeWidth={1.8} />
+            <p>目前沒有任何項目</p>
+          </div>
+        )}
+
+        {/* 項目表單對話框 (用於新增/編輯) */}
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>
+                {itemFormData.isEdit
+                  ? "編輯項目"
+                  : itemFormData.parentId
+                    ? "新增子項目"
+                    : "新增項目"}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <label htmlFor="itemName" className="text-sm font-medium">
+                  標題
+                </label>
+                <Input
+                  id="itemName"
+                  value={itemFormData.text}
+                  onChange={(e) =>
+                    setItemFormData({ ...itemFormData, text: e.target.value })
+                  }
+                  placeholder="輸入標題"
+                  className="w-full"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && itemFormData.text.trim()) {
+                      e.stopPropagation(); // 停止事件冒泡
+                      handleItemFormSubmit();
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="itemType" className="text-sm font-medium">
+                  類型
+                </label>
+                <Select
+                  value={itemFormData.itemType}
+                  onValueChange={(value) => {
+                    setItemFormData({ ...itemFormData, itemType: value });
+                  }}
+                  className="w-full"
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="請選擇" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {itemTypeOptions.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="notes" className="text-sm font-medium">
+                  備註
+                </label>
+                <textarea
+                  id="notes"
+                  value={itemFormData.notes}
+                  onChange={(e) =>
+                    setItemFormData({ ...itemFormData, notes: e.target.value })
+                  }
+                  placeholder="輸入備註..."
+                  className="min-h-[100px] w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">取消</Button>
+              </DialogClose>
+              <Button
+                onClick={handleItemFormSubmit}
+                type="submit"
+                disabled={itemFormData.text.trim() === ""}
+              >
+                {itemFormData.isEdit ? "儲存" : "新增"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* 刪除確認對話框 */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>確認刪除</AlertDialogTitle>
+              <AlertDialogDescription>
+                您確定要刪除此項目嗎？若項目包含子項目，所有子項目也將被刪除。此操作無法撤銷。
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>取消</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmDelete}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                確認刪除
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* 清除全部項目確認對話框 */}
+        <AlertDialog
+          open={clearAllDialogOpen}
+          onOpenChange={setClearAllDialogOpen}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>確認清除全部項目</AlertDialogTitle>
+              <AlertDialogDescription>
+                您確定要清除所有項目嗎？此操作將刪除所有項目及其子項目，且無法撤銷。
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>取消</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmClearAll}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                清除全部
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* 文字格式對話框 */}
+        <Dialog
+          open={textFormatDialogOpen}
+          onOpenChange={setTextFormatDialogOpen}
+        >
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>輸出文字</DialogTitle>
+            </DialogHeader>
+            <div className="relative">
+              <pre className="max-h-96 min-h-[200px] overflow-auto rounded-md border border-input bg-gray-100 p-4 text-sm">
+                {formattedText}
+              </pre>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard.writeText(formattedText);
+                }}
+              >
+                複製
+              </Button>
+
+              <DialogClose asChild>
+                <Button>關閉</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* 架構圖對話框 */}
+        {structureDialogOpen && (
+          <Script
+            src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+            onLoad={() => {
+              // 腳本加載後初始化 Mermaid
+              try {
+                // @ts-expect-error - 類型定義不完整，需要忽略類型檢查
+                if (window.mermaid) {
+                  // @ts-expect-error - 第三方庫類型衝突
+                  window.mermaid.initialize({
+                    startOnLoad: true,
+                    theme: "default",
+                    flowchart: {
+                      useMaxWidth: true,
+                      htmlLabels: true,
+                      curve: "linear", // 改為 linear 或移除這行以使用直線
+                    },
+                  });
+                }
+              } catch (error) {
+                console.error("Error initializing mermaid:", error);
               }
-            } catch (error) {
-              console.error("Error initializing mermaid:", error);
-            }
-          }}
-        />
-      )}
+            }}
+          />
+        )}
 
-      <Dialog open={structureDialogOpen} onOpenChange={setStructureDialogOpen}>
-        <DialogContent className="sm:max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>項目架構圖</DialogTitle>
-          </DialogHeader>
-          <div
-            className="overflow-auto rounded border"
-            style={{ maxHeight: "70vh" }}
-          >
-            {/* 使用 iframe 顯示 Mermaid 圖表 */}
-            <div className="flex w-full justify-center">
-              <iframe
-                title="項目架構圖"
-                className="h-[50vh] min-h-[400px] w-full border-0"
-                srcDoc={`
+        <Dialog
+          open={structureDialogOpen}
+          onOpenChange={setStructureDialogOpen}
+        >
+          <DialogContent className="sm:max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>項目架構圖</DialogTitle>
+            </DialogHeader>
+            <div
+              className="overflow-auto rounded border"
+              style={{ maxHeight: "70vh" }}
+            >
+              {/* 使用 iframe 顯示 Mermaid 圖表 */}
+              <div className="flex w-full justify-center">
+                <iframe
+                  title="項目架構圖"
+                  className="h-[50vh] min-h-[400px] w-full border-0"
+                  srcDoc={`
                     <!DOCTYPE html>
                     <html>
                     <head>
@@ -1091,25 +1119,26 @@ const NestedItemManager = () => {
                     </body>
                     </html>
                   `}
-              />
+                />
+              </div>
             </div>
-          </div>
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigator.clipboard.writeText(mermaidCode);
-              }}
-            >
-              複製 Mermaid 代碼
-            </Button>
-            <DialogClose asChild>
-              <Button>關閉</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard.writeText(mermaidCode);
+                }}
+              >
+                複製 Mermaid 代碼
+              </Button>
+              <DialogClose asChild>
+                <Button>關閉</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };
