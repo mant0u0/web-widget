@@ -888,9 +888,9 @@ const NestedItemManager = () => {
           onLoad={() => {
             // 腳本加載後初始化 Mermaid
             try {
-              // @ts-expect-error
+              // @ts-expect-error - 類型定義不完整，需要忽略類型檢查
               if (window.mermaid) {
-                // @ts-expect-error
+                // @ts-expect-error - 第三方庫類型衝突
                 window.mermaid.initialize({
                   startOnLoad: true,
                   theme: "default",
