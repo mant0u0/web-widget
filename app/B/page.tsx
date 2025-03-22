@@ -821,12 +821,6 @@ const NestedItemManager = () => {
     setTextFormatDialogOpen(true);
   };
 
-  // 當選項變更時更新文字
-  const updateFormattedText = () => {
-    const textTree = buildTextTree(items, showItemType, showItemNotes);
-    setFormattedText(textTree);
-  };
-
   // 處理顯示類型選項變更
   const handleTypeCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setShowItemType(e.target.checked);
