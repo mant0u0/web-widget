@@ -8,12 +8,11 @@ import {
   Edit,
   Trash2,
   Plus,
-  Info,
+  // Info,
   FileText,
   GitBranch,
   Copy,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -854,27 +853,24 @@ const NestedItemManager = () => {
       >
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>項目結構文字格式</DialogTitle>
+            <DialogTitle>輸出文字</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <div className="relative">
-              <pre className="max-h-96 overflow-auto rounded-md bg-gray-50 p-4 text-sm">
-                {formattedText}
-              </pre>
-              <Button
-                className="absolute right-2 top-2"
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  navigator.clipboard.writeText(formattedText);
-                  // 可以加入複製成功的提示
-                }}
-              >
-                複製
-              </Button>
-            </div>
+          <div className="relative">
+            <pre className="max-h-96 min-h-[200px] overflow-auto rounded-md border border-input bg-gray-100 p-4 text-sm">
+              {formattedText}
+            </pre>
           </div>
+
           <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigator.clipboard.writeText(formattedText);
+              }}
+            >
+              複製
+            </Button>
+
             <DialogClose asChild>
               <Button>關閉</Button>
             </DialogClose>
@@ -914,17 +910,16 @@ const NestedItemManager = () => {
           <DialogHeader>
             <DialogTitle>項目架構圖</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <div
-              className="mb-4 overflow-auto rounded border"
-              style={{ maxHeight: "70vh" }}
-            >
-              {/* 使用 iframe 顯示 Mermaid 圖表 */}
-              <div className="flex w-full justify-center">
-                <iframe
-                  title="項目架構圖"
-                  className="h-[50vh] min-h-[400px] w-full border-0"
-                  srcDoc={`
+          <div
+            className="overflow-auto rounded border"
+            style={{ maxHeight: "70vh" }}
+          >
+            {/* 使用 iframe 顯示 Mermaid 圖表 */}
+            <div className="flex w-full justify-center">
+              <iframe
+                title="項目架構圖"
+                className="h-[50vh] min-h-[400px] w-full border-0"
+                srcDoc={`
                     <!DOCTYPE html>
                     <html>
                     <head>
@@ -967,13 +962,13 @@ const NestedItemManager = () => {
                     </body>
                     </html>
                   `}
-                />
-              </div>
+              />
             </div>
           </div>
+
           <DialogFooter>
             <Button
-              variant="secondary"
+              variant="outline"
               onClick={() => {
                 navigator.clipboard.writeText(mermaidCode);
               }}
