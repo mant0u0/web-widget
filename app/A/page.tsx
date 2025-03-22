@@ -105,6 +105,8 @@ const NestedItemManager = () => {
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [dragOverItem, setDragOverItem] = useState<string | null>(null);
   const [dragOverPosition, setDragOverPosition] = useState<string | null>(null); // 'before', 'after', 'inside'
+  // 清除狀態
+  const [clearAllDialogOpen, setClearAllDialogOpen] = useState(false);
 
   // 項目表單狀態
   const [itemFormData, setItemFormData] = useState({
@@ -115,30 +117,6 @@ const NestedItemManager = () => {
     parentId: null as string | null,
     isEdit: false,
   });
-
-  // 找到項目及其父項目
-  const findItemAndParent = (
-    itemId: string,
-    itemsArray: Item[] = items,
-    parent: Item | null = null,
-  ): FindResult => {
-    for (let i = 0; i < itemsArray.length; i++) {
-      if (itemsArray[i].id === itemId) {
-        return { item: itemsArray[i], parent, index: i };
-      }
-
-      if (itemsArray[i].children.length > 0) {
-        const result = findItemAndParent(
-          itemId,
-          itemsArray[i].children,
-          itemsArray[i],
-        );
-        if (result) return result;
-      }
-    }
-
-    return null;
-  };
 
   // 開啟新增項目對話框
   const openAddItemDialog = (parentId: string | null = null) => {
@@ -286,6 +264,12 @@ const NestedItemManager = () => {
     setItems(deleteFromArray([...items]));
     setDeleteDialogOpen(false);
     setDeleteItemId(null);
+  };
+
+  // 開啟清空所有項目確認對話框
+  const confirmClearAll = () => {
+    setItems([]);
+    setClearAllDialogOpen(false);
   };
 
   // 真正生成唯一 ID 的函數
@@ -689,14 +673,14 @@ const NestedItemManager = () => {
 
               {/* 操作按鈕組 */}
               <div className="flex opacity-0 transition-opacity group-hover:opacity-100">
-                {/* 新增子項目按鈕 */}
+                {/* 刪除按鈕 */}
                 <Button
-                  onClick={() => openAddItemDialog(item.id)}
+                  onClick={() => openDeleteDialog(item.id)}
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 p-0 text-gray-400 hover:bg-green-50 hover:text-green-600"
+                  className="ml-1 h-8 w-8 p-0 text-gray-400 hover:bg-red-50 hover:text-red-600"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
 
                 {/* 複製按鈕 */}
@@ -719,14 +703,14 @@ const NestedItemManager = () => {
                   <Edit className="h-4 w-4" />
                 </Button>
 
-                {/* 刪除按鈕 */}
+                {/* 新增子項目按鈕 */}
                 <Button
-                  onClick={() => openDeleteDialog(item.id)}
+                  onClick={() => openAddItemDialog(item.id)}
                   variant="ghost"
                   size="icon"
-                  className="ml-1 h-8 w-8 p-0 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                  className="h-8 w-8 p-0 text-gray-400 hover:bg-green-50 hover:text-green-600"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -816,6 +800,15 @@ const NestedItemManager = () => {
         </Button>
 
         <div className="flex items-center justify-between gap-2">
+          <Button
+            onClick={() => setClearAllDialogOpen(true)}
+            variant="outline"
+            className="flex items-center border-red-300 text-red-500 hover:bg-red-50 hover:text-red-600"
+          >
+            <Trash2 className="h-4 w-4" />
+            清除全部
+          </Button>
+
           <Button
             onClick={toggleExpandAll}
             variant="outline"
@@ -930,7 +923,11 @@ const NestedItemManager = () => {
             <DialogClose asChild>
               <Button variant="outline">取消</Button>
             </DialogClose>
-            <Button onClick={handleItemFormSubmit} type="submit">
+            <Button
+              onClick={handleItemFormSubmit}
+              type="submit"
+              disabled={itemFormData.text.trim() === ""}
+            >
               {itemFormData.isEdit ? "儲存" : "新增"}
             </Button>
           </DialogFooter>
@@ -950,6 +947,30 @@ const NestedItemManager = () => {
             <AlertDialogCancel>取消</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete}>
               確認刪除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 清除全部項目確認對話框 */}
+      <AlertDialog
+        open={clearAllDialogOpen}
+        onOpenChange={setClearAllDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>確認清除全部項目</AlertDialogTitle>
+            <AlertDialogDescription>
+              您確定要清除所有項目嗎？此操作將刪除所有項目及其子項目，且無法撤銷。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmClearAll}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              確認清除全部
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
