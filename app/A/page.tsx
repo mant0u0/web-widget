@@ -12,6 +12,7 @@ import {
   FileText,
   GitBranch,
   Copy,
+  ListCollapse,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,7 +99,8 @@ const NestedItemManager = () => {
   const [formattedText, setFormattedText] = useState("");
   const [structureDialogOpen, setStructureDialogOpen] = useState(false);
   const [mermaidCode, setMermaidCode] = useState("");
-
+  // 添加一個狀態來記錄是否全部展開
+  const [isAllExpanded, setIsAllExpanded] = useState(true);
   // 拖曳狀態
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [dragOverItem, setDragOverItem] = useState<string | null>(null);
@@ -286,6 +288,85 @@ const NestedItemManager = () => {
     setDeleteItemId(null);
   };
 
+  // 真正生成唯一 ID 的函數
+  const generateUniqueId = () => {
+    const timestamp = Date.now();
+    const randomPart = Math.floor(Math.random() * 1000000);
+    const uniquePart = Math.random().toString(36).substring(2, 10);
+    return `item-${timestamp}-${randomPart}-${uniquePart}`;
+  };
+
+  // 添加複製項目功能
+  // 此函數會創建一個項目的副本，並將其插入到相同的父項目下
+  const handleCopyItem = (itemId: string) => {
+    // 先找到要複製的項目
+    const findItemById = (items: Item[], id: string): Item | null => {
+      for (const item of items) {
+        if (item.id === id) {
+          return item;
+        }
+        if (item.children.length > 0) {
+          const found = findItemById(item.children, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    // 找到原始項目
+    const originalItem = findItemById(items, itemId);
+    if (!originalItem) return;
+
+    // 深度複製項目，確保每個層級都有新的 ID
+    const deepCopyWithNewIds = (item: Item): Item => {
+      return {
+        ...item,
+        id: generateUniqueId(), // 為每個項目生成新 ID
+        text: `${item.text}`,
+        children: item.children.map((child) => deepCopyWithNewIds(child)), // 遞迴處理所有子項目
+      };
+    };
+
+    // 創建複製後的項目，每個層級都有新 ID
+    const copiedItem = deepCopyWithNewIds(originalItem);
+
+    // 在原始項目旁邊插入複製的項目
+    const insertCopiedItem = (
+      currentItems: Item[],
+      targetId: string,
+    ): Item[] => {
+      const result = [...currentItems];
+
+      // 查找目標項目的索引
+      const index = result.findIndex((item) => item.id === targetId);
+
+      // 如果在當前層級找到了目標項目
+      if (index !== -1) {
+        // 在目標項目後插入複製的項目
+        result.splice(index + 1, 0, copiedItem);
+        return result;
+      }
+
+      // 如果在當前層級沒找到，遞迴查找子項目
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].children.length > 0) {
+          const newChildren = insertCopiedItem(result[i].children, targetId);
+
+          // 如果子項目數量變化了，說明找到了目標位置
+          if (newChildren.length !== result[i].children.length) {
+            result[i] = { ...result[i], children: newChildren };
+            return result;
+          }
+        }
+      }
+
+      return result;
+    };
+
+    // 更新項目列表
+    setItems(insertCopiedItem(items, itemId));
+  };
+
   // 切換項目展開/折疊狀態
   const toggleExpanded = (itemId: string) => {
     const toggleItem = (itemsArray: Item[]): Item[] => {
@@ -301,6 +382,33 @@ const NestedItemManager = () => {
     };
 
     setItems(toggleItem([...items]));
+  };
+
+  // 切換全部展開/折疊的功能
+  const toggleExpandAll = () => {
+    // 反轉當前狀態
+    const newExpandedState = !isAllExpanded;
+
+    // 遞迴更新所有項目的展開狀態
+    const updateItemsExpanded = (itemsArray: Item[]): Item[] => {
+      return itemsArray.map((item) => {
+        // 更新子項目
+        const updatedChildren =
+          item.children.length > 0 ? updateItemsExpanded(item.children) : [];
+
+        // 返回更新後的項目
+        return {
+          ...item,
+          expanded: newExpandedState, // 設置展開/折疊狀態
+          children: updatedChildren,
+        };
+      });
+    };
+
+    // 更新項目狀態
+    setItems(updateItemsExpanded([...items]));
+    // 更新全部展開的狀態
+    setIsAllExpanded(newExpandedState);
   };
 
   // 確定放置位置
@@ -323,189 +431,172 @@ const NestedItemManager = () => {
 
   // 處理拖曳結束事件
   const handleDragEnd = () => {
-    // 確保只有在有拖曳和目標項目時才處理
+    // 確保有有效的拖放目標
     if (!draggedItem || !dragOverItem || !dragOverPosition) {
       resetDragState();
       return;
     }
 
-    // 避免放置到自身
+    // 避免將項目拖到自己身上
     if (draggedItem === dragOverItem) {
       resetDragState();
       return;
     }
 
     try {
-      // 檢查是否拖到自己的子項目中 (避免形成循環引用)
-      const isChildOf = (childId: string, parentId: string): boolean => {
-        const parent = findItemAndParent(parentId);
-        if (!parent) return false;
+      // 檢查是否是拖到自己的子項目中 - 更簡單的實現
+      const isChildOf = (parent: string, child: string): boolean => {
+        const findParentPath = (
+          items: Item[],
+          targetId: string,
+          path: string[] = [],
+        ): string[] | null => {
+          for (const item of items) {
+            // 當前路徑
+            const currentPath = [...path, item.id];
 
-        const checkChildren = (children: Item[]): boolean => {
-          for (const child of children) {
-            if (child.id === childId) return true;
-            if (child.children.length > 0 && checkChildren(child.children))
-              return true;
+            // 找到目標
+            if (item.id === targetId) {
+              return currentPath;
+            }
+
+            // 遞迴查找子項目
+            if (item.children.length > 0) {
+              const result = findParentPath(
+                item.children,
+                targetId,
+                currentPath,
+              );
+              if (result) return result;
+            }
           }
-          return false;
+          return null;
         };
 
-        return checkChildren(parent.item.children);
+        const childPath = findParentPath(items, child);
+        return childPath ? childPath.includes(parent) : false;
       };
 
-      if (isChildOf(dragOverItem, draggedItem)) {
-        console.log("Cannot drag to child item");
+      // 不允許拖到自己的子項目中
+      if (isChildOf(draggedItem, dragOverItem)) {
+        console.log("不能將項目拖到其子項目中");
         resetDragState();
         return;
       }
 
-      // 找到拖曳項目和目標項目
-      const draggedItemInfo = findItemAndParent(draggedItem);
-      const dropTargetInfo = findItemAndParent(dragOverItem);
+      // 1. 找到並深度複製被拖曳的項目
+      let draggedItemData: Item | null = null;
 
-      if (!draggedItemInfo || !dropTargetInfo) {
-        console.log("Item not found");
-        resetDragState();
-        return;
-      }
+      // 2. 使用遞迴函數來構建新的項目樹狀結構
+      const buildNewItemsTree = (
+        currentItems: Item[],
+        isTopLevel: boolean = true,
+      ): Item[] => {
+        // 創建項目的副本，以避免直接修改原始項目
+        const newItems = currentItems.map((item) => ({
+          ...item,
+          children: [...item.children], // 複製子項目數組
+        }));
 
-      // 顯示更詳細的日誌，幫助調試
-      console.log(
-        "Dragging item:",
-        draggedItemInfo.item.text,
-        "to",
-        dropTargetInfo.item.text,
-        "position:",
-        dragOverPosition,
-      );
+        // 首先，從樹中找到並移除被拖曳的項目
+        const removeItem = (items: Item[]): [Item[], Item | null] => {
+          let removed: Item | null = null;
+          const result: Item[] = [];
 
-      // 創建項目的完整深度複製
-      const newItems = JSON.parse(JSON.stringify(items));
-
-      // 1. 先找到原始項目並保存它的完整副本（包括所有子項目）
-      const findAndExtractItem = (
-        itemsArray: Item[],
-        idToFind: string,
-      ): [Item | null, Item[]] => {
-        let extractedItem: Item | null = null;
-
-        // 從陣列中找到並移除項目
-        const remainingItems = itemsArray.filter((item) => {
-          if (item.id === idToFind) {
-            extractedItem = JSON.parse(JSON.stringify(item)); // 深度複製
-            return false; // 從陣列中移除
-          }
-          return true;
-        });
-
-        // 如果在頂層沒找到，則在子項目中查找
-        if (!extractedItem) {
-          for (let i = 0; i < remainingItems.length; i++) {
-            if (
-              remainingItems[i].children &&
-              remainingItems[i].children.length > 0
-            ) {
-              const [found, updatedChildren] = findAndExtractItem(
-                remainingItems[i].children,
-                idToFind,
+          for (const item of items) {
+            if (item.id === draggedItem) {
+              removed = JSON.parse(JSON.stringify(item)); // 深度複製
+            } else {
+              const [newChildren, removedFromChildren] = removeItem(
+                item.children,
               );
 
-              if (found) {
-                extractedItem = found;
-                remainingItems[i] = {
-                  ...remainingItems[i],
-                  children: updatedChildren,
-                };
-                break;
+              if (removedFromChildren) {
+                removed = removedFromChildren;
+                result.push({ ...item, children: newChildren });
+              } else {
+                result.push(item);
               }
             }
           }
+
+          return [result, removed];
+        };
+
+        const [itemsWithoutDragged, removed] = removeItem(newItems);
+
+        if (removed) {
+          draggedItemData = removed;
         }
 
-        return [extractedItem, remainingItems];
-      };
+        // 如果是拖曳到最上層
+        if (isTopLevel && !dragOverItem && draggedItemData) {
+          itemsWithoutDragged.push(draggedItemData);
+          return itemsWithoutDragged;
+        }
 
-      // 提取被拖曳的項目並得到新的項目陣列
-      const [draggedItemCopy, itemsWithoutDragged] = findAndExtractItem(
-        newItems,
-        draggedItem,
-      );
+        // 接著，將被拖曳的項目插入到目標位置
+        const insertItem = (items: Item[]): Item[] => {
+          const result: Item[] = [];
 
-      if (!draggedItemCopy) {
-        console.error("Failed to extract dragged item");
-        resetDragState();
-        return;
-      }
-
-      // 2. 將項目插入到新位置
-      const insertItem = (
-        itemsArray: Item[],
-        targetId: string,
-        itemToInsert: Item,
-        position: string,
-      ): Item[] => {
-        const result = [...itemsArray];
-
-        // 處理為根級別項目的情況
-        for (let i = 0; i < result.length; i++) {
-          if (result[i].id === targetId) {
-            if (position === "before") {
-              // 在目標項目前插入
-              result.splice(i, 0, itemToInsert);
-              return result;
-            } else if (position === "after") {
-              // 在目標項目後插入
-              result.splice(i + 1, 0, itemToInsert);
-              return result;
-            } else if (position === "inside") {
-              // 作為目標項目的子項目插入
-              result[i] = {
-                ...result[i],
-                children: [...result[i].children, itemToInsert],
+          for (const item of items) {
+            // 插入到目標項目前面
+            if (
+              item.id === dragOverItem &&
+              dragOverPosition === "before" &&
+              draggedItemData
+            ) {
+              result.push(draggedItemData);
+              result.push(item);
+            }
+            // 插入到目標項目內部
+            else if (
+              item.id === dragOverItem &&
+              dragOverPosition === "inside" &&
+              draggedItemData
+            ) {
+              result.push({
+                ...item,
                 expanded: true, // 自動展開
-              };
-              return result;
+                children: [...item.children, draggedItemData],
+              });
+            }
+            // 插入到目標項目後面
+            else if (
+              item.id === dragOverItem &&
+              dragOverPosition === "after" &&
+              draggedItemData
+            ) {
+              result.push(item);
+              result.push(draggedItemData);
+            }
+            // 遞迴處理子項目
+            else {
+              const newChildren = insertItem(item.children);
+              result.push({
+                ...item,
+                children: newChildren,
+              });
             }
           }
 
-          // 遞迴處理子項目
-          if (result[i].children && result[i].children.length > 0) {
-            const updatedChildren = insertItem(
-              result[i].children,
-              targetId,
-              itemToInsert,
-              position,
-            );
+          return result;
+        };
 
-            // 如果子項目有變化，更新當前項目
-            if (updatedChildren !== result[i].children) {
-              result[i] = {
-                ...result[i],
-                children: updatedChildren,
-              };
-              return result;
-            }
-          }
-        }
-
-        return result;
+        return insertItem(itemsWithoutDragged);
       };
 
-      // 將拖曳項目插入到新位置
-      const finalItems = insertItem(
-        itemsWithoutDragged,
-        dragOverItem,
-        draggedItemCopy,
-        dragOverPosition,
-      );
+      // 3. 構建並設置新的項目樹
+      const newItemsTree = buildNewItemsTree(items);
 
-      // 更新狀態
-      setItems(finalItems);
+      if (draggedItemData) {
+        setItems(newItemsTree);
+      }
     } catch (error) {
-      console.error("Error during drag and drop:", error);
+      console.error("拖放過程中發生錯誤:", error);
     }
 
-    // 重置拖曳狀態
+    // 重置拖放狀態
     resetDragState();
   };
 
@@ -610,7 +701,7 @@ const NestedItemManager = () => {
 
                 {/* 複製按鈕 */}
                 <Button
-                  onClick={() => {}}
+                  onClick={() => handleCopyItem(item.id)}
                   variant="ghost"
                   size="icon"
                   className="ml-1 h-8 w-8 p-0 text-gray-400 hover:bg-blue-50 hover:text-blue-600"
@@ -725,6 +816,24 @@ const NestedItemManager = () => {
         </Button>
 
         <div className="flex items-center justify-between gap-2">
+          <Button
+            onClick={toggleExpandAll}
+            variant="outline"
+            className="flex items-center"
+          >
+            {isAllExpanded ? (
+              <>
+                <ListCollapse className="mr-2 h-4 w-4" />
+                全部折疊
+              </>
+            ) : (
+              <>
+                <ListCollapse className="mr-2 h-4 w-4" />
+                全部展開
+              </>
+            )}
+          </Button>
+
           <Button
             onClick={generateTextFormat}
             variant="outline"
