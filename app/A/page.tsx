@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   ChevronDown,
   ChevronRight,
   GripVertical,
-  X,
   Edit,
   Trash2,
   Plus,
   Info,
+  FileText,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,32 +33,33 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+// 定義項目介面
+interface Item {
+  id: string;
+  text: string;
+  children: Item[];
+  expanded: boolean;
+  pageType: string;
+  notes: string;
+}
+
+type ItemState = Item[];
+type FindResult = { item: Item; parent: Item | null; index: number } | null;
+
 // 巢狀式項目管理器元件
 const NestedItemManager = () => {
   // 初始項目資料
-  const initialItems = [
+  const initialItems: ItemState = [
     {
       id: "1",
       text: "項目 1",
       children: [],
       expanded: true,
-      pageTitle: "", // 網頁標題
-      pageType: "一般頁面", // 頁面類型
-      notes: "", // 備註
+      pageType: "一般頁面",
+      notes: "",
     },
   ];
 
-  // 項目資料狀態
-  const [items, setItems] = useState<ItemState>(initialItems);
-  // 新項目輸入框內容
-  const [newItemText, setNewItemText] = useState("");
-  // 編輯對話框狀態
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editItem, setEditItem] = useState(null);
-  const [editItemText, setEditItemText] = useState("");
-  const [editPageTitle, setEditPageTitle] = useState("");
-  const [editPageType, setEditPageType] = useState("一般頁面");
-  const [editNotes, setEditNotes] = useState("");
   // 頁面類型選項
   const pageTypeOptions = [
     "一般頁面",
@@ -67,32 +68,31 @@ const NestedItemManager = () => {
     "聯絡表單",
     "關於我們",
   ];
-  // 刪除確認對話框狀態
+
+  // 狀態管理
+  const [items, setItems] = useState<ItemState>(initialItems);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
+  const [textFormatDialogOpen, setTextFormatDialogOpen] = useState(false);
+  const [formattedText, setFormattedText] = useState("");
+
   // 拖曳狀態
-  const [draggedItem, setDraggedItem] = useState(null);
-  const [dragOverItem, setDragOverItem] = useState(null);
-  const [dragOverPosition, setDragOverPosition] = useState(null); // 'before', 'after', 'inside'
-  // 新增子項目對話框狀態
-  const [addChildDialogOpen, setAddChildDialogOpen] = useState(false);
-  const [newChildText, setNewChildText] = useState("");
-  const [parentItemId, setParentItemId] = useState(null);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [dragOverItem, setDragOverItem] = useState<string | null>(null);
+  const [dragOverPosition, setDragOverPosition] = useState<string | null>(null); // 'before', 'after', 'inside'
+
+  // 項目表單狀態
+  const [itemFormData, setItemFormData] = useState({
+    id: "",
+    text: "",
+    pageType: "一般頁面",
+    notes: "",
+    parentId: null as string | null,
+    isEdit: false,
+  });
 
   // 找到項目及其父項目
-  interface Item {
-    id: string;
-    text: string;
-    children: Item[];
-    expanded: boolean;
-    pageTitle: string;
-    pageType: string;
-    notes: string;
-  }
-
-  type ItemState = Item[];
-  type FindResult = { item: Item; parent: Item | null; index: number } | null;
-
   const findItemAndParent = (
     itemId: string,
     itemsArray: Item[] = items,
@@ -114,6 +114,137 @@ const NestedItemManager = () => {
     }
 
     return null;
+  };
+
+  // 開啟新增項目對話框
+  const openAddItemDialog = (parentId: string | null = null) => {
+    setItemFormData({
+      id: "",
+      text: "",
+      pageType: "一般頁面",
+      notes: "",
+      parentId,
+      isEdit: false,
+    });
+    setDialogOpen(true);
+  };
+
+  // 開啟編輯項目對話框
+  const openEditDialog = (item: Item) => {
+    setItemFormData({
+      id: item.id,
+      text: item.text,
+      pageType: item.pageType,
+      notes: item.notes,
+      parentId: null,
+      isEdit: true,
+    });
+    setDialogOpen(true);
+  };
+
+  // 處理表單提交
+  const handleItemFormSubmit = () => {
+    if (!itemFormData.text.trim()) return;
+
+    if (itemFormData.isEdit) {
+      // 編輯現有項目
+      const updateItem = (itemsArray: Item[]): Item[] => {
+        return itemsArray.map((item) => {
+          if (item.id === itemFormData.id) {
+            return {
+              ...item,
+              text: itemFormData.text,
+              pageType: itemFormData.pageType,
+              notes: itemFormData.notes,
+            };
+          }
+          if (item.children.length) {
+            return { ...item, children: updateItem(item.children) };
+          }
+          return item;
+        });
+      };
+
+      setItems(updateItem([...items]));
+    } else {
+      // 新增項目
+      const newItem: Item = {
+        id: `item-${Date.now()}`,
+        text: itemFormData.text,
+        children: [],
+        expanded: true,
+        pageType: itemFormData.pageType,
+        notes: itemFormData.notes,
+      };
+
+      if (itemFormData.parentId) {
+        // 新增子項目
+        const addChildToParent = (itemsArray: Item[]): Item[] => {
+          return itemsArray.map((item) => {
+            if (item.id === itemFormData.parentId) {
+              return {
+                ...item,
+                children: [...item.children, newItem],
+                expanded: true, // 自動展開父項目
+              };
+            }
+            if (item.children.length) {
+              return { ...item, children: addChildToParent(item.children) };
+            }
+            return item;
+          });
+        };
+
+        setItems(addChildToParent([...items]));
+      } else {
+        // 新增根級項目
+        setItems([...items, newItem]);
+      }
+    }
+
+    setDialogOpen(false);
+  };
+
+  // 開啟刪除確認對話框
+  const openDeleteDialog = (itemId: string) => {
+    setDeleteItemId(itemId);
+    setDeleteDialogOpen(true);
+  };
+
+  // 確認刪除項目
+  const confirmDelete = () => {
+    if (!deleteItemId) return;
+
+    const deleteFromArray = (itemsArray: Item[]): Item[] => {
+      return itemsArray.filter((item) => {
+        if (item.id === deleteItemId) return false;
+        if (item.children.length) {
+          item.children = deleteFromArray(item.children);
+        }
+        return true;
+      });
+    };
+
+    setItems(deleteFromArray([...items]));
+    setDeleteDialogOpen(false);
+    setDeleteItemId(null);
+  };
+
+  // 切換項目展開/折疊狀態
+  const toggleExpanded = (itemId: string) => {
+    const toggleItem = (itemsArray: Item[]): Item[] => {
+      return itemsArray.map((item) => {
+        if (item.id === itemId) {
+          return { ...item, expanded: !item.expanded };
+        }
+        if (item.children.length) {
+          return { ...item, children: toggleItem(item.children) };
+        }
+        return item;
+      });
+    };
+
+    setItems(toggleItem([...items]));
   };
 
   // 確定放置位置
@@ -192,7 +323,7 @@ const NestedItemManager = () => {
       newItems.splice(draggedItemInfo.index, 1);
     } else {
       const parentIndex = newItems.findIndex(
-        (item) => item.id === draggedItemInfo.parent.id,
+        (item) => item.id === draggedItemInfo.parent!.id,
       );
       if (parentIndex !== -1) {
         newItems[parentIndex].children.splice(draggedItemInfo.index, 1);
@@ -205,7 +336,7 @@ const NestedItemManager = () => {
       const targetIndex =
         dropTargetInfo.parent === null
           ? newItems.findIndex((item) => item.id === dropTargetInfo.item.id)
-          : newItems.findIndex((item) => item.id === dropTargetInfo.parent.id);
+          : newItems.findIndex((item) => item.id === dropTargetInfo.parent!.id);
 
       if (targetIndex !== -1) {
         if (dropTargetInfo.parent === null) {
@@ -254,157 +385,13 @@ const NestedItemManager = () => {
     resetDragState();
   };
 
-  // 重置拖曳狀態
-  const resetDragState = () => {
-    setDraggedItem(null);
-    setDragOverItem(null);
-    setDragOverPosition(null);
-  };
-
-  // 添加新項目
-  const addItem = () => {
-    if (newItemText.trim()) {
-      const newItem = {
-        id: `item-${Date.now()}`,
-        text: newItemText,
-        children: [],
-        expanded: true,
-        pageTitle: "",
-        pageType: "一般頁面",
-        notes: "",
-      };
-
-      setItems([...items, newItem]);
-      setNewItemText("");
-    }
-  };
-
-  // 添加子項目
-  const addChildItem = () => {
-    if (!parentItemId || !newChildText.trim()) return;
-
-    const newChild = {
-      id: `item-${Date.now()}`,
-      text: newChildText,
-      children: [],
-      expanded: true,
-      pageTitle: "",
-      pageType: "一般頁面",
-      notes: "",
-    };
-
-    const addChildToParent = (itemsArray) => {
-      return itemsArray.map((item) => {
-        if (item.id === parentItemId) {
-          return {
-            ...item,
-            children: [...item.children, newChild],
-            expanded: true, // 自動展開父項目
-          };
-        }
-        if (item.children.length) {
-          return { ...item, children: addChildToParent(item.children) };
-        }
-        return item;
-      });
-    };
-
-    setItems(addChildToParent([...items]));
-    setAddChildDialogOpen(false);
-    setParentItemId(null);
-    setNewChildText("");
-  };
-
-  // 打開編輯對話框
-  const openEditDialog = (item: Item) => {
-    setEditItem(item);
-    setEditItemText(item.text);
-    setEditPageTitle(item.pageTitle || "");
-    setEditPageType(item.pageType || "一般頁面");
-    setEditNotes(item.notes || "");
-    setEditDialogOpen(true);
-  };
-
-  // 保存編輯
-  const saveEdit = () => {
-    if (!editItem || !editItemText.trim()) return;
-
-    const updateItem = (itemsArray) => {
-      return itemsArray.map((item) => {
-        if (item.id === editItem.id) {
-          return {
-            ...item,
-            text: editItemText,
-            pageTitle: editPageTitle,
-            pageType: editPageType,
-            notes: editNotes,
-          };
-        }
-        if (item.children.length) {
-          return { ...item, children: updateItem(item.children) };
-        }
-        return item;
-      });
-    };
-
-    setItems(updateItem([...items]));
-    setEditDialogOpen(false);
-    setEditItem(null);
-    setEditItemText("");
-    setEditPageTitle("");
-    setEditPageType("一般頁面");
-    setEditNotes("");
-  };
-
-  // 打開刪除確認對話框
-  const openDeleteDialog = (itemId) => {
-    setDeleteItemId(itemId);
-    setDeleteDialogOpen(true);
-  };
-
-  // 確認刪除項目
-  const confirmDelete = () => {
-    if (!deleteItemId) return;
-
-    const deleteFromArray = (itemsArray: Item[]) => {
-      return itemsArray.filter((item) => {
-        if (item.id === deleteItemId) return false;
-        if (item.children.length) {
-          item.children = deleteFromArray(item.children);
-        }
-        return true;
-      });
-    };
-
-    setItems(deleteFromArray([...items]));
-    setDeleteDialogOpen(false);
-    setDeleteItemId(null);
-  };
-
-  // 切換項目展開/折疊狀態
-  const toggleExpanded = (itemId: string) => {
-    const toggleItem = (itemsArray) => {
-      return itemsArray.map((item) => {
-        if (item.id === itemId) {
-          return { ...item, expanded: !item.expanded };
-        }
-        if (item.children.length) {
-          return { ...item, children: toggleItem(item.children) };
-        }
-        return item;
-      });
-    };
-
-    setItems(toggleItem([...items]));
-  };
-
   // 處理拖曳經過事件
   const handleDragOver = (e: React.DragEvent, itemId: string) => {
     e.preventDefault();
     if (draggedItem === itemId) return;
 
     // 獲取項目的DOM元素
-    const itemElement = e.currentTarget;
+    const itemElement = e.currentTarget as HTMLElement;
     const rect = itemElement.getBoundingClientRect();
 
     // 確定拖曳位置
@@ -415,11 +402,11 @@ const NestedItemManager = () => {
     setDragOverPosition(position);
   };
 
-  // 打開新增子項目對話框
-  const openAddChildDialog = (itemId: string) => {
-    setParentItemId(itemId);
-    setNewChildText("");
-    setAddChildDialogOpen(true);
+  // 重置拖曳狀態
+  const resetDragState = () => {
+    setDraggedItem(null);
+    setDragOverItem(null);
+    setDragOverPosition(null);
   };
 
   // 遞迴渲染項目列表
@@ -476,48 +463,51 @@ const NestedItemManager = () => {
               <p className="item-text w-full">
                 <span>{item.text}</span>
                 <br />
-                <span className="text-gray-400">{item.pageType}</span>
+                <span className="text-xs text-gray-400">{item.pageType}</span>
               </p>
 
-              {/* 屬性指示器 */}
-              {(item.pageTitle || item.notes) && (
+              {/* 備註指示器 */}
+              {item.notes && (
                 <span
                   className="mx-1 cursor-help text-xs text-gray-400"
-                  title={`${item.pageTitle ? "標題: " + item.pageTitle + " | " : ""}${item.pageType ? "類型: " + item.pageType + " | " : ""}${item.notes ? "備註: " + item.notes : ""}`}
+                  title={`備註: ${item.notes}`}
                 >
                   <Info className="h-3 w-3" />
                 </span>
               )}
 
-              {/* 新增子項目按鈕 */}
-              <Button
-                onClick={() => openAddChildDialog(item.id)}
-                variant="ghost"
-                size="icon"
-                className="ml-1 h-7 w-7 p-0 text-gray-400 opacity-0 transition-opacity hover:text-green-500 group-hover:opacity-100"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
+              {/* 操作按鈕組 */}
+              <div className="flex opacity-0 transition-opacity group-hover:opacity-100">
+                {/* 新增子項目按鈕 */}
+                <Button
+                  onClick={() => openAddItemDialog(item.id)}
+                  variant="ghost"
+                  size="icon"
+                  className="ml-1 h-7 w-7 p-0 text-gray-400 hover:text-green-500"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
 
-              {/* 編輯按鈕 */}
-              <Button
-                onClick={() => openEditDialog(item)}
-                variant="ghost"
-                size="icon"
-                className="ml-1 h-7 w-7 p-0 text-gray-400 opacity-0 transition-opacity hover:text-blue-500 group-hover:opacity-100"
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
+                {/* 編輯按鈕 */}
+                <Button
+                  onClick={() => openEditDialog(item)}
+                  variant="ghost"
+                  size="icon"
+                  className="ml-1 h-7 w-7 p-0 text-gray-400 hover:text-blue-500"
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
 
-              {/* 刪除按鈕 */}
-              <Button
-                onClick={() => openDeleteDialog(item.id)}
-                variant="ghost"
-                size="icon"
-                className="ml-1 h-7 w-7 p-0 text-gray-400 opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+                {/* 刪除按鈕 */}
+                <Button
+                  onClick={() => openDeleteDialog(item.id)}
+                  variant="ghost"
+                  size="icon"
+                  className="ml-1 h-7 w-7 p-0 text-gray-400 hover:text-red-500"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             {/* 子項目 */}
@@ -534,22 +524,51 @@ const NestedItemManager = () => {
     );
   };
 
+  // 生成文字格式
+  const generateTextFormat = () => {
+    const buildTextTree = (itemsList: Item[], depth = 0): string => {
+      let result = "";
+
+      itemsList.forEach((item) => {
+        // 添加縮排
+        const indent = "  ".repeat(depth);
+        // 構建項目文字
+        result += `${indent}- ${item.text} (${item.pageType})${item.notes ? ` // ${item.notes}` : ""}\n`;
+
+        // 遞迴處理子項目
+        if (item.children.length > 0) {
+          result += buildTextTree(item.children, depth + 1);
+        }
+      });
+
+      return result;
+    };
+
+    const textTree = buildTextTree(items);
+    setFormattedText(textTree);
+    setTextFormatDialogOpen(true);
+  };
+
   return (
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="mb-6 text-2xl font-bold">巢狀式項目管理器</h1>
 
-      <div className="mb-6 flex">
-        <Input
-          type="text"
-          value={newItemText}
-          onChange={(e) => setNewItemText(e.target.value)}
-          placeholder="輸入新項目..."
-          className="rounded-r-none bg-white"
-          onKeyDown={(e) => e.key === "Enter" && addItem()}
-        />
-        <Button onClick={addItem} className="rounded-l-none">
+      <div className="mb-6 flex gap-2">
+        <Button
+          onClick={() => openAddItemDialog()}
+          className="flex items-center"
+        >
           <Plus className="mr-2 h-4 w-4" />
           新增項目
+        </Button>
+
+        <Button
+          onClick={generateTextFormat}
+          variant="outline"
+          className="flex items-center"
+        >
+          <FileText className="mr-2 h-4 w-4" />
+          顯示文字格式
         </Button>
       </div>
 
@@ -557,11 +576,17 @@ const NestedItemManager = () => {
         <CardContent className="p-4">{renderItems(items)}</CardContent>
       </Card>
 
-      {/* 編輯對話框 */}
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+      {/* 項目表單對話框 (用於新增/編輯) */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>編輯項目</DialogTitle>
+            <DialogTitle>
+              {itemFormData.isEdit
+                ? "編輯項目"
+                : itemFormData.parentId
+                  ? "新增子項目"
+                  : "新增項目"}
+            </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -570,24 +595,14 @@ const NestedItemManager = () => {
               </label>
               <Input
                 id="itemName"
-                value={editItemText}
-                onChange={(e) => setEditItemText(e.target.value)}
+                value={itemFormData.text}
+                onChange={(e) =>
+                  setItemFormData({ ...itemFormData, text: e.target.value })
+                }
                 placeholder="輸入項目名稱"
                 className="w-full"
                 autoFocus
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <label htmlFor="pageTitle" className="text-sm font-medium">
-                網頁標題
-              </label>
-              <Input
-                id="pageTitle"
-                value={editPageTitle}
-                onChange={(e) => setEditPageTitle(e.target.value)}
-                placeholder="輸入網頁標題"
-                className="w-full"
+                onKeyDown={(e) => e.key === "Enter" && handleItemFormSubmit()}
               />
             </div>
 
@@ -597,8 +612,10 @@ const NestedItemManager = () => {
               </label>
               <select
                 id="pageType"
-                value={editPageType}
-                onChange={(e) => setEditPageType(e.target.value)}
+                value={itemFormData.pageType}
+                onChange={(e) =>
+                  setItemFormData({ ...itemFormData, pageType: e.target.value })
+                }
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
               >
                 {pageTypeOptions.map((option) => (
@@ -615,8 +632,10 @@ const NestedItemManager = () => {
               </label>
               <textarea
                 id="notes"
-                value={editNotes}
-                onChange={(e) => setEditNotes(e.target.value)}
+                value={itemFormData.notes}
+                onChange={(e) =>
+                  setItemFormData({ ...itemFormData, notes: e.target.value })
+                }
                 placeholder="輸入備註..."
                 className="min-h-[100px] w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               />
@@ -626,35 +645,8 @@ const NestedItemManager = () => {
             <DialogClose asChild>
               <Button variant="outline">取消</Button>
             </DialogClose>
-            <Button onClick={saveEdit} type="submit">
-              儲存
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* 新增子項目對話框 */}
-      <Dialog open={addChildDialogOpen} onOpenChange={setAddChildDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>新增子項目</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <Input
-              value={newChildText}
-              onChange={(e) => setNewChildText(e.target.value)}
-              placeholder="輸入子項目名稱"
-              className="w-full"
-              autoFocus
-              onKeyDown={(e) => e.key === "Enter" && addChildItem()}
-            />
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">取消</Button>
-            </DialogClose>
-            <Button onClick={addChildItem} type="submit">
-              新增
+            <Button onClick={handleItemFormSubmit} type="submit">
+              {itemFormData.isEdit ? "儲存" : "新增"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -677,6 +669,41 @@ const NestedItemManager = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* 文字格式對話框 */}
+      <Dialog
+        open={textFormatDialogOpen}
+        onOpenChange={setTextFormatDialogOpen}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>項目結構文字格式</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="relative">
+              <pre className="max-h-96 overflow-auto rounded-md bg-gray-50 p-4 text-sm">
+                {formattedText}
+              </pre>
+              <Button
+                className="absolute right-2 top-2"
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  navigator.clipboard.writeText(formattedText);
+                  // 可以加入複製成功的提示
+                }}
+              >
+                複製
+              </Button>
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button>關閉</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
