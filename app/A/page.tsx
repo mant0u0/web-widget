@@ -65,7 +65,6 @@ interface Item {
 }
 
 type ItemState = Item[];
-type FindResult = { item: Item; parent: Item | null; index: number } | null;
 
 // 巢狀式項目管理器元件
 const NestedItemManager = () => {
