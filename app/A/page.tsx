@@ -11,6 +11,7 @@ import {
   Info,
   FileText,
   GitBranch,
+  Copy,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -547,9 +548,12 @@ const NestedItemManager = () => {
             className={` ${draggedItem === item.id ? "opacity-50" : ""}`}
           >
             <div
+              draggable
+              onDragStart={() => setDraggedItem(item.id)}
+              //
               onDragEnd={handleDragEnd}
               onDragOver={(e) => handleDragOver(e, item.id)}
-              className={`group flex items-center rounded-md border ${
+              className={`group flex h-full gap-2 rounded-md border ${
                 dragOverItem === item.id && dragOverPosition === "inside"
                   ? "border-2 border-green-500 bg-green-50"
                   : dragOverItem === item.id
@@ -560,31 +564,24 @@ const NestedItemManager = () => {
               } relative bg-white p-2 shadow-sm`}
             >
               {/* 展開/折疊按鈕 */}
-              {item.children.length > 0 && (
-                <Button
-                  onClick={() => toggleExpanded(item.id)}
-                  variant="ghost"
-                  size="icon"
-                  className="mr-1 h-6 w-6 p-0 text-gray-500 hover:text-gray-800 focus:outline-none"
-                >
-                  {item.expanded ? (
-                    <ChevronDown className="h-5 w-5" />
-                  ) : (
-                    <ChevronRight className="h-5 w-5" />
-                  )}
-                </Button>
-              )}
-
-              {/* 空白填充，讓沒有子項目的項目保持對齊 */}
-              {item.children.length === 0 && <div className="mr-1 w-6" />}
-
-              {/* 拖動把手 */}
-              <div
-                draggable
-                onDragStart={() => setDraggedItem(item.id)}
-                className="mr-2 cursor-move text-gray-400 hover:text-gray-600"
-              >
-                <GripVertical className="h-4 w-4" />
+              <div className="flex w-8 items-center justify-center">
+                {item.children.length > 0 && (
+                  <Button
+                    onClick={() => toggleExpanded(item.id)}
+                    variant="ghost"
+                    size="icon"
+                    className="h-full w-8 rounded-sm p-0 text-gray-500 hover:text-gray-800 focus:outline-none"
+                  >
+                    {item.expanded ? (
+                      <ChevronDown className="h-5 w-5" />
+                    ) : (
+                      <ChevronRight className="h-5 w-5" />
+                    )}
+                  </Button>
+                )}
+                {item.children.length === 0 && (
+                  <GripVertical className="h-4 w-4 cursor-grab text-gray-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                )}
               </div>
 
               {/* 項目內容 */}
@@ -592,17 +589,13 @@ const NestedItemManager = () => {
                 <span>{item.text}</span>
                 <br />
                 <span className="text-xs text-gray-400">{item.itemType}</span>
+                {item.notes && (
+                  <>
+                    <br />
+                    <span className="text-xs text-gray-400">{item.notes}</span>
+                  </>
+                )}
               </p>
-
-              {/* 備註指示器 */}
-              {item.notes && (
-                <span
-                  className="mx-1 cursor-help text-xs text-gray-400"
-                  title={`備註: ${item.notes}`}
-                >
-                  <Info className="h-3 w-3" />
-                </span>
-              )}
 
               {/* 操作按鈕組 */}
               <div className="flex opacity-0 transition-opacity group-hover:opacity-100">
@@ -611,9 +604,19 @@ const NestedItemManager = () => {
                   onClick={() => openAddItemDialog(item.id)}
                   variant="ghost"
                   size="icon"
-                  className="ml-1 h-7 w-7 p-0 text-gray-400 hover:text-green-500"
+                  className="h-8 w-8 p-0 text-gray-400 hover:bg-green-50 hover:text-green-600"
                 >
                   <Plus className="h-4 w-4" />
+                </Button>
+
+                {/* 複製按鈕 */}
+                <Button
+                  onClick={() => {}}
+                  variant="ghost"
+                  size="icon"
+                  className="ml-1 h-8 w-8 p-0 text-gray-400 hover:bg-blue-50 hover:text-blue-600"
+                >
+                  <Copy className="h-4 w-4" />
                 </Button>
 
                 {/* 編輯按鈕 */}
@@ -621,7 +624,7 @@ const NestedItemManager = () => {
                   onClick={() => openEditDialog(item)}
                   variant="ghost"
                   size="icon"
-                  className="ml-1 h-7 w-7 p-0 text-gray-400 hover:text-blue-500"
+                  className="ml-1 h-8 w-8 p-0 text-gray-400 hover:bg-blue-50 hover:text-blue-600"
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -631,7 +634,7 @@ const NestedItemManager = () => {
                   onClick={() => openDeleteDialog(item.id)}
                   variant="ghost"
                   size="icon"
-                  className="ml-1 h-7 w-7 p-0 text-gray-400 hover:text-red-500"
+                  className="ml-1 h-8 w-8 p-0 text-gray-400 hover:bg-red-50 hover:text-red-600"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -713,7 +716,7 @@ const NestedItemManager = () => {
     <div className="mx-auto max-w-4xl p-6">
       {/* <h1 className="mb-6 text-2xl font-bold">巢狀式項目管理器</h1> */}
 
-      <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="mb-4 flex items-center justify-between gap-2">
         <Button
           onClick={() => openAddItemDialog()}
           className="flex items-center"
@@ -743,9 +746,7 @@ const NestedItemManager = () => {
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-2">{renderItems(items)}</CardContent>
-      </Card>
+      <div className="">{renderItems(items)}</div>
 
       {/* 項目表單對話框 (用於新增/編輯) */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -915,7 +916,7 @@ const NestedItemManager = () => {
           </DialogHeader>
           <div className="py-4">
             <div
-              className="mb-4 overflow-auto rounded border p-4"
+              className="mb-4 overflow-auto rounded border"
               style={{ maxHeight: "70vh" }}
             >
               {/* 使用 iframe 顯示 Mermaid 圖表 */}
@@ -969,20 +970,16 @@ const NestedItemManager = () => {
                 />
               </div>
             </div>
-            <div className="mt-4">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  navigator.clipboard.writeText(mermaidCode);
-                }}
-                className="mr-2"
-              >
-                複製 Mermaid 代碼
-              </Button>
-            </div>
           </div>
           <DialogFooter>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(mermaidCode);
+              }}
+            >
+              複製 Mermaid 代碼
+            </Button>
             <DialogClose asChild>
               <Button>關閉</Button>
             </DialogClose>
