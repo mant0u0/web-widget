@@ -321,27 +321,8 @@ const NestedItemManager = () => {
     }
   };
 
-  // 為所有項目及其子項目生成新的ID
-  const generateNewIds = (item: Item): Item => {
-    // 建立一個新的項目物件，而非修改原始物件
-    const newItem = { ...item };
-
-    // 為項目生成新 ID
-    newItem.id = `item-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-
-    // 遞迴處理子項目
-    if (newItem.children && newItem.children.length > 0) {
-      newItem.children = newItem.children.map((child) =>
-        generateNewIds({ ...child }),
-      );
-    }
-
-    return newItem;
-  };
-
   // 處理拖曳結束事件
-  // 處理拖曳結束事件
-  const handleDragEnd = (e: React.DragEvent) => {
+  const handleDragEnd = () => {
     // 確保只有在有拖曳和目標項目時才處理
     if (!draggedItem || !dragOverItem || !dragOverPosition) {
       resetDragState();
@@ -907,9 +888,9 @@ const NestedItemManager = () => {
           onLoad={() => {
             // 腳本加載後初始化 Mermaid
             try {
-              // @ts-ignore
+              // @ts-expect-error
               if (window.mermaid) {
-                // @ts-ignore
+                // @ts-expect-error
                 window.mermaid.initialize({
                   startOnLoad: true,
                   theme: "default",
