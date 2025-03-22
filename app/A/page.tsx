@@ -906,13 +906,12 @@ const NestedItemManager = () => {
                   類型
                 </label>
                 <Select
-                  value={itemFormData.itemType}
+                  defaultValue={itemFormData.itemType}
                   onValueChange={(value) => {
                     setItemFormData({ ...itemFormData, itemType: value });
                   }}
-                  className="w-full"
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="請選擇" />
                   </SelectTrigger>
                   <SelectContent>
