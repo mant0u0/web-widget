@@ -1,3 +1,5 @@
+// page.tsx 主要程式
+
 "use client";
 import React, { useCallback, ChangeEvent, useMemo, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
@@ -338,10 +340,10 @@ const TextEditor = () => {
 
   return (
     <div className="flex h-full w-full flex-col items-center overflow-hidden">
-      {/* content  */}
-      <div className="flex h-full w-full flex-col overflow-hidden p-2 md:flex-row-reverse md:gap-3 md:p-3">
+      <div className="flex h-full w-full flex-col overflow-hidden md:flex-row-reverse">
+        {/* 文字編輯區 */}
         <div className="flex h-[40%] w-full flex-col overflow-hidden md:h-full md:w-[80%]">
-          <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-input bg-white">
+          <div className="flex h-full w-full flex-col overflow-hidden bg-white">
             <div className="relative flex-1 overflow-hidden">
               <Textarea
                 value={text}
@@ -406,7 +408,10 @@ const TextEditor = () => {
             </div>
           </div>
         </div>
-        <div className="h-[60%] w-full overflow-hidden md:h-full md:w-[20%] md:min-w-[340px]">
+
+        {/* 工具列 */}
+        <div className="h-[60%] w-full overflow-hidden border-t md:h-full md:w-[25%] md:min-w-[380px] md:border-r md:border-t-0">
+          {/* Toolbar 裡面有 SymbolPicker 元件 */}
           <Toolbar
             text={text}
             updateText={updateText}
@@ -417,7 +422,6 @@ const TextEditor = () => {
           />
         </div>
       </div>
-      {/* Footer */}
       <Footer
         text={text}
         copyStatus={copyStatus}

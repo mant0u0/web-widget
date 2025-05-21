@@ -329,9 +329,10 @@ export const SearchReplace: React.FC<SearchReplaceProps> = ({
 
   return (
     <div className="h-full w-full overflow-hidden pt-0">
-      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
         {/* 搜尋欄 */}
         <div className="border-b bg-background p-2 md:p-3">
+          <p className="mb-2 text-sm text-zinc-600">⠿ 搜尋取代</p>
           <div className="relative">
             <Collapsible>
               {/* 搜尋輸入框 */}

@@ -1,24 +1,22 @@
+// SymbolPicker.tsx
+
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ChevronDown, ChevronRight, CircleDashed } from "lucide-react";
 import { SymbolItem, SymbolData } from "./types";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+// 引入 useLocalStorage hook
+import useLocalStorage from "../hooks/useLocalStorage";
 
 // 設定每次載入的符號數量，用於實現延遲載入功能
 const ITEMS_PER_BATCH = 20;
 
-/**
- * 單個符號按鈕組件
- * 顯示符號並在懸停時顯示提示文字
- * @param item - 符號項目資料
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- */
+// 單個符號按鈕組件，顯示符號並在懸停時顯示提示文字
 const SymbolButton = ({
-  item,
-  onSelect,
-  btnClassName,
+  item, //符號項目資料
+  onSelect, //選擇符號時的回調函數
+  btnClassName, //自定義按鈕樣式
 }: {
   item: SymbolItem;
   onSelect: (item: SymbolItem) => void;
@@ -46,22 +44,14 @@ const SymbolButton = ({
   </div>
 );
 
-/**
- * 可折疊的分類區塊組件
- * 實現延遲載入和展開/收起功能
- * @param category - 分類名稱
- * @param items - 該分類下的符號項目
- * @param onSelect - 選擇符號時的回調函數
- * @param btnClassName - 自定義按鈕樣式
- * @param defaultExpanded - 預設是否展開
- */
+// 可折疊的分類區塊組件，實現延遲載入和展開/收起功能
 const LazyLoadSection = ({
-  category,
-  items,
-  onSelect,
-  btnClassName,
+  category, //分類名稱
+  items, //該分類下的符號項目
+  onSelect, //選擇符號時的回調函數
+  btnClassName, //自定義按鈕樣式
   listClassName = "",
-  defaultExpanded = true,
+  defaultExpanded = true, //預設是否展開
 }: {
   category: string;
   items: SymbolItem[];
@@ -169,14 +159,8 @@ export const SymbolPicker: React.FC<{
 }) => {
   // 搜尋關鍵字
   const [searchQuery, setSearchQuery] = useState("");
-  // 最近使用的符號
-  const [recentItems, setRecentItems] = useState<SymbolItem[]>([]);
-  // 最近使用區塊的展開狀態
-  const [isExpanded, setIsExpanded] = useState(false);
-  // 客戶端渲染標記
-  const [isClientSide, setIsClientSide] = useState(false);
 
-  // 根據不同的 pickerType 獲取對應的 localStorage key
+  // 獲取對應的 localStorage key
   const getLocalStorageKey = () => {
     switch (pickerType) {
       case "emoji":
@@ -189,55 +173,37 @@ export const SymbolPicker: React.FC<{
     }
   };
 
-  const localStorageKey = getLocalStorageKey();
+  // 使用 useLocalStorage 替代 useState + 手動讀寫 localStorage
+  const [recentItems, setRecentItems] = useLocalStorage<SymbolItem[]>(
+    getLocalStorageKey(),
+    [],
+  );
+
+  // 最近使用區塊的展開狀態
+  const [isExpanded, setIsExpanded] = useState(false);
+  // 客戶端渲染標記
+  const [isClientSide, setIsClientSide] = useState(false);
 
   // 在客戶端初始化狀態
   useEffect(() => {
     setIsExpanded(true);
     setIsClientSide(true);
+    // 不需要再手動讀取 localStorage，useLocalStorage hook 會自動處理
+  }, []);
 
-    // 根據 pickerType 從 localStorage 讀取最近使用的項目
-    try {
-      const storedRecent = localStorage.getItem(localStorageKey);
-      if (storedRecent) {
-        setRecentItems(JSON.parse(storedRecent));
-      }
-    } catch (e) {
-      console.error(`Failed to read ${localStorageKey} from localStorage:`, e);
-    }
-  }, [localStorageKey]);
-
-  /**
-   * 處理符號選擇
-   * 1. 觸發選擇回調
-   * 2. 更新最近使用列表
-   */
+  // 處理符號選擇（  1. 觸發選擇回調 2. 更新最近使用列表）
   const handleSymbolSelect = (item: SymbolItem) => {
     onSelect(item.symbol);
     setRecentItems((prev) => {
       // 避免重複添加相同的符號
       if (prev.some((prevItem) => prevItem.symbol === item.symbol)) return prev;
       // 添加到最近使用列表，最多保留 20 個
-      const newRecentItems = [item, ...prev].slice(0, 20);
-
-      // 儲存到 localStorage，使用對應的 key
-      try {
-        localStorage.setItem(localStorageKey, JSON.stringify(newRecentItems));
-      } catch (e) {
-        console.error(
-          `Failed to write to localStorage (${localStorageKey}):`,
-          e,
-        );
-      }
-
-      return newRecentItems;
+      return [item, ...prev].slice(0, 20);
+      // 不需要手動保存到 localStorage，useLocalStorage hook 會自動處理
     });
   };
 
-  /**
-   * 根據搜尋關鍵字過濾符號
-   * 使用 useMemo 優化效能，只在 searchQuery 或 data 變更時重新計算
-   */
+  // 根據搜尋關鍵字過濾符號，使用 useMemo 優化效能，只在 searchQuery 或 data 變更時重新計算
   const filteredItems = useMemo(() => {
     if (!searchQuery) return data;
 
@@ -281,7 +247,7 @@ export const SymbolPicker: React.FC<{
   if (!isClientSide) {
     return (
       <div className="h-full w-full overflow-hidden pt-0">
-        <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
+        <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
           <div className="border-b bg-background p-3">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
@@ -303,94 +269,100 @@ export const SymbolPicker: React.FC<{
   }
 
   return (
-    <div className="h-full w-full overflow-hidden pt-0">
-      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
-        {/* 搜尋欄 */}
-        <div className="border-b bg-background p-2 md:p-3">
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder={`搜尋${pickerType === "emoji" ? "表情符號" : pickerType === "kaomoji" ? "顏文字" : "符號"}`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 text-base"
-            />
-          </div>
+    <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
+      {/* 搜尋欄 */}
+      <div className="border-b bg-background p-2 md:p-3">
+        <p className="mb-2 text-sm text-zinc-600">
+          ⠿ 插入
+          {pickerType === "emoji"
+            ? " Emoji"
+            : pickerType === "kaomoji"
+              ? "顏文字"
+              : "符號"}
+        </p>
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+          <Input
+            type="text"
+            placeholder={`搜尋${pickerType === "emoji" ? "表情符號" : pickerType === "kaomoji" ? "顏文字" : "符號"}`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-8 text-base"
+          />
         </div>
+      </div>
 
-        {/* 符號列表區域 */}
-        <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
-          {/* 最近使用區塊（僅在未搜尋時顯示） */}
-          {!searchQuery && (
-            <div className="">
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:px-3 md:py-2"
-              >
-                {isExpanded ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-                <p className="">
-                  最近使用
+      {/* 符號列表區域 */}
+      <ScrollArea className="h-full overflow-y-auto overflow-x-hidden">
+        {/* 最近使用區塊（僅在未搜尋時顯示） */}
+        {!searchQuery && (
+          <div className="">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="sticky left-0 top-0 z-10 flex w-full items-center gap-2 bg-zinc-50 p-2 text-left text-sm font-semibold transition-colors hover:bg-zinc-100 md:px-3 md:py-2"
+            >
+              {isExpanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+              <p className="">
+                最近使用
+                {pickerType === "emoji"
+                  ? "的表情符號"
+                  : pickerType === "kaomoji"
+                    ? "的顏文字"
+                    : "的符號"}
+              </p>
+              <span className="text-xs text-zinc-400">
+                {recentItems.length}
+              </span>
+            </button>
+            <div
+              className={`flex flex-wrap gap-1 ${
+                isExpanded
+                  ? "p-2 opacity-100 md:p-3"
+                  : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
+              } ${listClassName}`}
+            >
+              {recentItems.length > 0 ? (
+                recentItems.map((item, index) => (
+                  <SymbolButton
+                    key={`${item.symbol}-${index}`}
+                    item={item}
+                    onSelect={handleSymbolSelect}
+                    btnClassName={btnClassName}
+                  />
+                ))
+              ) : (
+                <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
+                  <CircleDashed className="h-5 w-4" />
+                  最近沒有使用
                   {pickerType === "emoji"
                     ? "的表情符號"
                     : pickerType === "kaomoji"
                       ? "的顏文字"
                       : "的符號"}
-                </p>
-                <span className="text-xs text-zinc-400">
-                  {recentItems.length}
-                </span>
-              </button>
-              <div
-                className={`flex flex-wrap gap-1 ${
-                  isExpanded
-                    ? "p-2 opacity-100 md:p-3"
-                    : "h-0 overflow-hidden px-2 py-0 opacity-0 md:px-3"
-                } ${listClassName}`}
-              >
-                {recentItems.length > 0 ? (
-                  recentItems.map((item, index) => (
-                    <SymbolButton
-                      key={`${item.symbol}-${index}`}
-                      item={item}
-                      onSelect={handleSymbolSelect}
-                      btnClassName={btnClassName}
-                    />
-                  ))
-                ) : (
-                  <div className="flex w-full items-center justify-center gap-2 text-sm text-zinc-400">
-                    <CircleDashed className="h-5 w-4" />
-                    最近沒有使用
-                    {pickerType === "emoji"
-                      ? "的表情符號"
-                      : pickerType === "kaomoji"
-                        ? "的顏文字"
-                        : "的符號"}
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* 符號分類列表 */}
-          {Object.entries(filteredItems).map(([category, { items }]) => (
-            <LazyLoadSection
-              key={category}
-              category={category}
-              items={items}
-              onSelect={handleSymbolSelect}
-              btnClassName={btnClassName}
-              listClassName={listClassName}
-            />
-          ))}
+        {/* 符號分類列表 */}
+        {Object.entries(filteredItems).map(([category, { items }]) => (
+          <LazyLoadSection
+            key={category}
+            category={category}
+            items={items}
+            onSelect={handleSymbolSelect}
+            btnClassName={btnClassName}
+            listClassName={listClassName}
+          />
+        ))}
 
-          <ScrollBar className="z-10" />
-        </ScrollArea>
-      </div>
+        <ScrollBar className="z-10" />
+      </ScrollArea>
     </div>
   );
 };

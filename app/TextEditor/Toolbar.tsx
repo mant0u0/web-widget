@@ -1,5 +1,5 @@
 // Toolbar.tsx
-import React, { useRef, useState, MouseEvent, WheelEvent } from "react";
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Type,
@@ -54,133 +54,82 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
     transformSelectedText,
     transformSelectedLine,
   }) => {
-    // 滑鼠
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [isMouseDown, setIsMouseDown] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
-
-    // 滾動
-    const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollLeft += e.deltaY;
-      }
-    };
-
-    // 滑鼠按下
-    const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-      setIsMouseDown(true);
-      const slider = scrollContainerRef.current;
-      if (slider) {
-        const startPosition = e.pageX - slider.offsetLeft;
-        setStartX(startPosition);
-        setScrollLeft(slider.scrollLeft);
-      }
-    };
-
-    // 滑鼠移動
-    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-      if (!isMouseDown) return;
-      e.preventDefault();
-      const slider = scrollContainerRef.current;
-      if (slider) {
-        const x = e.pageX - slider.offsetLeft;
-        const distance = x - startX;
-        slider.scrollLeft = scrollLeft - distance;
-      }
-    };
-
-    // 滑鼠放開
-    const handleMouseUp = () => {
-      setIsMouseDown(false);
-    };
-
     return (
       <Tabs
         defaultValue="插入符號"
-        className="flex h-full w-full flex-col overflow-hidden"
+        className="flex h-full w-full overflow-hidden"
       >
-        <div
-          ref={scrollContainerRef}
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className="relative top-0 z-0 cursor-grab select-none overflow-x-scroll py-1 [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)] md:py-2 md:pt-0"
-          // [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]
-          style={{
-            msOverflowStyle: "none",
-            scrollbarWidth: "none",
-          }}
-        >
-          <div className="flex cursor-grab select-none">
-            <TabsList className="h-10 gap-1 bg-transparent p-0">
-              <TabsTrigger
-                value="插入符號"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <Type className="w-4" />
-                <p className="whitespace-nowrap text-sm">插入符號</p>
-              </TabsTrigger>
-              <TabsTrigger
-                value="插入 Emoji"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <Smile className="w-4" />
-                <p className="whitespace-nowrap text-sm">插入 Emoji</p>
-              </TabsTrigger>
-              <TabsTrigger
-                value="插入顏文字"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <Smile className="w-4" />
-                <p className="whitespace-nowrap text-sm">插入顏文字</p>
-              </TabsTrigger>
-              <TabsTrigger
-                value="插入引號"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <Quote className="w-4" />
-                <p className="whitespace-nowrap text-sm">插入引號</p>
-              </TabsTrigger>
-              <TabsTrigger
-                value="段落符號"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <ListOrdered className="w-4" />
-                <p className="whitespace-nowrap text-sm">段落符號</p>
-              </TabsTrigger>
-              <TabsTrigger
-                value="文字處理"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <SpellCheck2 className="w-4" />
-                <p className="whitespace-nowrap text-sm">文字處理</p>
-              </TabsTrigger>
-              <TabsTrigger
-                value="搜尋取代"
-                className="h-full cursor-grab gap-2 rounded-xl border border-transparent px-4 data-[state=active]:border data-[state=active]:border-input data-[state=active]:shadow-sm"
-              >
-                <Search className="w-4" />
-                <p className="whitespace-nowrap text-sm">搜尋取代</p>
-              </TabsTrigger>
-              <div className="w-10"></div>
-            </TabsList>
-          </div>
-        </div>
+        <TabsList className="no-scrollbar h-full flex-col items-start justify-start overflow-y-auto overflow-x-hidden rounded-none border-r border-input bg-transparent p-0">
+          <TabsTrigger
+            value="插入符號"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t-0 border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 插入符號 */}
+            <Type className="w-6" />
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="插入 Emoji"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 插入 Emoji */}
+            <Smile className="w-6" />
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="插入顏文字"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 插入顏文字 */}
+            <Smile className="w-6" />
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="插入引號"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 插入引號 */}
+            <Quote className="w-6" />
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="段落符號"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 段落符號 */}
+            <ListOrdered className="w-6" />
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="文字處理"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 文字處理 */}
+            <SpellCheck2 className="w-6" />
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="搜尋取代"
+            className="h-[48px] w-[48px] flex-none gap-2 rounded-none border-b border-l-0 border-r-0 border-t border-transparent data-[state=active]:border-input data-[state=active]:shadow-sm"
+          >
+            {/* 搜尋取代 */}
+            <Search className="w-6" />
+          </TabsTrigger>
+        </TabsList>
 
         <TabsContent
           value="插入符號"
           className="mt-0 h-full w-full flex-1 overflow-y-auto"
         >
-          <SymbolPicker
-            data={dataSymbols}
-            onSelect={insertSymbol}
-            btnClassName="w-[48px] aspect-square overflow-hidden"
-            listClassName="flex flex-wrap"
-            pickerType="symbol" // 符號
-          />
+          <div className="flex h-full w-full flex-col overflow-hidden pt-0">
+            <SymbolPicker
+              data={dataSymbols}
+              onSelect={insertSymbol}
+              btnClassName="w-[48px] aspect-square overflow-hidden"
+              listClassName="flex flex-wrap"
+              pickerType="symbol" // 符號
+            />
+          </div>
         </TabsContent>
         <TabsContent
           value="插入 Emoji"

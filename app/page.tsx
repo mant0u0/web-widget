@@ -17,9 +17,9 @@ export default function Home() {
             link="/Purchasing"
           /> */}
           <LinkItem
-            text="飲料店搜尋器"
-            info="搜尋台灣各家連鎖飲料店的網址與社群。"
-            link="/DrinkSearch"
+            text="顏色梯度生成器"
+            info="生成顏色梯度，並提供顏色代碼。"
+            link="/ColorBox"
           />
           <LinkItem
             text="文字編輯器"

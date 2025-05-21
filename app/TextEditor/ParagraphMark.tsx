@@ -182,84 +182,87 @@ export const ParagraphMark: React.FC<ParagraphMarkProps> = ({
 
   return (
     <div className="h-full w-full overflow-hidden pt-0">
-      <div className="flex h-full w-full flex-1 flex-col overflow-hidden rounded-xl border border-input bg-zinc-50">
-        <div className="flex items-center justify-between border-b bg-background p-2 md:p-3">
-          {/* 新增自訂符號 */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="bg-background p-3 shadow-none"
-              >
-                <Plus />
-                <p className="text-sm">自訂符號</p>
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>新增自訂符號</DialogTitle>
-              </DialogHeader>
-              <p className="text-sm font-medium leading-6 text-gray-700">
-                可於每行的開頭新增該自訂符號；符號新增後，可於編輯區域「選取文字」新增該自訂符號。
-              </p>
-              <Input
-                value={newSymbol}
-                onChange={(e) => setNewSymbol(e.target.value)}
-                placeholder="輸入自訂符號"
-                className="w-full"
-              />
-
-              <DialogClose asChild>
-                <Button size="lg" onClick={addCustomSymbol}>
+      <div className="flex h-full w-full flex-1 flex-col overflow-hidden bg-zinc-50">
+        <div className="border-b bg-background p-2 md:p-3">
+          <p className="mb-2 text-sm text-zinc-600">⠿ 段落符號</p>
+          <div className="flex items-center justify-between">
+            {/* 新增自訂符號 */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="bg-background p-3 shadow-none"
+                >
                   <Plus />
-                  新增
+                  <p className="text-sm">自訂符號</p>
                 </Button>
-              </DialogClose>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>新增自訂符號</DialogTitle>
+                </DialogHeader>
+                <p className="text-sm font-medium leading-6 text-gray-700">
+                  可於每行的開頭新增該自訂符號；符號新增後，可於編輯區域「選取文字」新增該自訂符號。
+                </p>
+                <Input
+                  value={newSymbol}
+                  onChange={(e) => setNewSymbol(e.target.value)}
+                  placeholder="輸入自訂符號"
+                  className="w-full"
+                />
 
-          {/* 包含空白行 */}
-          <div className="flex h-[36px] overflow-hidden rounded-md border border-input">
-            <Label className="flex cursor-pointer items-center gap-1 px-3 py-2">
-              <Checkbox
-                id="terms"
-                checked={includeEmptyLines}
-                onCheckedChange={(checked: boolean) =>
-                  setIncludeEmptyLines(checked)
+                <DialogClose asChild>
+                  <Button size="lg" onClick={addCustomSymbol}>
+                    <Plus />
+                    新增
+                  </Button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
+
+            {/* 包含空白行 */}
+            <div className="flex h-[36px] overflow-hidden rounded-md border border-input">
+              <Label className="flex cursor-pointer items-center gap-1 px-3 py-2">
+                <Checkbox
+                  id="terms"
+                  checked={includeEmptyLines}
+                  onCheckedChange={(checked: boolean) =>
+                    setIncludeEmptyLines(checked)
+                  }
+                />
+                <p className="ml-1 text-sm">包含空行</p>
+              </Label>
+
+              {/* 空白字元縮排 */}
+              <Button
+                onClick={() =>
+                  removePrefix({
+                    symbol: " ",
+                    name: "半形空格",
+                    type: "repeat",
+                    editable: false,
+                  })
                 }
-              />
-              <p className="ml-1 text-sm">包含空行</p>
-            </Label>
-
-            {/* 空白字元縮排 */}
-            <Button
-              onClick={() =>
-                removePrefix({
-                  symbol: " ",
-                  name: "半形空格",
-                  type: "repeat",
-                  editable: false,
-                })
-              }
-              variant="outline"
-              className="rounded-none border-b-0 border-r-0 border-t-0 bg-background p-3 shadow-none"
-            >
-              <PilcrowLeft />
-            </Button>
-            <Button
-              onClick={() =>
-                insertPrefix({
-                  symbol: " ",
-                  name: "半形空格",
-                  type: "repeat",
-                  editable: false,
-                })
-              }
-              variant="outline"
-              className="rounded-none border-b-0 border-r-0 border-t-0 bg-background p-3 shadow-none"
-            >
-              <PilcrowRight />
-            </Button>
+                variant="outline"
+                className="rounded-none border-b-0 border-r-0 border-t-0 bg-background p-3 shadow-none"
+              >
+                <PilcrowLeft />
+              </Button>
+              <Button
+                onClick={() =>
+                  insertPrefix({
+                    symbol: " ",
+                    name: "半形空格",
+                    type: "repeat",
+                    editable: false,
+                  })
+                }
+                variant="outline"
+                className="rounded-none border-b-0 border-r-0 border-t-0 bg-background p-3 shadow-none"
+              >
+                <PilcrowRight />
+              </Button>
+            </div>
           </div>
         </div>
 
